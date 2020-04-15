@@ -64,9 +64,9 @@ def video_demo(video_path):
             break
 
 
-image_demos(root + "/docs/kite.jpg")
+# image_demos(root + "/docs/kite.jpg")
 
-# image_demo(root + "/docs/kite.jpg")
+image_demo(root + "/docs/kite.jpg")
 # image_demo("'/Users/liangtaoniu/workspace/MyDiary/tmp/models/yolo/test/bb.jpg'")
 
 # video_demo(video_path=root + "/docs/road.mp4")
