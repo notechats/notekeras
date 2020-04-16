@@ -84,17 +84,25 @@ def _main(config_path, weights_path, output_path, weights_only=False, plot_model
 
             print('conv2d', 'bn' if batch_normalize else '  ', activation, weights_shape)
 
-            conv_bias = np.ndarray(shape=(filters,), dtype='float32', buffer=weights_file.read(filters * 4))
+            conv_bias = np.ndarray(shape=(filters,),
+                                   dtype='float32',
+                                   buffer=weights_file.read(filters * 4))
             count += filters
 
             if batch_normalize:
-                bn_weights = np.ndarray(shape=(3, filters), dtype='float32', buffer=weights_file.read(filters * 12))
+                bn_weights = np.ndarray(shape=(3, filters),
+                                        dtype='float32',
+                                        buffer=weights_file.read(filters * 12))
                 count += 3 * filters
 
-                # (scale gamma, shift beta, running mean, running var)
-                bn_weight_list = [bn_weights[0], conv_bias, bn_weights[1], bn_weights[2]]
+                bn_weight_list = [bn_weights[0],  # scale gamma
+                                  conv_bias,  # shift beta
+                                  bn_weights[1],  # running mean
+                                  bn_weights[2]  # running var
+                                  ]
 
-            conv_weights = np.ndarray(shape=darknet_w_shape, dtype='float32',
+            conv_weights = np.ndarray(shape=darknet_w_shape,
+                                      dtype='float32',
                                       buffer=weights_file.read(weights_size * 4))
             count += weights_size
 
@@ -178,14 +186,9 @@ def _main(config_path, weights_path, output_path, weights_only=False, plot_model
 
         else:
             raise ValueError('Unsupported section header type: {}'.format(section))
-    for layer in all_layers:
-        print(layer)
-        print(len(layer.weights))
-        pass
-    a = b2
+
     # Create and save model.
-    if len(out_index) == 0:
-        out_index.append(len(all_layers) - 1)
+    if len(out_index) == 0: out_index.append(len(all_layers) - 1)
     model = Model(inputs=input_layer, outputs=[all_layers[i] for i in out_index])
     print(model.summary())
     if weights_only:
@@ -208,7 +211,7 @@ def _main(config_path, weights_path, output_path, weights_only=False, plot_model
 
 
 if __name__ == '__main__':
-    root = '/Users/liangtaoniu/workspace/MyDiary/tmp/models/yolo/configs'
+    root = '/Users/liangtaoniu/workspace/MyDiary/tmp/models/yolo'
     config_path = '{}/yolov3.cfg'.format(root)
     weights_path = '{}/yolov3.weights'.format(root)
     output_path = '{}/yolov3.h5'.format(root)

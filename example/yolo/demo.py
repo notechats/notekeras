@@ -21,7 +21,8 @@ def get_anchors():
 anchors = get_anchors()
 
 yolo_body = YoloBody(anchors=anchors, num_classes=len(classes))
-yolo_body.load_weights("/Users/liangtaoniu/workspace/MyDiary/tmp/models/yolo/configs/yolov3.h5", freeze_body=3)
+# yolo_body.load_weights("/Users/liangtaoniu/workspace/MyDiary/tmp/models/yolo/configs/yolov3.h5", freeze_body=3)
+yolo_body.load_layer_weights()
 
 
 def image_demo(image_path):

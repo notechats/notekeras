@@ -17,6 +17,7 @@ from tqdm import tqdm
 from notekeras.component.yolo import YoloModel
 from notekeras.utils.image import image_resize, postprocess_boxes, nms
 from notekeras.utils.image import read_image_batch
+from notemodel.database import load_layers
 
 STRIDES = np.array([8, 16, 32])
 IOU_LOSS_THRESH = 0.5
@@ -823,6 +824,10 @@ class YoloBody:
             res.append(self.decode(out, index=i))
         return res
 
+    def release(self):
+        del self.yolo_model
+        del self.train_model
+
     def decode(self, conv_output, index=0):
         anchors = np.array(self.anchors).reshape([3, 3, 2])
 
@@ -902,7 +907,13 @@ class YoloBody:
             result_boxs.append(boxes)
         return result_boxs
 
+    def load_layer_weights(self):
+        print("load weight")
+        load_layers(self.yolo_model.layers, model_name='yolov3')
+        print("load weight done")
+
     def load_weights(self, filepath, freeze_body=2):
+
         self.yolo_model.load_weights(filepath)
 
         print('Load weights success {}.'.format(filepath))
