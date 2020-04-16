@@ -827,7 +827,7 @@ class YoloBody:
         self.train_model = Model(inputs=[yolo_model.input, *y_true], outputs=model_loss)
         # ###############################################
 
-    def train(self, dataset: Dataset, log_dir=".data/yolo/log", lr=1e-3, steps_per_epoch=None):
+    def train(self, dataset: Dataset, log_dir=".data/yolo/log", lr=1e-3, epochs=1, steps_per_epoch=None):
         logging = TensorBoard(log_dir=log_dir)
 
         checkpoint = ModelCheckpoint(
@@ -840,32 +840,29 @@ class YoloBody:
         # 测试集准确率，下降前终止
         early_stopping = EarlyStopping(monitor='loss', min_delta=0, patience=10, verbose=1)
 
-        self.train_model.compile(optimizer=Adam(lr=lr),
-                                 loss={'yolo_loss': lambda y_true0, y_pred: y_pred})
+        self.train_model.compile(optimizer=Adam(lr=lr), loss={'yolo_loss': lambda y_true0, y_pred: y_pred})
 
         self.train_model.fit(dataset.dataset_iterator,
-                             steps_per_epoch=steps_per_epoch or dataset.steps_total,
+                             epochs=epochs,
+                             steps_per_epoch=steps_per_epoch,
                              callbacks=[logging, checkpoint, reduce_lr, early_stopping])
 
-    def train_iterator(self, dataset: YoloDataset, log_dir=".data/yolo/log", lr=1e-3, steps_per_epoch=None):
+    def train_iterator(self, dataset: YoloDataset, log_dir=".data/yolo/log", lr=1e-3, steps_per_epoch=None, epochs=1):
         logging = TensorBoard(log_dir=log_dir)
 
-        checkpoint = ModelCheckpoint(
-            log_dir + '/checkpoint',
-            monitor='val_loss',
-            # save_freq=2,
-        )
+        checkpoint = ModelCheckpoint(log_dir + '/checkpoint', monitor='val_loss', )
         # 当评价指标不在提升时，减少学习率
         reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.1, patience=3, verbose=1)
         # 测试集准确率，下降前终止
         early_stopping = EarlyStopping(monitor='loss', min_delta=0, patience=10, verbose=1)
 
         # optimizers.Adam(lr=lr)
-        self.train_model.compile(optimizer=optimizers.Adadelta(lr=lr),
+        self.train_model.compile(optimizer=optimizers.Adam(lr=lr),
                                  loss={'yolo_loss': lambda y_true0, y_pred: y_pred})
 
         self.train_model.fit(dataset.build(),
-                             steps_per_epoch=steps_per_epoch or dataset.steps_total,
+                             epochs=epochs,
+                             steps_per_epoch=steps_per_epoch,
                              callbacks=[logging, checkpoint, reduce_lr, early_stopping])
 
     def decodes(self, outputs):
