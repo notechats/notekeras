@@ -7,7 +7,7 @@ from PIL import Image
 from tensorflow.keras import backend as K
 from tensorflow.keras import optimizers
 from tensorflow.keras.callbacks import EarlyStopping, TensorBoard, ReduceLROnPlateau, ModelCheckpoint
-from tensorflow.keras.layers import Input
+from tensorflow.keras.layers import Input, Lambda
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import plot_model
@@ -493,7 +493,11 @@ class YoloDataset(object):
         np.random.shuffle(annotations)
         for annotation in annotations:
             image, label_box1, label_box2, label_box3 = self.parse_annotations(annotation)
-            yield (image, label_box1, label_box2, label_box3), np.zeros(image.shape[0])
+
+            inputs = (image, label_box1, label_box2, label_box3)
+            outputs = (np.zeros(1), np.zeros(1), np.zeros(1), np.zeros(1))
+
+            yield inputs, outputs
 
     def parse_annotations(self, annotation_line):
         image_data = []
@@ -818,14 +822,15 @@ class YoloBody:
                   Input(shape=(h // 16, w // 16, self.num_anchors // 3, self.num_classes + 5)),
                   Input(shape=(h // 8, w // 8, self.num_anchors // 3, self.num_classes + 5))]
 
-        model_loss = tf.keras.layers.Lambda(yolo_loss,
-                                            output_shape=(1,), name='yolo_loss',
-                                            arguments={'anchors': self.anchors,
-                                                       'num_classes': self.num_classes,
-                                                       'ignore_thresh': 0.5
-                                                       }
-                                            )([*yolo_model.output, *y_true])
-        self.train_model = Model(inputs=[yolo_model.input, *y_true], outputs=model_loss)
+        model_loss = Lambda(yolo_loss,
+                            output_shape=(4,),
+                            arguments={'anchors': self.anchors, 'num_classes': self.num_classes, 'ignore_thresh': 0.5}
+                            )([*yolo_model.output, *y_true])
+        loss1 = Lambda(lambda x: x[0,], output_shape=(1,), name='xy')(model_loss)
+        loss2 = Lambda(lambda x: x[1,], output_shape=(1,), name='wh')(model_loss)
+        loss3 = Lambda(lambda x: x[2,], output_shape=(1,), name='conf')(model_loss)
+        loss4 = Lambda(lambda x: x[3,], output_shape=(1,), name='class')(model_loss)
+        self.train_model = Model(inputs=[yolo_model.input, *y_true], outputs=[loss1, loss2, loss3, loss4])
         # ###############################################
 
     def train(self, dataset: Dataset, log_dir=".data/yolo/log", lr=1e-3, epochs=1, steps_per_epoch=None):
@@ -841,30 +846,30 @@ class YoloBody:
         # 测试集准确率，下降前终止
         early_stopping = EarlyStopping(monitor='loss', min_delta=0, patience=10, verbose=1)
 
-        self.train_model.compile(optimizer=Adam(lr=lr), loss={'yolo_loss': lambda y_true0, y_pred: y_pred})
+        self.train_model.compile(optimizer=Adam(lr=lr), loss={'loss2': lambda y_true0, y_pred: y_pred})
 
         self.train_model.fit(dataset.dataset_iterator,
                              epochs=epochs,
                              steps_per_epoch=steps_per_epoch,
                              callbacks=[logging, checkpoint, reduce_lr, early_stopping])
 
-    def train_iterator(self, dataset: YoloDataset, log_dir=".data/yolo/log", lr=1e-3, steps_per_epoch=None, epochs=1):
-        logging = TensorBoard(log_dir=log_dir)
-
-        checkpoint = ModelCheckpoint(log_dir + '/checkpoint', monitor='val_loss', )
+    def train_iterator(self, dataset: YoloDataset, lr=1e-3, steps_per_epoch=None, epochs=1):
         # 当评价指标不在提升时，减少学习率
         reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.1, patience=3, verbose=1)
         # 测试集准确率，下降前终止
         early_stopping = EarlyStopping(monitor='loss', min_delta=0, patience=10, verbose=1)
 
-        # optimizers.Adam(lr=lr)
         self.train_model.compile(optimizer=optimizers.Adam(lr=lr),
-                                 loss={'yolo_loss': lambda y_true0, y_pred: y_pred})
+                                 loss={'xy': lambda y_true0, y_pred: y_pred,
+                                       'wh': lambda y_true0, y_pred: y_pred,
+                                       'conf': lambda y_true0, y_pred: y_pred,
+                                       'class': lambda y_true0, y_pred: y_pred},
+                                 loss_weights={'xy': 1., 'wh': 1., 'conf': 1., 'class': 1.})
 
         self.train_model.fit(dataset.build(),
                              epochs=epochs,
                              steps_per_epoch=steps_per_epoch,
-                             callbacks=[logging, checkpoint, reduce_lr, early_stopping])
+                             callbacks=[reduce_lr, early_stopping])
 
     def decodes(self, outputs):
         res = []
@@ -1167,6 +1172,8 @@ def yolo_loss(args, anchors, num_classes, ignore_thresh=.5, print_loss=False):
 
     grid_shapes = [K.cast(K.shape(y_pred[l])[1:3], K.dtype(y_true[0])) for l in range(num_layers)]
     loss = 0
+    loss_all = [0, 0, 0, 0]
+
     batch_size = K.shape(y_pred[0])[0]  # batch size, tensor
     batch_size2 = K.cast(batch_size, K.dtype(y_pred[0]))
 
@@ -1233,6 +1240,13 @@ def yolo_loss(args, anchors, num_classes, ignore_thresh=.5, print_loss=False):
         loss_conf = K.sum(loss_conf) / batch_size2
         loss_class = K.sum(loss_class) / batch_size2
 
-        loss += loss_xy + loss_wh + loss_conf + loss_class
+        # loss += loss_xy + loss_wh + loss_conf + loss_class
+        loss_all[0] += loss_xy
+        loss_all[1] += loss_wh
+        loss_all[2] += loss_conf
+        loss_all[3] += loss_class
 
-    return loss
+    res = Lambda(lambda x: K.stack(x))(loss_all)
+
+    # return loss
+    return res
