@@ -489,8 +489,9 @@ class YoloDataset(object):
         self.annotations = annotations
 
     def build(self):
-
-        for annotation in self.annotations:
+        annotations = self.annotations
+        np.random.shuffle(annotations)
+        for annotation in annotations:
             image, label_box1, label_box2, label_box3 = self.parse_annotations(annotation)
             yield (image, label_box1, label_box2, label_box3), np.zeros(image.shape[0])
 
