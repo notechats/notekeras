@@ -6,9 +6,12 @@ from PIL import Image
 
 from notekeras.model.yolo import YoloBody
 from notekeras.utils import read_lines, draw_bbox
+from notemodel.database import set_weight_path
 
 root = '/Users/liangtaoniu/workspace/MyDiary/notechats/notekeras/example/yolo'
 classes = read_lines(root + "/data/classes/coco.names")
+
+set_weight_path("/Users/liangtaoniu/workspace/MyDiary/src/tianchi/live/data/weights")
 
 
 def get_anchors():
