@@ -859,7 +859,7 @@ class YoloBody:
         # 测试集准确率，下降前终止
         early_stopping = EarlyStopping(monitor='loss', min_delta=0, patience=10, verbose=1)
 
-        self.train_model.compile(optimizer=optimizers.Adadelta(lr=lr),
+        self.train_model.compile(optimizer=optimizers.Adam(lr=lr),
                                  loss={'xy': lambda y_true0, y_pred: y_pred,
                                        'wh': lambda y_true0, y_pred: y_pred,
                                        'conf': lambda y_true0, y_pred: y_pred,
