@@ -32,13 +32,14 @@ def image_demo(image_path):
     original_image, boxes = yolo_body.predict_box(image_path)
     image = draw_bbox(original_image, boxes, classes=classes)
     image = Image.fromarray(image)
+    print(boxes)
     image.show()
 
 
 def image_demos(image_path):
     image_path = [image_path, image_path, image_path, image_path, image_path, image_path]
     boxes = yolo_body.predict_result_batch(image_path)
-    print(boxes)
+    print(boxes[0])
 
 
 def video_demo(video_path):
@@ -68,7 +69,7 @@ def video_demo(video_path):
             break
 
 
-# image_demos(root + "/docs/kite.jpg")
+image_demos(root + "/docs/kite.jpg")
 
 image_demo(root + "/docs/kite.jpg")
 # image_demo("'/Users/liangtaoniu/workspace/MyDiary/tmp/models/yolo/test/bb.jpg'")

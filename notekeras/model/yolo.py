@@ -855,11 +855,11 @@ class YoloBody:
 
     def train_iterator(self, dataset: YoloDataset, lr=1e-3, steps_per_epoch=None, epochs=1):
         # 当评价指标不在提升时，减少学习率
-        reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.1, patience=3, verbose=1)
+        reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.5, patience=1, verbose=1, min_lr=0.00001)
         # 测试集准确率，下降前终止
         early_stopping = EarlyStopping(monitor='loss', min_delta=0, patience=10, verbose=1)
 
-        self.train_model.compile(optimizer=optimizers.Adam(lr=lr),
+        self.train_model.compile(optimizer=optimizers.Adadelta(lr=lr),
                                  loss={'xy': lambda y_true0, y_pred: y_pred,
                                        'wh': lambda y_true0, y_pred: y_pred,
                                        'conf': lambda y_true0, y_pred: y_pred,
@@ -937,22 +937,23 @@ class YoloBody:
     def predict_result_batch(self, image_paths):
         original_image = []
 
-        for image_data in read_image_batch(image_paths):
-            image_data = (cv2.cvtColor(image_data, cv2.COLOR_BGR2RGB))
+        images = read_image_batch(image_paths)
+
+        for image in images:
+            image_data = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             image_data = image_resize(np.copy(image_data), self.input_shape)
             image_data = image_data.astype(np.float32)
 
             original_image.append(image_data)
-        image_input = np.array(original_image)
-        output = self.yolo_model.predict(image_input)
 
+        output = self.yolo_model.predict(np.array(original_image))
         pred_boxs = self.decodes(output[::-1])
 
         result_boxs = []
         for i, image in enumerate(original_image):
             pred_box = [pred_boxs[0][i], pred_boxs[1][i], pred_boxs[2][i]]
 
-            original_image_size = image.shape[:2]
+            original_image_size = images[i].shape[:2]
             pred_box = [tf.reshape(x, (-1, tf.shape(x)[-1])) for x in pred_box]
             pred_box = tf.concat(pred_box, axis=0)
             boxes = postprocess_boxes(pred_box, original_image_size, self.input_shape[0], 0.3)
