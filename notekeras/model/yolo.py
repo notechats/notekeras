@@ -864,7 +864,11 @@ class YoloBody:
                                        'wh': lambda y_true0, y_pred: y_pred,
                                        'conf': lambda y_true0, y_pred: y_pred,
                                        'class': lambda y_true0, y_pred: y_pred},
-                                 loss_weights={'xy': 1., 'wh': 1., 'conf': 5., 'class': 3.})
+                                 loss_weights={'xy': 1.,
+                                               'wh': 1.,
+                                               'conf': 1.,
+                                               'class': 1.
+                                               })
 
         self.train_model.fit(dataset.build(),
                              epochs=epochs,
