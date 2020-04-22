@@ -125,20 +125,16 @@ def create_generators(preprocess_image, batch_size=32, annotations=None, classes
 
 def train(batch_size=32, backbone='resnet50', annotations=None, classes=None):
     backbone = models.backbone(backbone)
-
-    # create the generators
     train_generator, validation_generator = create_generators(backbone.preprocess_image, batch_size=batch_size,
                                                               annotations=annotations,
                                                               classes=classes)
-
     model, training_model, prediction_model = create_models(backbone_retinanet=backbone.retinanet,
                                                             num_classes=train_generator.num_classes(),
                                                             freeze_backbone=False,
-                                                            lr=1e-5,
-                                                            )
+                                                            lr=1e-5, )
 
     print(model.summary())
-
+    
     callbacks = create_callbacks(batch_size, tensorboard_dir=None)
 
     return training_model.fit_generator(generator=train_generator,
