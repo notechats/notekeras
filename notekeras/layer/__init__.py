@@ -12,7 +12,7 @@ from notekeras.layer.embedding import TaskEmbedding
 from notekeras.layer.embedding import TokenEmbedding
 from notekeras.layer.embedding import TrigPosEmbedding
 from notekeras.layer.embedding import TrigPosEmbedding
-#
+from notekeras.layer.normalize import BatchNormalizationFreeze
 from notekeras.layer.normalize import LayerNormalization
 
 #

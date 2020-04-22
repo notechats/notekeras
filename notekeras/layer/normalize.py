@@ -1,21 +1,13 @@
 import tensorflow as tf
+from keras.layers import BatchNormalization
+from keras.layers import Layer
 from tensorflow import keras
 from tensorflow.keras import backend as K
-from tensorflow.keras.layers import Layer
 
 
 class LayerNormalization(Layer):
-    def __init__(self,
-                 center=True,
-                 scale=True,
-                 epsilon=None,
-                 gamma_initializer='ones',
-                 beta_initializer='zeros',
-                 gamma_regularizer=None,
-                 beta_regularizer=None,
-                 gamma_constraint=None,
-                 beta_constraint=None,
-                 **kwargs):
+    def __init__(self, center=True, scale=True, epsilon=None, gamma_initializer='ones', beta_initializer='zeros',
+                 gamma_regularizer=None, beta_regularizer=None, gamma_constraint=None, beta_constraint=None, **kwargs):
         """Layer normalization layer
 
         See: [Layer Normalization](https://arxiv.org/pdf/1607.06450.pdf)
@@ -100,3 +92,27 @@ class LayerNormalization(Layer):
         if self.center:
             outputs += self.beta
         return outputs
+
+
+class BatchNormalizationFreeze(BatchNormalization):
+    """
+    Identical to keras.layers.BatchNormalization, but adds the option to freeze parameters.
+    """
+
+    def __init__(self, freeze, *args, **kwargs):
+        self.freeze = freeze
+        super(BatchNormalizationFreeze, self).__init__(*args, **kwargs)
+
+        # set to non-trainable if freeze is true
+        self.trainable = not self.freeze
+
+    def call(self, *args, **kwargs):
+        # Force test mode if frozen, otherwise use default behaviour (i.e., training=None).
+        if self.freeze:
+            kwargs['training'] = False
+        return super(BatchNormalizationFreeze, self).call(*args, **kwargs)
+
+    def get_config(self):
+        config = super(BatchNormalizationFreeze, self).get_config()
+        config.update({'freeze': self.freeze})
+        return config

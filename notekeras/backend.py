@@ -1,6 +1,7 @@
 import os
 
-import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras.backend import *
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -11,7 +12,6 @@ __all__ = [
     'Dense', 'plot_model',
     'Layer', 'Model',
 ]
-keras = tf.keras
 
 # keras.backend.set_floatx('float64')
 utils = keras.utils
