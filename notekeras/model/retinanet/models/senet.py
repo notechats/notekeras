@@ -1,6 +1,6 @@
-import keras
 from classification_models.keras import Classifiers
 from keras.utils import get_file
+from tensorflow import keras
 
 from . import Backbone
 from . import retinanet

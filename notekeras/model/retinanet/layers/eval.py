@@ -2,10 +2,10 @@ import os
 import time
 
 import cv2
-import keras
-import keras.backend as K
 import numpy as np
 import progressbar
+import tensorflow.keras.backend as K
+from tensorflow import keras
 
 from notekeras.model.retinanet.utils.anchors import compute_overlap
 from notekeras.model.retinanet.utils.visualization import draw_detections, draw_annotations

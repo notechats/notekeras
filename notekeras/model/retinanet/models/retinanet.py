@@ -1,6 +1,6 @@
-import keras
-import keras.backend as K
-from keras.layers import Conv2D, Add, Activation, Input
+import tensorflow.keras.backend as K
+from tensorflow import keras
+from tensorflow.keras.layers import Conv2D, Add, Activation, Input
 
 from notekeras.initializers import PriorProbability
 from notekeras.layer.retinanet import UpSampleLike, RegressBoxes, ClipBoxes, FilterDetections
@@ -9,14 +9,8 @@ from .. import layers
 from ..utils.anchors import AnchorParameters
 
 
-def default_classification_model(
-        num_classes,
-        num_anchors,
-        pyramid_feature_size=256,
-        prior_probability=0.01,
-        classification_feature_size=256,
-        name='classification_submodel'
-):
+def default_classification_model(num_classes, num_anchors, pyramid_feature_size=256, prior_probability=0.01,
+                                 classification_feature_size=256, name='classification_submodel'):
     """ Creates the default classification submodel.
 
     Args
@@ -29,11 +23,7 @@ def default_classification_model(
     Returns
         A keras.models.Model that predicts classes for each anchor.
     """
-    options = {
-        'kernel_size': 3,
-        'strides': 1,
-        'padding': 'same',
-    }
+    options = {'kernel_size': 3, 'strides': 1, 'padding': 'same', }
 
     if K.image_data_format() == 'channels_first':
         inputs = keras.layers.Input(shape=(pyramid_feature_size, None, None))
@@ -41,22 +31,20 @@ def default_classification_model(
         inputs = keras.layers.Input(shape=(None, None, pyramid_feature_size))
     outputs = inputs
     for i in range(4):
-        outputs = keras.layers.Conv2D(
-            filters=classification_feature_size,
-            activation='relu',
-            name='pyramid_classification_{}'.format(i),
-            kernel_initializer=keras.initializers.normal(mean=0.0, stddev=0.01, seed=None),
-            bias_initializer='zeros',
-            **options
-        )(outputs)
+        outputs = keras.layers.Conv2D(filters=classification_feature_size,
+                                      activation='relu',
+                                      name='pyramid_classification_{}'.format(i),
+                                      kernel_initializer=keras.initializers.glorot_normal(seed=None),
+                                      bias_initializer='zeros',
+                                      **options
+                                      )(outputs)
 
-    outputs = keras.layers.Conv2D(
-        filters=num_classes * num_anchors,
-        kernel_initializer=keras.initializers.normal(mean=0.0, stddev=0.01, seed=None),
-        bias_initializer=PriorProbability(probability=prior_probability),
-        name='pyramid_classification',
-        **options
-    )(outputs)
+    outputs = keras.layers.Conv2D(filters=num_classes * num_anchors,
+                                  kernel_initializer=keras.initializers.glorot_normal(seed=None),
+                                  bias_initializer=PriorProbability(probability=prior_probability),
+                                  name='pyramid_classification',
+                                  **options
+                                  )(outputs)
 
     # reshape output and apply sigmoid
     if K.image_data_format() == 'channels_first':
@@ -88,7 +76,7 @@ def default_regression_model(num_values, num_anchors, pyramid_feature_size=256, 
         'kernel_size': 3,
         'strides': 1,
         'padding': 'same',
-        'kernel_initializer': keras.initializers.normal(mean=0.0, stddev=0.01, seed=None),
+        'kernel_initializer': keras.initializers.glorot_normal(seed=None),
         'bias_initializer': 'zeros'
     }
 
@@ -266,18 +254,8 @@ def retinanet(inputs, backbone_layers, num_classes, num_anchors=None, create_pyr
     return keras.models.Model(inputs=inputs, outputs=pyramids, name=name)
 
 
-def retinanet_bbox(
-        model=None,
-        nms=True,
-        class_specific_filter=True,
-        name='retinanet-bbox',
-        anchor_params=None,
-        nms_threshold=0.5,
-        score_threshold=0.05,
-        max_detections=300,
-        parallel_iterations=32,
-        **kwargs
-):
+def retinanet_bbox(model=None, nms=True, class_specific_filter=True, name='retinanet-bbox', anchor_params=None,
+                   nms_threshold=0.5, score_threshold=0.05, max_detections=300, parallel_iterations=32, **kwargs):
     """ Construct a RetinaNet model on top of a backbone and adds convenience functions to output boxes directly.
 
     This model uses the minimum retinanet model and appends a few layers to compute boxes within the graph.

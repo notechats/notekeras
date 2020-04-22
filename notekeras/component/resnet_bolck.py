@@ -1,4 +1,4 @@
-import keras
+from tensorflow import keras
 
 from notekeras.layer import BatchNormalizationFreeze
 

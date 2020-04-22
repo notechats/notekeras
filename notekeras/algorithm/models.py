@@ -1,4 +1,5 @@
-from notekeras.backend import keras
+from tensorflow import keras
+
 from notekeras.layer.attention import MultiHeadAttention
 from notekeras.layer.embedding import EmbeddingRet, EmbeddingSim
 from notekeras.layer.embedding import TrigPosEmbedding

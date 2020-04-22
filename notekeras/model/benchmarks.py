@@ -1,22 +1,20 @@
 import os.path
 
 import click
-import keras
-import keras.preprocessing.image
+import keras_resnet.metrics
+import keras_resnet.models
 import numpy
 import pkg_resources
 import sklearn.model_selection
 import tensorflow
-
-import keras_resnet.metrics
-import keras_resnet.models
+import tensorflow.keras.preprocessing.image
+from tensorflow import keras
 
 _benchmarks = {
     "CIFAR-10": keras.datasets.cifar10,
     "CIFAR-100": keras.datasets.cifar100,
     "MNIST": keras.datasets.mnist
 }
-
 
 _names = {
     "ResNet-18": keras_resnet.models.ResNet2D18,

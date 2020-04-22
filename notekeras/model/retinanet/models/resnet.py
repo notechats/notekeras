@@ -1,7 +1,6 @@
-import keras
-import keras.backend as K
-import keras_resnet
-from keras.utils import get_file
+import tensorflow.keras.backend as K
+from tensorflow import keras
+from tensorflow.keras.utils import get_file
 
 from notekeras.layer import BatchNormalizationFreeze
 from notekeras.model.resnet import ResNet50, ResNet101, ResNet152
@@ -19,7 +18,7 @@ class ResNetBackbone(Backbone):
             'BatchNormalization': BatchNormalizationFreeze,
         }
 
-        self.custom_objects.update(keras_resnet.custom_objects)
+        self.custom_objects.update(custom_objects)
 
     def retinanet(self, *args, **kwargs):
         """ Returns a retinanet model using the correct backbone.

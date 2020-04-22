@@ -1,7 +1,7 @@
 import efficientnet.keras as efn
-import keras
-import keras.backend as K
+import tensorflow.keras.backend as K
 from keras.utils import get_file
+from tensorflow import keras
 
 from . import Backbone
 from . import retinanet

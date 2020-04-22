@@ -1,13 +1,12 @@
 import json
 
-import keras.backend as K
 import numpy as np
 import progressbar
 import tensorflow as tf
-from keras.callbacks import Callback
-from keras.layers import Layer
 from pycocotools.cocoeval import COCOeval
 from tensorflow.keras import backend as K
+from tensorflow.keras.callbacks import Callback
+from tensorflow.keras.layers import Layer
 
 from notekeras.utils.image import resize_images, bbox_transform_inv
 

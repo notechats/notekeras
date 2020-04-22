@@ -1,5 +1,7 @@
+from tensorflow import keras
+from tensorflow.keras import layers
+
 from notekeras.backend import backend as K
-from notekeras.backend import keras, layers
 from notekeras.layer import SelfSum, MaskFlatten
 
 Layer = layers.Layer

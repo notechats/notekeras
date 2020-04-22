@@ -1,7 +1,7 @@
-import keras
-import keras.backend as K
+import tensorflow.keras.backend as K
 from keras.applications import densenet
 from keras.utils import get_file
+from tensorflow import keras
 
 from notekeras.model.retinanet.core import Backbone
 from . import retinanet

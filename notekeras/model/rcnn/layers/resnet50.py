@@ -1,8 +1,8 @@
 from __future__ import absolute_import
 from __future__ import print_function
 
-import keras.backend as K
 import tensorflow as tf
+import tensorflow.keras.backend as K
 from keras.engine.topology import Layer
 from tensorflow.keras import initializers, regularizers
 from tensorflow.keras.layers import Input, Add, Dense, Activation, Flatten, Convolution2D, MaxPooling2D

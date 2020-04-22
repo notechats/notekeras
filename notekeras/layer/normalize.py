@@ -1,8 +1,8 @@
 import tensorflow as tf
-from keras.layers import BatchNormalization
-from keras.layers import Layer
 from tensorflow import keras
 from tensorflow.keras import backend as K
+from tensorflow.keras.layers import BatchNormalization
+from tensorflow.keras.layers import Layer
 
 
 class LayerNormalization(Layer):

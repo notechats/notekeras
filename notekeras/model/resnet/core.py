@@ -1,7 +1,7 @@
-import keras
-from keras import layers
-from keras.layers import Conv2D, Activation, MaxPooling2D
-from keras.models import Model
+from tensorflow import keras
+from tensorflow.keras import layers
+from tensorflow.keras.layers import Conv2D, Activation, MaxPooling2D
+from tensorflow.keras.models import Model
 
 from notekeras.component import resnet_bolck as B
 from notekeras.layer import BatchNormalizationFreeze
@@ -109,7 +109,7 @@ class ResNet1D18(ResNet1D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet18Classifier(x, classes=classes)
+        >>> model = keras_resnet.models.ResNet18(x, classes=classes)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -146,7 +146,7 @@ class ResNet1D34(ResNet1D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet34Classifier(x, classes=classes)
+        >>> model = keras_resnet.models.ResNet34(x, classes=classes)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -183,7 +183,7 @@ class ResNet1D50(ResNet1D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet50Classifier(x)
+        >>> model = keras_resnet.models.ResNet50(x)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -231,7 +231,7 @@ class ResNet1D101(ResNet1D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet101Classifier(x, classes=classes)
+        >>> model = keras_resnet.models.ResNet101(x, classes=classes)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -279,7 +279,7 @@ class ResNet1D152(ResNet1D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet152Classifier(x, classes=classes)
+        >>> model = keras_resnet.models.ResNet152(x, classes=classes)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -327,7 +327,7 @@ class ResNet1D200(ResNet1D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet200Classifier(x, classes=classes)
+        >>> model = keras_resnet.models.ResNet200(x, classes=classes)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -452,7 +452,7 @@ class ResNet2D18(ResNet2D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet18Classifier(x, classes=classes)
+        >>> model = keras_resnet.models.ResNet18(x, classes=classes)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -497,7 +497,7 @@ class ResNet2D34(ResNet2D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet34Classifier(x, classes=classes)
+        >>> model = keras_resnet.models.ResNet34(x, classes=classes)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -542,7 +542,7 @@ class ResNet2D50(ResNet2D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet50Classifier(x)
+        >>> model = keras_resnet.models.ResNet50(x)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -587,7 +587,7 @@ class ResNet2D101(ResNet2D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet101Classifier(x, classes=classes)
+        >>> model = keras_resnet.models.ResNet101(x, classes=classes)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -635,7 +635,7 @@ class ResNet2D152(ResNet2D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet152Classifier(x, classes=classes)
+        >>> model = keras_resnet.models.ResNet152(x, classes=classes)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -683,7 +683,7 @@ class ResNet2D200(ResNet2D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet200Classifier(x, classes=classes)
+        >>> model = keras_resnet.models.ResNet200(x, classes=classes)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -825,7 +825,7 @@ class ResNet3D18(ResNet3D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet18Classifier(x, classes=classes)
+        >>> model = keras_resnet.models.ResNet18(x, classes=classes)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -870,7 +870,7 @@ class ResNet3D34(ResNet3D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet34Classifier(x, classes=classes)
+        >>> model = keras_resnet.models.ResNet34(x, classes=classes)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -915,7 +915,7 @@ class ResNet3D50(ResNet3D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet50Classifier(x)
+        >>> model = keras_resnet.models.ResNet50(x)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -963,7 +963,7 @@ class ResNet3D101(ResNet3D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet101Classifier(x, classes=classes)
+        >>> model = keras_resnet.models.ResNet101(x, classes=classes)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -1011,7 +1011,7 @@ class ResNet3D152(ResNet3D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet152Classifier(x, classes=classes)
+        >>> model = keras_resnet.models.ResNet152(x, classes=classes)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
@@ -1059,7 +1059,7 @@ class ResNet3D200(ResNet3D):
 
         >>> x = keras.layers.Input(shape)
 
-        >>> model = keras_resnet.models.ResNet200Classifier(x, classes=classes)
+        >>> model = keras_resnet.models.ResNet200(x, classes=classes)
 
         >>> model.compile("adam", "categorical_crossentropy", ["accuracy"])
     """
