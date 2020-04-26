@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from notekeras.model.retinanet import models
+from notekeras.model.retinanet.models.retinanet import RetinaNetBox
 from notekeras.model.retinanet.utils.image import read_image_bgr, preprocess_image, resize_image
 from notekeras.model.retinanet.utils.visualization import draw_box, draw_caption, label_color
 
@@ -14,8 +15,10 @@ gpu = 0
 # models can be downloaded here: https://github.com/fizyr/keras-retinanet/releases
 model_path = '/Users/liangtaoniu/workspace/MyDiary/tmp/models/retinanet/resnet50_coco_best_v2.1.0.h5'
 
-model = models.load_model(model_path, backbone_name='resnet50')
+model = models.backbone("resnet50").retinanet(80, num_anchors=None, modifier=None)
+model.load_weights(model_path, by_name=True, skip_mismatch=True)
 
+model = RetinaNetBox(model=model, anchor_params=None)
 # if the model is not converted to an inference model, use the line below
 # see: https://github.com/fizyr/keras-retinanet#converting-a-training-model-to-inference-model
 # model = models.convert_model(model)
@@ -49,9 +52,9 @@ image, scale = resize_image(image)
 
 # process image
 start = time.time()
-boxes, scores, labels = model.predict_on_batch(np.expand_dims(image, axis=0))
+boxes, scores, labels = model.predict(np.expand_dims(image, axis=0))
 print("processing time: ", time.time() - start)
-
+print(boxes)
 boxes /= scale
 
 # visualize detections

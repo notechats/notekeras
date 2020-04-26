@@ -4,6 +4,7 @@ from notekeras.initializers import PriorProbability
 from notekeras.layer.retinanet import UpSampleLike, RegressBoxes, ClipBoxes, FilterDetections
 from notekeras.model.retinanet import layers
 from notekeras.model.retinanet.losses import smooth_l1, focal
+from notekeras.model.retinanet.models import RetinaNetBox
 
 
 class Backbone(object):
@@ -105,9 +106,9 @@ def convert_model(model, nms=True, class_specific_filter=True, anchor_params=Non
         ImportError: if h5py is not available.
         ValueError: In case of an invalid savefile.
     """
-    from .retinanet import retinanet_bbox
-    return retinanet_bbox(model=model, nms=nms, class_specific_filter=class_specific_filter,
-                          anchor_params=anchor_params, **kwargs)
+
+    return RetinaNetBox(model=model, nms=nms, class_specific_filter=class_specific_filter,
+                        anchor_params=anchor_params, **kwargs)
 
 
 def assert_training_model(model):

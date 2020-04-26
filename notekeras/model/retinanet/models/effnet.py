@@ -4,7 +4,7 @@ from keras.utils import get_file
 from tensorflow import keras
 
 from . import Backbone
-from . import retinanet
+from .retinanet import RetinaNetModel
 
 
 class EfficientNetBackbone(Backbone):
@@ -104,7 +104,7 @@ def effnet_retinanet(num_classes, backbone='EfficientNetB0', inputs=None, modifi
         model = modifier(model)
 
     # create the full model
-    return retinanet.retinanet(inputs=inputs, num_classes=num_classes, backbone_layers=model.outputs, **kwargs)
+    return RetinaNetModel(inputs=inputs, num_classes=num_classes, backbone_layers=model.outputs, **kwargs)
 
 
 def EfficientNetB0_retinanet(num_classes, inputs=None, **kwargs):

@@ -5,6 +5,49 @@ from tensorflow import keras
 from notekeras.initializers import PriorProbability
 from notekeras.layer.retinanet import UpSampleLike, RegressBoxes, ClipBoxes, FilterDetections
 from notekeras.model.retinanet.losses import smooth_l1, focal
+from notekeras.model.retinanet.models.retinanet import RetinaNetBox
+
+
+class BackboneModel(object):
+    """ This class stores additional information on backbones.
+    """
+
+    def __init__(self, backbone):
+        from .. import layers
+        self.custom_objects = {
+            'UpsampleLike': UpSampleLike,
+            'PriorProbability': PriorProbability,
+            'RegressBoxes': RegressBoxes,
+            'FilterDetections': FilterDetections,
+            'Anchors': layers.Anchors,
+            'ClipBoxes': ClipBoxes,
+            '_smooth_l1': smooth_l1(),
+            '_focal': focal(),
+        }
+
+        self.backbone = backbone
+        self.validate()
+
+    def retinanet(self, *args, **kwargs):
+        """ Returns a retinanet model using the correct backbone.
+        """
+        raise NotImplementedError('retinanet method not implemented.')
+
+    def download_imagenet(self):
+        """ Downloads ImageNet weights and returns path to weights file.
+        """
+        raise NotImplementedError('download_imagenet method not implemented.')
+
+    def validate(self):
+        """ Checks whether the backbone string is correct.
+        """
+        raise NotImplementedError('validate method not implemented.')
+
+    def preprocess_image(self, inputs):
+        """ Takes as input an image and prepares it for being passed through the network.
+        Having this function in Backbone allows other backbones to define a specific preprocessing step.
+        """
+        raise NotImplementedError('preprocess_image method not implemented.')
 
 
 class Backbone(object):
@@ -87,7 +130,8 @@ def load_model(filepath, backbone_name='resnet50'):
         ValueError: In case of an invalid savefile.
     """
 
-    return keras.models.load_model(filepath, custom_objects=backbone(backbone_name).custom_objects)
+    # return keras.models.load_model(filepath, custom_objects=backbone(backbone_name).custom_objects)
+    return keras.models.load_model(filepath)
 
 
 def convert_model(model, nms=True, class_specific_filter=True, anchor_params=None, **kwargs):
@@ -107,9 +151,9 @@ def convert_model(model, nms=True, class_specific_filter=True, anchor_params=Non
         ImportError: if h5py is not available.
         ValueError: In case of an invalid savefile.
     """
-    from .retinanet import retinanet_bbox
-    return retinanet_bbox(model=model, nms=nms, class_specific_filter=class_specific_filter,
-                          anchor_params=anchor_params, **kwargs)
+
+    return RetinaNetBox(model=model, nms=nms, class_specific_filter=class_specific_filter,
+                        anchor_params=anchor_params, **kwargs)
 
 
 def assert_training_model(model):

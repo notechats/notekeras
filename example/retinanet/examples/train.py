@@ -6,7 +6,7 @@ from tensorflow.keras.callbacks import TensorBoard, ReduceLROnPlateau
 from notekeras.model.retinanet import models
 from notekeras.model.retinanet.generator import TextGenerator
 from notekeras.model.retinanet.losses import smooth_l1, focal
-from notekeras.model.retinanet.models.retinanet import retinanet_bbox
+from notekeras.model.retinanet.models.retinanet import RetinaNetBox
 from notekeras.model.retinanet.utils.image import random_visual_effect_generator
 from notekeras.model.retinanet.utils.transform import random_transform_generator
 from notekeras.utils.model import freeze
@@ -40,7 +40,7 @@ def create_models(backbone_retinanet, num_classes, weights=None, freeze_backbone
 
     training_model = model
 
-    prediction_model = retinanet_bbox(model=model, anchor_params=anchor_params)
+    prediction_model = RetinaNetBox(model=model, anchor_params=anchor_params)
 
     training_model.compile(loss={'regression': smooth_l1(), 'classification': focal()},
                            optimizer=keras.optimizers.Adam(lr=lr, clipnorm=0.001))
@@ -134,7 +134,7 @@ def train(batch_size=32, backbone='resnet50', annotations=None, classes=None):
                                                             lr=1e-5, )
 
     print(model.summary())
-    
+
     callbacks = create_callbacks(batch_size, tensorboard_dir=None)
 
     return training_model.fit_generator(generator=train_generator,

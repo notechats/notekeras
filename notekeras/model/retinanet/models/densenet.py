@@ -1,10 +1,10 @@
 import tensorflow.keras.backend as K
-from keras.applications import densenet
-from keras.utils import get_file
 from tensorflow import keras
+from tensorflow.keras.applications import densenet
+from tensorflow.keras.utils import get_file
 
 from notekeras.model.retinanet.core import Backbone
-from . import retinanet
+from .retinanet import RetinaNetModel
 from ..utils.image import preprocess_image
 
 allowed_backbones = {
@@ -86,6 +86,7 @@ def densenet_retinanet(num_classes, backbone='densenet121', inputs=None, modifie
         model = modifier(model)
 
     # create the full model
-    model = retinanet.retinanet(inputs=inputs, num_classes=num_classes, backbone_layers=model.outputs, **kwargs)
-
+    
+    model = RetinaNetModel(inputs=inputs, num_classes=num_classes, backbone_layers=model.outputs, **kwargs)
+    # RetinaNetModel
     return model

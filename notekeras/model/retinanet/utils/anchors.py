@@ -33,6 +33,13 @@ AnchorParameters.default = AnchorParameters(
     scales=np.array([2 ** 0, 2 ** (1.0 / 3.0), 2 ** (2.0 / 3.0)], K.floatx()),
 )
 
+anchor_parameter_default = AnchorParameters(
+    sizes=[32, 64, 128, 256, 512],
+    strides=[8, 16, 32, 64, 128],
+    ratios=np.array([0.5, 1, 2], K.floatx()),
+    scales=np.array([2 ** 0, 2 ** (1.0 / 3.0), 2 ** (2.0 / 3.0)], K.floatx()),
+)
+
 
 def anchor_targets_bbox(
         anchors,

@@ -4,7 +4,7 @@ from tensorflow.keras.applications import mobilenet
 from tensorflow.keras.utils import get_file
 
 from . import Backbone
-from . import retinanet
+from .retinanet import RetinaNetModel
 from ..utils.image import preprocess_image
 
 
@@ -92,4 +92,4 @@ def mobilenet_retinanet(num_classes, backbone='mobilenet224_1.0', inputs=None, m
     if modifier:
         backbone = modifier(backbone)
 
-    return retinanet.retinanet(inputs=inputs, num_classes=num_classes, backbone_layers=backbone.outputs, **kwargs)
+    return RetinaNetModel(inputs=inputs, num_classes=num_classes, backbone_layers=backbone.outputs, **kwargs)

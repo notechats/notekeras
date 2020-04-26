@@ -1,9 +1,9 @@
 from classification_models.keras import Classifiers
-from keras.utils import get_file
 from tensorflow import keras
+from tensorflow.keras.utils import get_file
 
 from . import Backbone
-from . import retinanet
+from .retinanet import RetinaNetModel
 
 
 class SeBackbone(Backbone):
@@ -104,7 +104,7 @@ def senet_retinanet(num_classes, backbone='seresnext50', inputs=None, modifier=N
         model = modifier(model)
 
     # create the full model
-    return retinanet.retinanet(inputs=inputs, num_classes=num_classes, backbone_layers=model.outputs, **kwargs)
+    return RetinaNetModel(inputs=inputs, num_classes=num_classes, backbone_layers=model.outputs, **kwargs)
 
 
 def seresnet18_retinanet(num_classes, inputs=None, **kwargs):
