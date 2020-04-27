@@ -351,7 +351,6 @@ class Generator(Sequence):
         return len(self.groups)
 
     def __getitem__(self, index):
-        print(index)
         group = self.groups[index]
         inputs, targets = self.compute_input_output(group)
 

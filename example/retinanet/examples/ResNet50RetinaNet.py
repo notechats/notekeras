@@ -75,3 +75,8 @@ plt.figure(figsize=(15, 15))
 plt.axis('off')
 plt.imshow(draw)
 plt.show()
+
+from tensorflow.keras.models import Model
+
+model = Model()
+model.fit()
