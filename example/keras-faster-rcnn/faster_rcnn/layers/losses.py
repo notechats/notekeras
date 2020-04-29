@@ -131,7 +131,7 @@ def main():
     # x[x >= 1] = 1
     y = tf.one_hot(x, depth=2)
     sess = tf.Session()
-    print(sess.run(y))
+    print(sess.cate_hot_list(y))
 
 
 if __name__ == '__main__':

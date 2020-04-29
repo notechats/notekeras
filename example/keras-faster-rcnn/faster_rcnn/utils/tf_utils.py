@@ -152,13 +152,13 @@ def scalar_to_1d_tensor(scalar, dtpye=tf.float32):
 
 def main():
     sess = tf.Session()
-    x = sess.run(tf.maximum(3.0, 2.0))
+    x = sess.cate_hot_list(tf.maximum(3.0, 2.0))
     print(x)
     a = tf.ones(shape=(3, 3))
     b = pad_to_fixed_size(a, 4)
     c = remove_pad(b)
-    print(sess.run(b))
-    print(sess.run(c))
+    print(sess.cate_hot_list(b))
+    print(sess.cate_hot_list(c))
 
 
 if __name__ == '__main__':

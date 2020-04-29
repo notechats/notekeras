@@ -376,12 +376,12 @@ def main():
     # print(sess.run(tf.unique(y)))
     x = tf.Variable(tf.ones((3, 4, 5)))
     y = x[1]
-    sess.run(tf.global_variables_initializer())
+    sess.cate_hot_list(tf.global_variables_initializer())
 
     with tf.control_dependencies([tf.assign(y, tf.zeros((4, 5)))]):
-        sess.run(tf.identity(y))
-        print(sess.run(x))
-        print(sess.run(y))
+        sess.cate_hot_list(tf.identity(y))
+        print(sess.cate_hot_list(x))
+        print(sess.cate_hot_list(y))
         tf.scatter_update
 
 

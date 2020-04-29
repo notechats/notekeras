@@ -123,5 +123,5 @@ if __name__ == '__main__':
     achrs = generate_anchors(64, [1], [1, 2, 4])
     print(achrs)
     all_achrs = shift([3, 3], 32, achrs)
-    print(sess.run(tf.shape(all_achrs)))
-    print(sess.run(all_achrs))
+    print(sess.cate_hot_list(tf.shape(all_achrs)))
+    print(sess.cate_hot_list(all_achrs))

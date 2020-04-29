@@ -28,8 +28,8 @@ def main():
 
     concat = tf.concat([all_indices, tf.reshape(class_ids, [-1, 1])], axis=1)
     sess = tf.Session()
-    all_indices = sess.run(all_indices)
-    concat = sess.run(concat)
+    all_indices = sess.cate_hot_list(all_indices)
+    concat = sess.cate_hot_list(concat)
     print(all_indices)
     print(concat)
 
