@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-install_requires = ['numpy', 'scipy', 'opencv-python', 'pillow', 'tqdm']
+install_requires = ['tensorflow', 'numpy', 'scipy', 'opencv-python', 'pillow', 'tqdm']
 
 setup(name='notekeras',
       version='0.1.0',

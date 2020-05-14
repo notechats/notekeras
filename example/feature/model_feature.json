@@ -1,0 +1,2652 @@
+{
+  "tensorTransform": [
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "kdt_id",
+        "output_tensor": "kdt_id_hashbucket",
+        "hash_bucket_size": 100000,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "y_pay_kdt_ids_seq",
+        "output_tensor": "y_pay_kdt_ids_seq_hashbucket",
+        "hash_bucket_size": 100000,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "SharedEmbeddingColumn",
+      "parameters": {
+        "input_tensor": ["kdt_id_hashbucket","y_pay_kdt_ids_seq_hashbucket"],
+        "output_tensor": ["kdt_id_embedding","y_pay_kdt_ids_seq_sharedembedding"],
+        "dimension": 16,
+        "combiner":"sum",
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "yz_uid",
+        "output_tensor": "yz_uid_hashbucket",
+        "hash_bucket_size": 10000000,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "yz_uid_hashbucket",
+        "output_tensor": "yz_uid_embedding",
+        "dimension": 16,
+        "wide_or_deep": "deep"
+      }
+    },
+     {
+      "name": "CateColWithVocabularyList",
+      "parameters": {
+        "input_tensor": "page_type",
+        "output_tensor": "page_type_voclist",
+        "wide_or_deep" : "",
+        "vocabulary_list":["g","ol" , "cart" , "paySuccess" , "od" , "traceDetail" , "refundDetail"],
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "page_type_voclist",
+        "output_tensor": "page_type_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithVocabularyList",
+      "parameters": {
+        "input_tensor": "component",
+        "output_tensor": "component_voclist",
+        "wide_or_deep" : "",
+        "vocabulary_list":["recommend_fixed","goods_asso","recommend","stockout","recommend_cps","recService"],
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "component_voclist",
+        "output_tensor": "component_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "banner_index",
+        "output_tensor": "banner_index_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "banner_index_num",
+        "output_tensor": "banner_index_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [1,2,3,4,5,6,7,8,9,10,15,20,25,30],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "banner_index_bucket",
+        "output_tensor": "banner_index_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithVocabularyList",
+      "parameters": {
+        "input_tensor": "user_client",
+        "output_tensor": "user_client_voclist",
+        "wide_or_deep" : "",
+        "vocabulary_list":["wx_weapp","MicroMessenger","kuaishou","kuaishou_lite"],
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "user_client_voclist",
+        "output_tensor": "user_client_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_shop_inner_hot",
+        "output_tensor": "score_shop_inner_hot_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_shop_class_hot",
+        "output_tensor": "score_shop_class_hot_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_shop_price_hot",
+        "output_tensor": "score_shop_price_hot_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_i_fp_order",
+        "output_tensor": "score_i_fp_order_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_i_cf_item",
+        "output_tensor": "score_i_cf_item_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_i_order_fpgrowth",
+        "output_tensor": "score_i_order_fpgrowth_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_i_view_fpgrowth",
+        "output_tensor": "score_i_view__fpgrowth_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_i_cart_fpgrowth",
+        "output_tensor": "score_i_cart_fpgrowth_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_i_cart_cf_item",
+        "output_tensor": "score_i_cart_cf_item_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_i_view_cf_item",
+        "output_tensor": "score_i_view_cf_item_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_i_seq_embedding",
+        "output_tensor": "score_i_seq_embedding_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_i_product",
+        "output_tensor": "score_i_product_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_view_cf_user",
+        "output_tensor": "score_u_view_cf_user_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_cart_cf_user",
+        "output_tensor": "score_u_cart_cf_user_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_view_cf_item",
+        "output_tensor": "score_u_view_cf_item_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_cart_cf_item",
+        "output_tensor": "score_u_cart_cf_item_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_view_gender_hot",
+        "output_tensor": "score_u_view_gender_hot_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_order_age_hot",
+        "output_tensor": "score_u_order_age_hot_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_order_gender_hot",
+        "output_tensor": "score_u_order_gender_hot_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_view_age_hot",
+        "output_tensor": "score_u_view_age_hot_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_cat_fim",
+        "output_tensor": "score_u_cat_fim_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_view_expand",
+        "output_tensor": "score_u_view_expand_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_cart_expand",
+        "output_tensor": "score_u_cart_expand_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_search",
+        "output_tensor": "score_u_search_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_cf_item",
+        "output_tensor": "score_u_cf_item_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+     {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_cf_user",
+        "output_tensor": "score_u_cf_user_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+     {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_order_fim",
+        "output_tensor": "score_u_order_fim_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_cart",
+        "output_tensor": "score_u_cart_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_visit",
+        "output_tensor": "score_u_visit_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_u_visit_fim",
+        "output_tensor": "score_u_visit_fim_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_p_product_inner_hot",
+        "output_tensor": "score_p_product_inner_hot_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_c_class_inner_hot",
+        "output_tensor": "score_c_class_inner_hot_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "score_max_recall",
+        "output_tensor": "score_max_recall_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_pv_1d",
+        "output_tensor": "p_pv_1d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_pv_1d_num",
+        "output_tensor": "p_pv_1d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [31, 95, 207, 402, 737, 1316, 2443, 4742, 11161],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_pv_1d_bucket",
+        "output_tensor": "p_pv_1d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_pv_7d",
+        "output_tensor": "p_pv_7d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_pv_7d_num",
+        "output_tensor": "p_pv_7d_bucket",
+        "wide_or_deep" : "",
+        "boundaries":[192, 602, 1347, 2594, 4635, 8208, 14954, 28614, 64567],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_pv_7d_bucket",
+        "output_tensor": "p_pv_7d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_pv_30d",
+        "output_tensor": "p_pv_30d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_pv_30d_num",
+        "output_tensor": "p_pv_30d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [594, 1868, 4177, 8050, 14534, 25761, 46145, 89430, 216700],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_pv_30d_bucket",
+        "output_tensor": "p_pv_30d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_pv_90d",
+        "output_tensor": "p_pv_90d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_pv_90d_num",
+        "output_tensor": "p_pv_90d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [920, 3011, 6787, 13341, 24671, 44090, 81646, 164138, 395449],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_pv_90d_bucket",
+        "output_tensor": "p_pv_90d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_display_1d",
+        "output_tensor": "p_display_1d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_display_1d_num",
+        "output_tensor": "p_display_1d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [ 0, 1, 2, 3, 5, 7, 13, 25, 70],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_display_1d_bucket",
+        "output_tensor": "p_display_1d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_display_7d",
+        "output_tensor": "p_display_7d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_display_7d_num",
+        "output_tensor": "p_display_7d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 1, 2, 3, 4, 6, 10, 15, 22, 33, 51, 83, 141, 261, 621],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_display_7d_bucket",
+        "output_tensor": "p_display_7d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_display_30d",
+        "output_tensor": "p_display_30d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_display_30d_num",
+        "output_tensor": "p_display_30d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 1, 2, 3, 5, 9, 13, 20, 30, 44, 63, 91, 133, 200, 307, 499, 927, 2236],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_display_30d_bucket",
+        "output_tensor": "p_display_30d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_display_90d",
+        "output_tensor": "p_display_90d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_display_90d_num",
+        "output_tensor": "p_display_90d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [1, 2, 4, 7, 12, 19, 29, 42, 62, 88, 126, 181, 262, 383, 584, 954, 1742, 4414],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_display_90d_bucket",
+        "output_tensor": "p_display_90d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_order_1d",
+        "output_tensor": "p_order_1d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_order_1d_num",
+        "output_tensor": "p_order_1d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 1, 3, 7, 25],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_order_1d_bucket",
+        "output_tensor": "p_order_1d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_order_7d",
+        "output_tensor": "p_order_7d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_order_7d_num",
+        "output_tensor": "p_order_7d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 1, 3, 6, 15, 33, 83, 261],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_order_7d_bucket",
+        "output_tensor": "p_order_7d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_order_30d",
+        "output_tensor": "p_order_30d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_order_30d_num",
+        "output_tensor": "p_order_30d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 2, 5, 13, 30, 63, 133, 307, 927],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_order_30d_bucket",
+        "output_tensor": "p_order_30d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_order_90d",
+        "output_tensor": "p_order_90d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_order_90d_num",
+        "output_tensor": "p_order_90d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [1, 4, 12, 29, 62, 126, 262, 585, 1732],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_order_90d_bucket",
+        "output_tensor": "p_order_90d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_goods_class2_rank_180d",
+        "output_tensor": "p_goods_class2_rank_180d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_goods_class2_rank_180d_num",
+        "output_tensor": "p_goods_class2_rank_180d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [345, 1304, 3389, 7278, 14209, 26306, 50031, 102597, 264127],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_goods_class2_rank_180d_bucket",
+        "output_tensor": "p_goods_class2_rank_180d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_goods_kdt_rank_180d",
+        "output_tensor": "p_goods_kdt_rank_180d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_goods_kdt_rank_180d_num",
+        "output_tensor": "p_goods_kdt_rank_180d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [5, 11, 20, 33, 53, 87, 142, 258, 586],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_goods_kdt_rank_180d_bucket",
+        "output_tensor": "p_goods_kdt_rank_180d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_avg_rebuy_period_180day",
+        "output_tensor": "p_avg_rebuy_period_180day_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_avg_rebuy_period_180day_num",
+        "output_tensor": "p_avg_rebuy_period_180day_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 1, 2, 5],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_avg_rebuy_period_180day_bucket",
+        "output_tensor": "p_avg_rebuy_period_180day_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_price",
+        "output_tensor": "p_price_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_price_num",
+        "output_tensor": "p_price_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [1680, 2980, 3990, 5800, 7500, 9900, 14800, 21900, 44900],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_price_bucket",
+        "output_tensor": "p_price_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_created_time",
+        "output_tensor": "p_created_time_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_created_time_num",
+        "output_tensor": "p_created_time_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [1, 2, 4, 5, 7, 12, 21, 42],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_created_time_bucket",
+        "output_tensor": "p_created_time_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_title_length",
+        "output_tensor": "p_title_length_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_title_length_num",
+        "output_tensor": "p_title_length_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [9, 12, 16, 20, 24, 28, 32, 36, 44],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_title_length_bucket",
+        "output_tensor": "p_title_length_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_age",
+        "output_tensor": "p_age_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_age_num",
+        "output_tensor": "p_age_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 1, 2, 3,4, 5, 6, 7, 8, 10, 14, 21],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_age_bucket",
+        "output_tensor": "p_age_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_male_fans",
+        "output_tensor": "p_male_fans_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_male_fans_num",
+        "output_tensor": "p_male_fans_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 1,2, 4, 5, 8, 12, 17, 24, 37, 56, 89, 152, 292, 761],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_male_fans_bucket",
+        "output_tensor": "p_male_fans_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_female_fans",
+        "output_tensor": "p_female_fans_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_female_fans_num",
+        "output_tensor": "p_female_fans_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 1, 3, 6, 10, 16, 25, 37, 54, 78, 113, 164, 239, 367, 572, 920, 1623, 3716],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_female_fans_bucket",
+        "output_tensor": "p_female_fans_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "p_search_words_seq",
+        "output_tensor": "p_search_words_seq_hashbucket",
+        "hash_bucket_size": 100000,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "p_search_click_cnt",
+        "output_tensor": "p_search_click_cnt_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "p_search_click_cnt_num",
+        "output_tensor": "p_search_click_cnt_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [1,2,3,4,5,6,10,15,20],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "p_search_click_cnt_bucket",
+        "output_tensor": "p_search_click_cnt_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "p_smooth_ctr",
+        "output_tensor": "p_smooth_ctr_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "p_smooth_cvr",
+        "output_tensor": "p_smooth_cvr_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+
+
+
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_order_1d",
+        "output_tensor": "y_order_1d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_order_1d_num",
+        "output_tensor": "y_order_1d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 1, 2],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_order_1d_bucket",
+        "output_tensor": "y_order_1d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_order_7d",
+        "output_tensor": "y_order_7d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_order_7d_num",
+        "output_tensor": "y_order_7d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0,1, 2, 3, 4, 7],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_order_7d_bucket",
+        "output_tensor": "y_order_7d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_order_15d",
+        "output_tensor": "y_order_15d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_order_15d_num",
+        "output_tensor": "y_order_15d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [ 0,1, 2, 3, 4, 6, 12],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_order_15d_bucket",
+        "output_tensor": "y_order_15d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_order_30d",
+        "output_tensor": "y_order_30d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_order_30d_num",
+        "output_tensor": "y_order_30d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 1, 2, 3, 4, 5, 7, 10, 19],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_order_30d_bucket",
+        "output_tensor": "y_order_30d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_order_90d",
+        "output_tensor": "y_order_90d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_order_90d_num",
+        "output_tensor": "y_order_90d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 1, 2, 3, 4, 5, 6, 9, 12, 19, 34],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_order_90d_bucket",
+        "output_tensor": "y_order_90d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+        {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_order_180d",
+        "output_tensor": "y_order_180d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_order_180d_num",
+        "output_tensor": "y_order_180d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 1, 2, 3, 4, 5, 7, 10, 14, 20, 30, 55],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_order_180d_bucket",
+        "output_tensor": "y_order_180d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_goods_7d",
+        "output_tensor": "y_goods_7d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_goods_7d_num",
+        "output_tensor": "y_goods_7d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0,1, 2, 3, 4, 6, 11],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_goods_7d_bucket",
+        "output_tensor": "y_goods_7d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_goods_30d",
+        "output_tensor": "y_goods_30d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_goods_30d_num",
+        "output_tensor": "y_goods_30d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 1, 2, 3, 4, 5, 7, 11, 16, 31],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_goods_30d_bucket",
+        "output_tensor": "y_goods_30d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_goods_90d",
+        "output_tensor": "y_goods_90d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_goods_90d_num",
+        "output_tensor": "y_goods_90d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 1, 2, 3, 4, 5, 7, 10, 14, 19, 30, 58],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_goods_90d_bucket",
+        "output_tensor": "y_goods_90d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_goods_180d",
+        "output_tensor": "y_goods_180d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_goods_180d_num",
+        "output_tensor": "y_goods_180d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 1, 2, 3, 5, 6, 9, 12, 16, 22, 31, 48, 90],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_goods_180d_bucket",
+        "output_tensor": "y_goods_180d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_amt_7d",
+        "output_tensor": "y_amt_7d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_amt_7d_num",
+        "output_tensor": "y_amt_7d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0,1, 1992, 4990, 8103, 11900, 17300, 25580, 39540, 76099],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_amt_7d_bucket",
+        "output_tensor": "y_amt_7d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+       {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_amt_30d",
+        "output_tensor": "y_amt_30d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_amt_30d_num",
+        "output_tensor": "y_amt_30d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 2163, 5700, 8993, 12892, 18160, 24856, 33790, 46940, 67500, 106200, 207708],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_amt_30d_bucket",
+        "output_tensor": "y_amt_30d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+       {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_amt_90d",
+        "output_tensor": "y_amt_90d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_amt_90d_num",
+        "output_tensor": "y_amt_90d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [ 0, 400, 4590, 8480, 12700, 18205, 25306, 34370, 46494, 63340, 88400, 129800, 200791, 392591],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_amt_90d_bucket",
+        "output_tensor": "y_amt_90d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+       {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_amt_180d",
+        "output_tensor": "y_amt_180d_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_amt_180d_num",
+        "output_tensor": "y_amt_180d_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0, 600, 4981, 9678, 14701, 21230, 29985, 41400, 56800, 77706, 107370, 149900, 216630, 337560, 638710],
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_amt_180d_bucket",
+        "output_tensor": "y_amt_180d_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "y_gender",
+        "output_tensor": "y_gender_hashbucket",
+        "hash_bucket_size": 5,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_gender_hashbucket",
+        "output_tensor": "y_gender_embedding",
+        "dimension": 1,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "y_real_gender",
+        "output_tensor": "y_real_gender_hashbucket",
+        "hash_bucket_size": 5,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_real_gender_hashbucket",
+        "output_tensor": "y_real_gender_embedding",
+        "dimension": 1,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "y_age",
+        "output_tensor": "y_age_hashbucket",
+        "hash_bucket_size": 10,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_age_hashbucket",
+        "output_tensor": "y_age_embedding",
+        "dimension": 1,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithVocabularyList",
+      "parameters": {
+        "input_tensor": "y_price_sensity",
+        "output_tensor": "y_price_sensity_voclist",
+        "wide_or_deep" : "",
+        "vocabulary_list":["不敏感","较不敏感","比较敏感","非常敏感"],
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_price_sensity_voclist",
+        "output_tensor": "y_price_sensity_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithVocabularyList",
+      "parameters": {
+        "input_tensor": "y_consuming_ability",
+        "output_tensor": "y_consuming_ability_voclist",
+        "wide_or_deep" : "",
+        "vocabulary_list":["低消费","中等消费","高消费"],
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_consuming_ability_voclist",
+        "output_tensor": "y_consuming_ability_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+     {
+      "name": "CateColWithVocabularyList",
+      "parameters": {
+        "input_tensor": "y_has_car",
+        "output_tensor": "y_has_car_voclist",
+        "wide_or_deep" : "",
+        "vocabulary_list":["是","否"],
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_has_car_voclist",
+        "output_tensor": "y_has_car_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithVocabularyList",
+      "parameters": {
+        "input_tensor": "y_has_child",
+        "output_tensor": "y_has_child_voclist",
+        "wide_or_deep" : "",
+        "vocabulary_list":["是","否"],
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_has_child_voclist",
+        "output_tensor": "y_has_child_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithVocabularyList",
+      "parameters": {
+        "input_tensor": "y_summon_ability",
+        "output_tensor": "y_summon_ability_voclist",
+        "wide_or_deep" : "",
+        "vocabulary_list":["弱召集力","强召集力"],
+        "dtype": "string"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_summon_ability_voclist",
+        "output_tensor": "y_summon_ability_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithVocabularyList",
+      "parameters": {
+        "input_tensor": "y_influence",
+        "output_tensor": "y_influence_voclist",
+        "wide_or_deep" : "",
+        "vocabulary_list":["弱影响力","强影响力"],
+        "dtype": "string"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_influence_voclist",
+        "output_tensor": "y_influence_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithVocabularyList",
+      "parameters": {
+        "input_tensor": "y_share_mood",
+        "output_tensor": "y_share_mood_voclist",
+        "wide_or_deep" : "",
+        "vocabulary_list":["不乐意分享","乐意分享"],
+        "dtype": "string"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_share_mood_voclist",
+        "output_tensor": "y_share_mood_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "y_style_seq",
+        "output_tensor": "y_style_seq_hashbucket",
+        "hash_bucket_size": 1000,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_style_seq_hashbucket",
+        "output_tensor": "y_style_seq_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithVocabularyList",
+      "parameters": {
+        "input_tensor": "y_festival",
+        "output_tensor": "y_festival_voclist",
+        "wide_or_deep" : "",
+        "vocabulary_list":["低节庆导向","较低节庆导向","一般节庆导向","较高节庆导向","高节庆导向"],
+        "dtype": "string"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_festival_voclist",
+        "output_tensor": "y_festival_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithVocabularyList",
+      "parameters": {
+        "input_tensor": "y_trend",
+        "output_tensor": "y_trend_voclist",
+        "wide_or_deep" : "",
+        "vocabulary_list":["低潮流偏好","较低潮流偏好","一般潮流偏好","较高潮流偏好","高潮流偏好"],
+        "dtype": "string"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_trend_voclist",
+        "output_tensor": "y_trend_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithVocabularyList",
+      "parameters": {
+        "input_tensor": "y_traval",
+        "output_tensor": "y_traval_voclist",
+        "wide_or_deep" : "",
+        "vocabulary_list":["否","是"],
+        "dtype": "string"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_traval_voclist",
+        "output_tensor": "y_traval_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithVocabularyList",
+      "parameters": {
+        "input_tensor": "y_traval_freq",
+        "output_tensor": "y_traval_freq_voclist",
+        "wide_or_deep" : "",
+        "vocabulary_list":["低频","中频","高频"],
+        "dtype": "string"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_traval_freq_voclist",
+        "output_tensor": "y_traval_freq_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_swn_1",
+        "output_tensor": "y_swn_1_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_swn_1_num",
+        "output_tensor": "y_swn_1_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0,1,2],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_swn_1_bucket",
+        "output_tensor": "y_swn_1_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_swn_2",
+        "output_tensor": "y_swn_2_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_swn_2_num",
+        "output_tensor": "y_swn_2_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0,1,2],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_swn_2_bucket",
+        "output_tensor": "y_swn_2_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+        {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_swn_15",
+        "output_tensor": "y_swn_15_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_swn_15_num",
+        "output_tensor": "y_swn_15_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0,1,2],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_swn_15_bucket",
+        "output_tensor": "y_swn_15_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+        {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_swn_30",
+        "output_tensor": "y_swn_30_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_swn_30_num",
+        "output_tensor": "y_swn_30_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0,1,2],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_swn_30_bucket",
+        "output_tensor": "y_swn_30_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+        {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_spn_1",
+        "output_tensor": "y_spn_1_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_spn_1_num",
+        "output_tensor": "y_spn_1_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0,1,2],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_spn_1_bucket",
+        "output_tensor": "y_spn_1_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_spn_2",
+        "output_tensor": "y_spn_2_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_spn_2_num",
+        "output_tensor": "y_spn_2_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0,1,2],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_spn_2_bucket",
+        "output_tensor": "y_spn_2_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_spn_15",
+        "output_tensor": "y_spn_15_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_spn_15_num",
+        "output_tensor": "y_spn_15_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0,1,2],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_spn_15_bucket",
+        "output_tensor": "y_spn_15_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "y_spn_30",
+        "output_tensor": "y_spn_30_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "y_spn_30_num",
+        "output_tensor": "y_spn_30_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [0,1,2],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "y_spn_30_bucket",
+        "output_tensor": "y_spn_30_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "y_sw_1_seq",
+        "output_tensor": "y_sw_1_seq_hashbucket",
+        "hash_bucket_size": 100000,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "y_sw_2_seq",
+        "output_tensor": "y_sw_2_seq_hashbucket",
+        "hash_bucket_size": 100000,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "y_sw_15_seq",
+        "output_tensor": "y_sw_15_seq_hashbucket",
+        "hash_bucket_size": 100000,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "y_sw_30_seq",
+        "output_tensor": "y_sw_30_seq_hashbucket",
+        "hash_bucket_size": 100000,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "SharedEmbeddingColumn",
+      "parameters": {
+        "input_tensor": ["p_search_words_seq_hashbucket","y_sw_1_seq_hashbucket","y_sw_2_seq_hashbucket","y_sw_15_seq_hashbucket","y_sw_30_seq_hashbucket"],
+        "output_tensor": ["p_search_words_seq_embedding","y_sw_1_seq_sharedembedding","y_sw_2_seq_sharedembedding","y_sw_15_seq_sharedembedding","y_sw_30_seq_sharedembedding"],
+        "dimension": 4,
+        "combiner":"sum",
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "y_sp_1_seq",
+        "output_tensor": "y_sp_1_seq_hashbucket",
+        "hash_bucket_size": 100000,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "y_sp_2_seq",
+        "output_tensor": "y_sp_2_seq_hashbucket",
+        "hash_bucket_size": 100000,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "y_sp_15_seq",
+        "output_tensor": "y_sp_15_seq_hashbucket",
+        "hash_bucket_size": 100000,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "y_sp_30_seq",
+        "output_tensor": "y_sp_30_seq_hashbucket",
+        "hash_bucket_size": 100000,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+    {
+      "name": "SharedEmbeddingColumn",
+      "parameters": {
+        "input_tensor": ["y_sp_1_seq_hashbucket","y_sp_2_seq_hashbucket","y_sp_15_seq_hashbucket","y_sp_30_seq_hashbucket"],
+        "output_tensor": ["y_sp_1_seq_embedding","y_sp_2_seq_sharedembedding","y_sp_15_seq_sharedembedding","y_sp_30_seq_sharedembedding"],
+        "dimension": 4,
+        "combiner":"sum",
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "y_mean_ctr",
+        "output_tensor": "y_mean_ctr_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "y_mean_cvr",
+        "output_tensor": "y_mean_cvr_num",
+        "wide_or_deep": "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "y_smooth_ctr",
+        "output_tensor": "y_smooth_ctr_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "y_smooth_cvr",
+        "output_tensor": "y_smooth_cvr_num",
+        "wide_or_deep": "deep",
+        "dtype": "double"
+      }
+    },
+
+
+
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "t_team_type",
+        "output_tensor": "t_team_type_hashbucket",
+        "hash_bucket_size": 30,
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_team_type_hashbucket",
+        "output_tensor": "t_team_type_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "t_cat_id",
+        "output_tensor": "t_cat_id_hashbucket",
+        "hash_bucket_size": 30,
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_cat_id_hashbucket",
+        "output_tensor": "t_cat_id_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "t_province",
+        "output_tensor": "t_province_hashbucket",
+        "hash_bucket_size": 100,
+        "wide_or_deep" : "",
+        "dtype": "string"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_province_hashbucket",
+        "output_tensor": "t_province_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "t_created_time",
+        "output_tensor": "t_created_time_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "t_created_time_num",
+        "output_tensor": "t_created_time_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [57, 162, 251, 318, 456, 644, 876, 1280, 1717],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_created_time_bucket",
+        "output_tensor": "t_created_time_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "t_certificate_time",
+        "output_tensor": "t_certificate_time_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "t_certificate_time_num",
+        "output_tensor": "t_certificate_time_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [21, 36, 65, 110, 118, 141, 180, 217, 260],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_certificate_time_bucket",
+        "output_tensor": "t_certificate_time_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "t_open_status",
+        "output_tensor": "t_open_status_hashbucket",
+        "hash_bucket_size": 10,
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+      {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_open_status_hashbucket",
+        "output_tensor": "t_open_status_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "t_is_supplier",
+        "output_tensor": "t_is_supplier_hashbucket",
+        "hash_bucket_size": 3,
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+      {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_is_supplier_hashbucket",
+        "output_tensor": "t_is_supplier_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "CateColWithHashBucket",
+      "parameters": {
+        "input_tensor": "t_is_seller",
+        "output_tensor": "t_is_seller_hashbucket",
+        "hash_bucket_size": 3,
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+      {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_is_seller_hashbucket",
+        "output_tensor": "t_is_seller_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "t_login_pv_30day",
+        "output_tensor": "t_login_pv_30day_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "t_login_pv_30day_num",
+        "output_tensor": "t_login_pv_30day_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [104, 163, 226, 298, 382, 488, 637, 887, 1365],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_login_pv_30day_bucket",
+        "output_tensor": "t_login_pv_30day_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "t_login_pv_60day",
+        "output_tensor": "t_login_pv_60day_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "t_login_pv_60day_num",
+        "output_tensor": "t_login_pv_60day_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [182, 303, 419, 571, 740, 952, 1292, 1828, 2628],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_login_pv_60day_bucket",
+        "output_tensor": "t_login_pv_60day_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "t_login_pv_90day",
+        "output_tensor": "t_login_pv_90day_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "t_login_pv_90day_num",
+        "output_tensor": "t_login_pv_90day_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [221, 358, 524, 702, 925, 1215, 1700, 2300, 3456],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_login_pv_90day_bucket",
+        "output_tensor": "t_login_pv_90day_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "t_admin_cnt",
+        "output_tensor": "t_admin_cnt_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "t_admin_cnt_num",
+        "output_tensor": "t_admin_cnt_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [1, 2, 3, 4, 5, 6],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_admin_cnt_bucket",
+        "output_tensor": "t_admin_cnt_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "t_paid_order_uv_360day",
+        "output_tensor": "t_paid_order_uv_360day_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "t_paid_order_uv_360day_num",
+        "output_tensor": "t_paid_order_uv_360day_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [854, 2772, 5330, 10245, 18351, 32635, 54436, 109233, 225500],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_paid_order_uv_360day_bucket",
+        "output_tensor": "t_paid_order_uv_360day_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "t_paid_order_cnt_360day",
+        "output_tensor": "t_paid_order_cnt_360day_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "t_paid_order_cnt_360day_num",
+        "output_tensor": "t_paid_order_cnt_360day_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [1708, 5951, 12701, 24002, 44237, 75017, 139593, 282513, 597768],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_paid_order_cnt_360day_bucket",
+        "output_tensor": "t_paid_order_cnt_360day_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "t_paid_order_cnt_90day_top1",
+        "output_tensor": "t_paid_order_cnt_90day_top1_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "t_paid_order_cnt_90day_top1_num",
+        "output_tensor": "t_paid_order_cnt_90day_top1_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [443, 1324, 2589, 4627, 7662, 14065, 24155, 44040, 95063],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_paid_order_cnt_90day_top1_bucket",
+        "output_tensor": "t_paid_order_cnt_90day_top1_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "t_paid_order_cnt_90day_top2",
+        "output_tensor": "t_paid_order_cnt_90day_top2_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "t_paid_order_cnt_90day_top2_num",
+        "output_tensor": "t_paid_order_cnt_90day_top2_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [77, 320, 771, 1532, 2869, 4850, 7560, 14122, 35701],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_paid_order_cnt_90day_top2_bucket",
+        "output_tensor": "t_paid_order_cnt_90day_top2_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+     {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "t_30_view_num",
+        "output_tensor": "t_30_view_num_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "t_30_view_num_num",
+        "output_tensor": "t_30_view_num_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [44991, 129418, 261769, 487600, 780266, 1246242, 2102895, 4513139, 9475995],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_30_view_num_bucket",
+        "output_tensor": "t_30_view_num_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "t_30_click_num",
+        "output_tensor": "t_30_click_num_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "t_30_click_num_num",
+        "output_tensor": "t_30_click_num_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [746, 2062, 4303, 7439, 12365, 20695, 33446, 56976, 99517],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_30_click_num_bucket",
+        "output_tensor": "t_30_click_num_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "t_30_order_num",
+        "output_tensor": "t_30_order_num_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "t_30_order_num_num",
+        "output_tensor": "t_30_order_num_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [18, 51, 104, 173, 284, 487, 762, 1424, 2548],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_30_order_num_bucket",
+        "output_tensor": "t_30_order_num_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumn",
+      "parameters": {
+        "input_tensor": "t_30_order_amount",
+        "output_tensor": "t_30_order_amount_num",
+        "wide_or_deep" : "",
+        "dtype": "int"
+      }
+    },
+    {
+      "name": "BucketizedColumn",
+      "parameters": {
+        "input_tensor": "t_30_order_amount_num",
+        "output_tensor": "t_30_order_amount_bucket",
+        "wide_or_deep" : "",
+        "boundaries": [116612, 363700, 787275, 1367100, 2385550, 4233603, 6943854, 10821409, 18771371],
+        "dtype": "int"
+      }
+    },
+     {
+      "name": "EmbeddingColumn",
+      "parameters": {
+        "input_tensor": "t_30_order_amount_bucket",
+        "output_tensor": "t_30_order_amount_embedding",
+        "dimension": 4,
+        "wide_or_deep": "deep"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "t_mean_ctr",
+        "output_tensor": "t_mean_ctr_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    },
+    {
+      "name": "NumericColumnV2",
+      "parameters": {
+        "input_tensor": "t_mean_cvr",
+        "output_tensor": "t_mean_cvr_num",
+        "wide_or_deep" : "deep",
+        "dtype": "double"
+      }
+    }
+
+
+  ]
+}
