@@ -6,3 +6,6 @@ bookdemo
 #*.apk
 work
 *.tfrecord
+build
+dist
+notekeras.egg-info
