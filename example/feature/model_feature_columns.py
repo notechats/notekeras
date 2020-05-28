@@ -1,4 +1,7 @@
+import random
+
 import demjson
+import numpy as np
 import pandas as pd
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
@@ -7,15 +10,35 @@ from tensorflow import keras
 from tensorflow.keras import layers, backend
 from tensorflow.keras.utils import plot_model
 
-from notekeras.config.core import parse_feature_json
+from notekeras.feature import ParseFeatureConfig
 
 backend.set_floatx('float32')
 
 
 def get_data():
+    def arr_c(n):
+        res = []
+        list = ["a", 'b', 'c', 'e', 'f']
+        for i in range(0, n):
+            random.shuffle(list)
+            res.append(np.array(list[:4]))
+        return res
+
+    def arr_c2(n):
+        res = []
+        list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        for i in range(0, n):
+            random.shuffle(list)
+            res.append(np.array(list[:4]))
+        return res
+
     URL = 'https://storage.googleapis.com/applied-dl/heart.csv'
     dataframe = pd.read_csv(URL)
-    dataframe.head()
+    dataframe['arr'] = arr_c(len(dataframe))
+    dataframe['arr2'] = arr_c(len(dataframe))
+    dataframe['arr3'] = arr_c2(len(dataframe))
+    dataframe['thal2'] = dataframe['thal']
+    dataframe = pd.DataFrame(dataframe)
 
     train, test = train_test_split(dataframe, test_size=0.2)
     train, val = train_test_split(train, test_size=0.2)
@@ -23,7 +46,12 @@ def get_data():
     def df_to_dataset(dataframe, shuffle=True, batch_size=32):
         dataframe = dataframe.copy()
         labels = dataframe.pop('target')
-        ds = tf.data.Dataset.from_tensor_slices((dict(dataframe), labels))
+        # arr = np.vstack(dataframe.pop('arr'))
+        data = dict(dataframe)
+        # data['arr'] = arr
+
+        ds = tf.data.Dataset.from_tensor_slices((data, labels))
+
         if shuffle:
             ds = ds.shuffle(buffer_size=len(dataframe))
         ds = ds.batch(batch_size)
@@ -94,14 +122,28 @@ def compare1():
 
 
 def compare2():
-    feature_json = open('test.json', 'r').read()
+    feature_json = open('model_feature.json', 'r').read()
     feature_json = demjson.decode(feature_json)
-    l0, feature_dict = parse_feature_json(feature_json['tensorTransform'])
+    parse = ParseFeatureConfig()
+
+    l0 = parse.parse_feature_json(feature_json['layer0'])
+    # l01 = parse.parse_feature_json(feature_json['layer4'])
+
+    la1, la1_length = parse.parse_sequence_feature_json(feature_json['layer3'])
+    la2, la2_length = parse.parse_sequence_feature_json(feature_json['layer2'])
+    # la3, la3_length = parse.parse_sequence_feature_json(feature_json['layer5'])
+
+    lb1 = tf.keras.backend.mean(la1, axis=1)
+    lb2 = tf.keras.backend.mean(la2, axis=1)
+    # lb3 = la3
+
+    l0 = tf.keras.backend.concatenate([l0, lb1, lb2])
+
     l1 = layers.Dense(128, activation='relu')(l0)
-    l2 = layers.Dense(128, activation='relu')(l1)
+    l2 = layers.Dense(64, activation='relu')(l1)
     l3 = layers.Dense(1, activation='sigmoid')(l2)
 
-    model = keras.models.Model(inputs=list(feature_dict.values()), outputs=[l3])
+    model = keras.models.Model(inputs=list(parse.feature_dict.values()), outputs=[l3])
     model.compile(optimizer='adam', loss='binary_crossentropy', )
     model.summary()
     plot_model(model, to_file='feature2.png', show_shapes=True)
@@ -109,5 +151,4 @@ def compare2():
     model.fit(train_ds, validation_data=val_ds, epochs=5)
 
 
-compare1()
 compare2()

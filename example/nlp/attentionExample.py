@@ -65,7 +65,7 @@ def wrap_attention_example():
 
 def encode_example():
     key, query, value = data_mock()
-
+    print(np.shape(key)[1:])
     inputs = keras.layers.Input(shape=np.shape(key)[1:], name='Encoder_Input')
     layer1 = EncoderComponent(name='wrap',
                               as_model=True,
