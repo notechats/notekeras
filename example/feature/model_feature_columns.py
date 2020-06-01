@@ -10,6 +10,7 @@ from tensorflow import keras
 from tensorflow.keras import layers, backend
 from tensorflow.keras.utils import plot_model
 
+from notekeras.component.transformer import EncoderComponent
 from notekeras.feature import ParseFeatureConfig
 
 backend.set_floatx('float32')
@@ -132,6 +133,8 @@ def compare2():
     la1, la1_length = parse.parse_sequence_feature_json(feature_json['layer3'])
     la2, la2_length = parse.parse_sequence_feature_json(feature_json['layer2'])
     # la3, la3_length = parse.parse_sequence_feature_json(feature_json['layer5'])
+
+    la1 = EncoderComponent(name='wrap', head_num=2, hidden_dim=2, layer_depth=0)(la1)
 
     lb1 = tf.keras.backend.mean(la1, axis=1)
     lb2 = tf.keras.backend.mean(la2, axis=1)

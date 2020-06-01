@@ -1,3 +1,3 @@
-__all__ = ['activations', 'optimizers', 'layer', 'model', 'backend', 'component', 'config']
+__all__ = ['activations', 'optimizers', 'layer', 'model', 'backend', 'component', 'feature']
 
 __version__ = '0.80.0'

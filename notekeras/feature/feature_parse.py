@@ -110,6 +110,16 @@ class ParseFeatureConfig:
 
         return feature
 
+    def _cate_indicator_column(self, params: dict) -> DenseFeatures:
+        key, inputs = self._get_input_layer(params)
+
+        feature = self._get_categorical_column(params)
+        feature_column = fc.indicator_column(feature)
+
+        outputs = DenseFeatures(feature_column, name=params.get('name', None))({key: inputs})
+
+        return outputs
+
     def _cate_embedding_column(self, params: dict) -> Layer:
         key, inputs = self._get_input_layer(params)
 
@@ -129,15 +139,15 @@ class ParseFeatureConfig:
         res = layer(sequence_input)
         return res
 
-    def _cate_indicator_column(self, params: dict) -> DenseFeatures:
-        key, inputs = self._get_input_layer(params)
+    def _sequence_cate_indicator_column(self, params: dict):
+        key, inputs = self._get_input_layer(params, size=params['length'])
 
-        feature = self._get_categorical_column(params)
-        feature_column = fc.indicator_column(feature)
+        feature = self._get_sequence_categorical_column(params)
+        column = IndicatorColumnDef(feature, size=params['length'])
 
-        outputs = DenseFeatures(feature_column, name=params.get('name', None))({key: inputs})
+        sequence_input, sequence_length = sfc.SequenceFeatures(column)({key: inputs})
 
-        return outputs
+        return sequence_input, sequence_length
 
     def _sequence_cate_embedding_column(self, params: dict):
         key, inputs = self._get_input_layer(params, size=params['length'])
