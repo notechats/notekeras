@@ -16,17 +16,59 @@ field_type_map = {
 }
 
 
-###################################################################################################################
+def _parse_vocabulary(vocabulary):
+    if isinstance(vocabulary, list):
+        return vocabulary
+    elif isinstance(vocabulary, str):
+        return eval(vocabulary)
+    else:
+        return []
 
 
-def _sequence_cate_share_embedding_column(params):
-    feature = sfc.sequence_categorical_column_with_vocabulary_list(params['key'], params['vocabulary'])
+def _get_categorical_column(params: dict) -> fc.CategoricalColumn:
+    if 'vocabulary' in params.keys():
+        feature = fc.categorical_column_with_vocabulary_list(params['key'],
+                                                             vocabulary_list=_parse_vocabulary(params['vocabulary']),
+                                                             default_value=0)
+    elif 'bucket_size' in params.keys():
+        feature = fc.categorical_column_with_hash_bucket(params['key'],
+                                                         hash_bucket_size=params['bucket_size'])
+    elif 'file' in params.keys():
+        feature = fc.categorical_column_with_vocabulary_file(params['key'],
+                                                             vocabulary_file=params['file'],
+                                                             default_value=0)
+    elif 'num_buckets' in params.keys():
+        feature = fc.categorical_column_with_identity(params['key'],
+                                                      num_buckets=params['num_buckets'])
+    elif 'boundaries' in params.keys():
+        feature = fc.bucketized_column(fc.numeric_column(params['key']),
+                                       boundaries=params['boundaries'])
+    else:
+        raise Exception("params error")
 
-    shared_embedding_column = fc.shared_embedding_columns_v2([feature],
-                                                             dimension=params['dimension'],
-                                                             shared_embedding_collection_name=params['share_name'])
+    return feature
 
-    return shared_embedding_column
+
+def _get_sequence_categorical_column(params: dict) -> fc.SequenceCategoricalColumn:
+    key = params['key']
+    if 'vocabulary' in params.keys():
+        feature = sfc.sequence_categorical_column_with_vocabulary_list(key,
+                                                                       vocabulary_list=_parse_vocabulary(
+                                                                           params['vocabulary']),
+                                                                       default_value=0)
+    elif 'bucket_size' in params.keys():
+        feature = sfc.sequence_categorical_column_with_hash_bucket(key, hash_bucket_size=params['bucket_size'])
+    elif 'file' in params.keys():
+        feature = sfc.sequence_categorical_column_with_vocabulary_file(key,
+                                                                       vocabulary_file=params['file'],
+                                                                       default_value=0)
+    elif 'num_buckets' in params.keys():
+        feature = sfc.sequence_categorical_column_with_identity(key,
+                                                                num_buckets=params['num_buckets'])
+    else:
+        raise Exception("params error")
+
+    return feature
 
 
 class ParseFeatureConfig:
@@ -60,60 +102,30 @@ class ParseFeatureConfig:
         elif name in self.share_layer.keys():
             return self.share_layer[name]
         else:
-            self.share_layer[layer.name] = layer
+            self.share_layer[name] = layer
             return layer
 
     def _numeric_column(self, params: dict) -> Layer:
+        """
+        输入：数值
+        输出：数值
+        :param params:
+        :return:
+        """
         key, inputs = self._get_input_layer(params)
 
         return inputs
 
-    def _bucketized_column(self, params: dict) -> DenseFeatures:
-        key, inputs = self._get_input_layer(params)
-
-        feature = fc.numeric_column(params['key'])
-        feature_column = fc.bucketized_column(feature, boundaries=params['boundaries'])
-
-        outputs = DenseFeatures(feature_column, name=params.get('name', None))({key: inputs})
-        return outputs
-
-    @staticmethod
-    def _get_categorical_column(params: dict) -> fc.CategoricalColumn:
-        if 'vocabulary' in params.keys():
-            feature = fc.categorical_column_with_vocabulary_list(params['key'], params['vocabulary'], default_value=0)
-        elif 'bucket_size' in params.keys():
-            feature = fc.categorical_column_with_hash_bucket(params['key'], hash_bucket_size=params['bucket_size'])
-        elif 'file' in params.keys():
-            feature = fc.categorical_column_with_vocabulary_file(params['key'], vocabulary_file=params['file'])
-        elif 'num_buckets' in params.keys():
-            feature = fc.categorical_column_with_identity(params['key'], num_buckets=params['num_buckets'])
-        elif 'boundaries' in params.keys():
-            feature = fc.bucketized_column(fc.numeric_column(params['key']), boundaries=params['boundaries'])
-        else:
-            raise Exception("params error")
-
-        return feature
-
-    @staticmethod
-    def _get_sequence_categorical_column(params: dict) -> fc.SequenceCategoricalColumn:
-        key = params['key']
-        if 'vocabulary' in params.keys():
-            feature = sfc.sequence_categorical_column_with_vocabulary_list(key, params['vocabulary'], default_value=0)
-        elif 'bucket_size' in params.keys():
-            feature = sfc.sequence_categorical_column_with_hash_bucket(key, hash_bucket_size=params['bucket_size'])
-        elif 'file' in params.keys():
-            feature = sfc.sequence_categorical_column_with_vocabulary_file(key, vocabulary_file=params['file'])
-        elif 'num_buckets' in params.keys():
-            feature = sfc.sequence_categorical_column_with_identity(key, num_buckets=params['num_buckets'])
-        else:
-            raise Exception("params error")
-
-        return feature
-
     def _cate_indicator_column(self, params: dict) -> DenseFeatures:
+        """
+        输入：类别
+        输出：类别对应的one_hot
+        :param params:
+        :return:
+        """
         key, inputs = self._get_input_layer(params)
 
-        feature = self._get_categorical_column(params)
+        feature = _get_categorical_column(params)
         feature_column = fc.indicator_column(feature)
 
         outputs = DenseFeatures(feature_column, name=params.get('name', None))({key: inputs})
@@ -121,9 +133,15 @@ class ParseFeatureConfig:
         return outputs
 
     def _cate_embedding_column(self, params: dict) -> Layer:
+        """
+        输入：类别
+        输出：类别对应的embedding
+        :param params:
+        :return:
+        """
         key, inputs = self._get_input_layer(params)
 
-        feature = self._get_categorical_column(params)
+        feature = _get_categorical_column(params)
 
         column = IndicatorColumnDef(feature, size=1)
 
@@ -132,7 +150,7 @@ class ParseFeatureConfig:
 
         name = params.get('share_name', None)
         layer = self._get_share_layer(name,
-                                      Embedding(input_dim=feature.num_buckets,
+                                      Embedding(input_dim=feature.num_buckets + 1,
                                                 output_dim=params['dimension'],
                                                 mask_zero=True,
                                                 name=name))
@@ -140,9 +158,15 @@ class ParseFeatureConfig:
         return res
 
     def _sequence_cate_indicator_column(self, params: dict):
+        """
+        输入：类别序列
+        输出：类别序列对应的类别ID
+        :param params:
+        :return:
+        """
         key, inputs = self._get_input_layer(params, size=params['length'])
 
-        feature = self._get_sequence_categorical_column(params)
+        feature = _get_sequence_categorical_column(params)
         column = IndicatorColumnDef(feature, size=params['length'])
 
         sequence_input, sequence_length = sfc.SequenceFeatures(column)({key: inputs})
@@ -150,9 +174,15 @@ class ParseFeatureConfig:
         return sequence_input, sequence_length
 
     def _sequence_cate_embedding_column(self, params: dict):
+        """
+        输入：类别序列
+        输出：类别序列对应的embedding
+        :param params:
+        :return:
+        """
         key, inputs = self._get_input_layer(params, size=params['length'])
 
-        feature = self._get_sequence_categorical_column(params)
+        feature = _get_sequence_categorical_column(params)
         column = IndicatorColumnDef(feature, size=params['length'])
 
         sequence_input, sequence_length = sfc.SequenceFeatures(column)({key: inputs})
@@ -161,7 +191,7 @@ class ParseFeatureConfig:
 
         name = params.get('share_name', None)
         layer = self._get_share_layer(name,
-                                      Embedding(input_dim=len(params['vocabulary']),
+                                      Embedding(input_dim=feature.num_buckets + 1,
                                                 output_dim=params['dimension'],
                                                 mask_zero=True,
                                                 name=name))
@@ -170,18 +200,22 @@ class ParseFeatureConfig:
 
     def _get_columns_map(self, key: str):
         _columns_map = {
-            "NumericColumn": self._numeric_column,
-            "BucketizedColumn": self._cate_indicator_column,
+            "NumericColumn": self._numeric_column,  # 数值类型
+            "BucketizedColumn": self._cate_indicator_column,  # 分桶类型
 
-            "CateIndicatorColumn": self._cate_indicator_column,
-            "FileIndicatorColumn": self._cate_indicator_column,
-            "HashIndicatorColumn": self._cate_indicator_column,
-            "BucketIndicatorColumn": self._cate_indicator_column,
+            "CateIndicatorColumn": self._cate_indicator_column,  # 类别库生成的类别对应的one_hot
+            "FileIndicatorColumn": self._cate_indicator_column,  # 读取文件产生的类别对应的one_hot
+            "HashIndicatorColumn": self._cate_indicator_column,  # 关键词hash映射产生的类别对应的one_hot
+            "BucketIndicatorColumn": self._cate_indicator_column,  # 数值分桶产生的类别对应的one_hot
 
-            "CateEmbeddingColumn": self._cate_embedding_column,
+            "CateEmbeddingColumn": self._cate_embedding_column,  # embedding
             "FileEmbeddingColumn": self._cate_embedding_column,
             "HashEmbeddingColumn": self._cate_embedding_column,
             "BucketEmbeddingColumn": self._cate_embedding_column,
+
+            "SequenceCateIndicatorColumn": self._sequence_cate_indicator_column,
+            "SequenceFileIndicatorColumn": self._sequence_cate_indicator_column,
+            "SequenceHashIndicatorColumn": self._sequence_cate_indicator_column,
 
             "SequenceCateEmbddingColumn": self._sequence_cate_embedding_column,
             "SequenceFileEmbddingColumn": self._sequence_cate_embedding_column,

@@ -358,5 +358,116 @@
         }
       }
     ]
+  },
+  "example1": {
+    "layer1": {
+      "inputs": [
+        {
+          "name": "NumericColumn",
+          "parameters": {
+            "input_tensor": "user_id_creative_id_unique",
+            "output_tensor": "banner_index_num",
+            "dtype": "float32"
+          }
+        },
+        {
+          "name": "NumericColumn",
+          "parameters": {
+            "input_tensor": "user_id_creative_id_count",
+            "output_tensor": "banner_index_num",
+            "dtype": "float32"
+          }
+        },
+        {
+          "name": "NumericColumn",
+          "parameters": {
+            "input_tensor": "user_id_ad_id_unique",
+            "output_tensor": "banner_index_num",
+            "dtype": "float32"
+          }
+        },
+        {
+          "name": "NumericColumn",
+          "parameters": {
+            "input_tensor": "user_id_ad_id_count",
+            "output_tensor": "banner_index_num",
+            "dtype": "float32"
+          }
+        },
+        {
+          "name": "NumericColumn",
+          "parameters": {
+            "input_tensor": "user_id_product_id_unique",
+            "output_tensor": "banner_index_num",
+            "dtype": "float32"
+          }
+        },
+        {
+          "name": "NumericColumn",
+          "parameters": {
+            "input_tensor": "user_id_product_category_unique",
+            "output_tensor": "banner_index_num",
+            "dtype": "float32"
+          }
+        },
+        {
+          "name": "NumericColumn",
+          "parameters": {
+            "input_tensor": "user_id_product_category_count",
+            "output_tensor": "banner_index_num",
+            "dtype": "float32"
+          }
+        },
+        {
+          "name": "NumericColumn",
+          "parameters": {
+            "input_tensor": "user_id_advertiser_id_unique",
+            "output_tensor": "banner_index_num",
+            "dtype": "float32"
+          }
+        },
+        {
+          "name": "NumericColumn",
+          "parameters": {
+            "input_tensor": "user_id_advertiser_id_count",
+            "output_tensor": "banner_index_num",
+            "dtype": "float32"
+          }
+        },
+        {
+          "name": "NumericColumn",
+          "parameters": {
+            "input_tensor": "user_id_industry_unique",
+            "output_tensor": "banner_index_num",
+            "dtype": "float32"
+          }
+        },
+        {
+          "name": "NumericColumn",
+          "parameters": {
+            "input_tensor": "user_id_industry_count",
+            "output_tensor": "banner_index_num",
+            "dtype": "float32"
+          }
+        }
+      ]
+    },
+    "layer2": {
+      "name": "sequence1",
+      "type": "sequence1",
+      "inputs": [
+        {
+          "type": "SequenceCateEmbddingColumn",
+          "parameters": {
+            "key": "arr",
+            "share_name": "item_id",
+            "dtype": "string",
+            "length": 4,
+            "dimension": 9,
+            "vocabulary": ""
+          }
+        }
+      ]
+    }
   }
 }

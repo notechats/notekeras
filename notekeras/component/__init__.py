@@ -5,4 +5,7 @@
 
 from .components import WideDeepComponent
 from .core import Component
-from .transformer import EncoderList, DecoderList
+from .transformer import DecoderComponent
+from .transformer import DecoderList
+from .transformer import EncoderComponent
+from .transformer import EncoderList
