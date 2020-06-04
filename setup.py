@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 install_requires = ['tensorflow', 'numpy', 'scipy', 'opencv-python', 'pillow', 'tqdm']
 
 setup(name='notekeras',
-      version='0.1.4',
+      version='0.1.5',
       description='notekeras',
       author='niuliangtao',
       author_email='1007530194@qq.com',

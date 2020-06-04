@@ -4,6 +4,7 @@ from tensorflow.python.feature_column import feature_column_v2 as fc
 from tensorflow.python.feature_column import sequence_feature_column as sfc
 
 from notekeras.feature import IndicatorColumnDef
+from notekeras.layer import TrigPosEmbedding
 
 field_type_map = {
     'int': tf.dtypes.int32,
@@ -41,8 +42,7 @@ def _get_categorical_column(params: dict) -> fc.CategoricalColumn:
         feature = fc.categorical_column_with_identity(params['key'],
                                                       num_buckets=params['num_buckets'])
     elif 'boundaries' in params.keys():
-        feature = fc.bucketized_column(fc.numeric_column(params['key']),
-                                       boundaries=params['boundaries'])
+        feature = fc.bucketized_column(fc.numeric_column(params['key']), boundaries=params['boundaries'])
     else:
         raise Exception("params error")
 
@@ -90,7 +90,7 @@ class ParseFeatureConfig:
 
         return field_name, inputs
 
-    def _get_share_layer(self, name: dict, layer: Layer) -> Layer:
+    def _get_share_layer(self, name: str, layer: Layer) -> Layer:
         """
         根据名称取出共享层
         :param name:
@@ -153,6 +153,8 @@ class ParseFeatureConfig:
                                       Embedding(input_dim=feature.num_buckets + 1,
                                                 output_dim=params['dimension'],
                                                 mask_zero=True,
+                                                embeddings_regularizer=tf.keras.regularizers.l2(0.01),
+                                                activity_regularizer=tf.keras.regularizers.l2(0.01),
                                                 name=name))
         res = layer(sequence_input)
         return res
@@ -194,8 +196,12 @@ class ParseFeatureConfig:
                                       Embedding(input_dim=feature.num_buckets + 1,
                                                 output_dim=params['dimension'],
                                                 mask_zero=True,
+                                                embeddings_regularizer=tf.keras.regularizers.l2(0.01),
+                                                activity_regularizer=tf.keras.regularizers.l2(0.01),
                                                 name=name))
+
         res = layer(sequence_input)
+        res = TrigPosEmbedding(mode=TrigPosEmbedding.MODE_ADD, )(res)
         return res, sequence_length
 
     def _get_columns_map(self, key: str):

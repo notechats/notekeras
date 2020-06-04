@@ -36,7 +36,7 @@ model = TransformerModel(token_num=len(token_dict),
                          dropout_rate=0.05,
                          name='trans',
                          embed_weights=np.random.random((len(token_dict), 30)),
-                         layer_depth=1
+                         layer_depth=5
                          )
 model.compile(
     optimizer='adam',
