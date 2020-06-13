@@ -1,3 +1,5 @@
+import pickle
+
 import tensorflow as tf
 from tensorflow.keras.layers import DenseFeatures, Input, Embedding, Layer
 from tensorflow.python.feature_column import feature_column_v2 as fc
@@ -153,8 +155,8 @@ class ParseFeatureConfig:
                                       Embedding(input_dim=feature.num_buckets + 1,
                                                 output_dim=params['dimension'],
                                                 mask_zero=True,
-                                                embeddings_regularizer=tf.keras.regularizers.l2(0.01),
-                                                activity_regularizer=tf.keras.regularizers.l2(0.01),
+                                                # embeddings_regularizer=tf.keras.regularizers.l2(0.01),
+                                                # activity_regularizer=tf.keras.regularizers.l2(0.01),
                                                 name=name))
         res = layer(sequence_input)
         return res
@@ -196,8 +198,12 @@ class ParseFeatureConfig:
                                       Embedding(input_dim=feature.num_buckets + 1,
                                                 output_dim=params['dimension'],
                                                 mask_zero=True,
-                                                embeddings_regularizer=tf.keras.regularizers.l2(0.01),
-                                                activity_regularizer=tf.keras.regularizers.l2(0.01),
+                                                weights=[pickle.load(
+                                                    params['weights'])] if 'weights' in params.keys() else None,
+
+                                                trainable=params.get('trainable', True),
+                                                # embeddings_regularizer=tf.keras.regularizers.l2(0.01),
+                                                # activity_regularizer=tf.keras.regularizers.l2(0.01),
                                                 name=name))
 
         res = layer(sequence_input)
