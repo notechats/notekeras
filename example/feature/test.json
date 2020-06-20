@@ -1,0 +1,373 @@
+{
+  "feature1": {
+    "group_key": ["user_id"],
+    "stat_cols": {
+      "time": [
+        {
+          "agg_func": "unique",
+          "col_name": "time_unique"
+        },
+        {
+          "agg_func": "count",
+          "col_name": "time_count"
+        },
+        {
+          "agg_func": "list",
+          "col_name": "time_list",
+          "agg_para": {
+            "size": 10,
+            "padding": true
+          }
+        },
+        {
+          "agg_func": "array",
+          "col_name": "time_pct",
+          "agg_para": {
+            "size": 91,
+            "pct": true
+          }
+        }
+      ],
+      "advertiser_id": [
+        {
+          "agg_func": "unique",
+          "col_name": "advertiser_unique"
+        },
+        {
+          "agg_func": "count",
+          "col_name": "advertiser_count"
+        },
+        {
+          "agg_func": "list",
+          "col_name": "advertiser_list",
+          "agg_para": {
+            "size": 10,
+            "padding": true
+          }
+        }
+      ],
+      "creative_id": [
+        {
+          "agg_func": "unique",
+          "col_name": "creative_unique"
+        },
+        {
+          "agg_func": "count",
+          "col_name": "creative_count"
+        },
+        {
+          "agg_func": "list",
+          "col_name": "creative_list",
+          "agg_para": {
+            "size": 10,
+            "padding": true
+          }
+        }
+      ],
+      "ad_id": [
+        {
+          "agg_func": "unique",
+          "col_name": "ad_unique"
+        },
+        {
+          "agg_func": "count",
+          "col_name": "ad_count"
+        },
+        {
+          "agg_func": "list",
+          "col_name": "ad_list",
+          "agg_para": {
+            "size": 10,
+            "padding": true
+          }
+        }
+      ],
+      "product_id": [
+        {
+          "agg_func": "unique",
+          "col_name": "product_unique"
+        },
+        {
+          "agg_func": "count",
+          "col_name": "product_count"
+        },
+        {
+          "agg_func": "list",
+          "col_name": "product_list",
+          "agg_para": {
+            "size": 10,
+            "padding": true
+          }
+        }
+      ],
+      "product_category": [
+        {
+          "agg_func": "unique",
+          "col_name": "category_unique"
+        },
+        {
+          "agg_func": "count",
+          "col_name": "category_count"
+        },
+        {
+          "agg_func": "list",
+          "col_name": "category_list",
+          "agg_para": {
+            "size": 10,
+            "padding": true
+          }
+        },
+        {
+          "agg_func": "array",
+          "col_name": "category_pct",
+          "agg_para": {
+            "size": 18,
+            "pct": true
+          }
+        }
+      ],
+      "industry": [
+        {
+          "agg_func": "unique",
+          "col_name": "industry_unique"
+        },
+        {
+          "agg_func": "count",
+          "col_name": "industry_count"
+        },
+        {
+          "agg_func": "list",
+          "col_name": "industry_list",
+          "agg_para": {
+            "size": 10,
+            "padding": true
+          }
+        },
+        {
+          "agg_func": "array",
+          "col_name": "industry_pct",
+          "agg_para": {
+            "size": 335,
+            "pct": true
+          }
+        }
+      ],
+      "weekday": [
+        {
+          "agg_func": "unique",
+          "col_name": "weekday_unique"
+        },
+        {
+          "agg_func": "count",
+          "col_name": "weekday_count"
+        },
+        {
+          "agg_func": "list",
+          "col_name": "weekday_list",
+          "agg_para": {
+            "size": 10,
+            "padding": true
+          }
+        },
+        {
+          "agg_func": "array",
+          "col_name": "weekday_pct",
+          "agg_para": {
+            "size": 7,
+            "pct": true
+          }
+        }
+      ]
+    },
+    "stat_cols2": [
+      {
+        "col": "time",
+        "agg_func": "unique",
+        "col_name": "time_unique"
+      },
+      {
+        "col": "time",
+        "agg_func": "count",
+        "col_name": "time_count"
+      },
+      {
+        "col": "time",
+        "agg_func": "list",
+        "col_name": "time_list",
+        "agg_para": {
+          "size": 10,
+          "padding": true
+        }
+      },
+      {
+        "col": "time",
+        "agg_func": "array",
+        "col_name": "time_pct",
+        "agg_para": {
+          "size": 91,
+          "pct": true
+        }
+      },
+      {
+        "col": "advertiser_id",
+        "agg_func": "unique",
+        "col_name": "advertiser_unique"
+      },
+      {
+        "col": "advertiser_id",
+        "agg_func": "count",
+        "col_name": "advertiser_count"
+      },
+      {
+        "col": "advertiser_id",
+        "agg_func": "list",
+        "col_name": "advertiser_list",
+        "agg_para": {
+          "size": 10,
+          "padding": true
+        }
+      },
+      {
+        "col": "creative_id",
+        "agg_func": "unique",
+        "col_name": "creative_unique"
+      },
+      {
+        "col": "creative_id",
+        "agg_func": "count",
+        "col_name": "creative_count"
+      },
+      {
+        "col": "creative_id",
+        "agg_func": "list",
+        "col_name": "creative_list",
+        "agg_para": {
+          "size": 10,
+          "padding": true
+        }
+      },
+      {
+        "col": "ad_id",
+        "agg_func": "unique",
+        "col_name": "ad_unique"
+      },
+      {
+        "col": "ad_id",
+        "agg_func": "count",
+        "col_name": "ad_count"
+      },
+      {
+        "col": "ad_id",
+        "agg_func": "list",
+        "col_name": "ad_list",
+        "agg_para": {
+          "size": 10,
+          "padding": true
+        }
+      },
+      {
+        "col": "product_id",
+        "agg_func": "unique",
+        "col_name": "product_unique"
+      },
+      {
+        "col": "product_id",
+        "agg_func": "count",
+        "col_name": "product_count"
+      },
+      {
+        "col": "product_id",
+        "agg_func": "list",
+        "col_name": "product_list",
+        "agg_para": {
+          "size": 10,
+          "padding": true
+        }
+      },
+      {
+        "col": "product_category",
+        "agg_func": "unique",
+        "col_name": "category_unique"
+      },
+      {
+        "col": "product_category",
+        "agg_func": "count",
+        "col_name": "category_count"
+      },
+      {
+        "col": "product_category",
+        "agg_func": "list",
+        "col_name": "category_list",
+        "agg_para": {
+          "size": 10,
+          "padding": true
+        }
+      },
+      {
+        "col": "product_category",
+        "agg_func": "array",
+        "col_name": "category_pct",
+        "agg_para": {
+          "size": 18,
+          "pct": true
+        }
+      },
+      {
+        "col": "industry",
+        "agg_func": "unique",
+        "col_name": "industry_unique"
+      },
+      {
+        "col": "industry",
+        "agg_func": "count",
+        "col_name": "industry_count"
+      },
+      {
+        "col": "industry",
+        "agg_func": "list",
+        "col_name": "industry_list",
+        "agg_para": {
+          "size": 10,
+          "padding": true
+        }
+      },
+      {
+        "col": "industry",
+        "agg_func": "array",
+        "col_name": "industry_pct",
+        "agg_para": {
+          "size": 335,
+          "pct": true
+        }
+      },
+      {
+        "col": "weekday",
+        "agg_func": "unique",
+        "col_name": "weekday_unique"
+      },
+      {
+        "col": "weekday",
+        "agg_func": "count",
+        "col_name": "weekday_count"
+      },
+      {
+        "col": "weekday",
+        "agg_func": "list",
+        "col_name": "weekday_list",
+        "agg_para": {
+          "size": 10,
+          "padding": true
+        }
+      },
+      {
+        "col": "weekday",
+        "agg_func": "array",
+        "col_name": "weekday_pct",
+        "agg_para": {
+          "size": 7,
+          "pct": true
+        }
+      }
+    ]
+  }
+}

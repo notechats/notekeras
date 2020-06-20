@@ -198,8 +198,8 @@ class ParseFeatureConfig:
                                       Embedding(input_dim=feature.num_buckets + 1,
                                                 output_dim=params['dimension'],
                                                 mask_zero=True,
-                                                weights=[pickle.load(
-                                                    params['weights'])] if 'weights' in params.keys() else None,
+                                                weights=[pickle.load(open(params['weights'],
+                                                                          'rb'))] if 'weights' in params.keys() else None,
 
                                                 trainable=params.get('trainable', True),
                                                 # embeddings_regularizer=tf.keras.regularizers.l2(0.01),
