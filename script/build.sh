@@ -24,7 +24,7 @@ if [ "$1" = "build" ]; then
 fi
 
 if [ "$1" = "install" ]; then
-  echo build
+  echo install
   pip uninstall $name -y
   python setup.py install
 
@@ -34,7 +34,7 @@ if [ "$1" = "install" ]; then
 fi
 
 if [ "push" = "push" ]; then
-  echo build
+  echo push
   git pull
   git add -A
   git commit -a -m "add"
