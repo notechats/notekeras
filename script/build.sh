@@ -2,7 +2,6 @@
 
 name=notekeras
 echo $name
-echo $name.egg-info
 
 if [ "$1" = "build" ]; then
   echo build
