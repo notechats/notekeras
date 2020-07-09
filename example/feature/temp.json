@@ -1,0 +1,16 @@
+{
+  "layer0": {
+    "name": "multi-concat",
+    "type": "single",
+    "inputs": [
+      {
+        "type": "NumericColumn",
+        "parameters": {
+          "key": "age",
+          "output_tensor": "banner_index_num",
+          "dtype": "float32"
+        }
+      }
+    ]
+  }
+}

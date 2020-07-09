@@ -1,6 +1,7 @@
 import pickle
 
 import tensorflow as tf
+from tensorflow.keras import backend as K
 from tensorflow.keras.layers import DenseFeatures, Input, Embedding, Layer
 from tensorflow.python.feature_column import feature_column_v2 as fc
 from tensorflow.python.feature_column import sequence_feature_column as sfc
@@ -116,6 +117,11 @@ class ParseFeatureConfig:
         """
         key, inputs = self._get_input_layer(params)
 
+        if 'transform' in params.keys():
+            if params['transform'] == 'log':
+                inputs = K.log(inputs)
+            elif params['transform'] == 'sqrt':
+                inputs = K.sqrt(inputs)
         return inputs
 
     def _cate_indicator_column(self, params: dict) -> DenseFeatures:
@@ -148,7 +154,7 @@ class ParseFeatureConfig:
         column = IndicatorColumnDef(feature, size=1)
 
         sequence_input = DenseFeatures(column)({key: inputs})
-        sequence_input = tf.keras.backend.sum(sequence_input, axis=-1)
+        sequence_input = K.sum(sequence_input, axis=-1)
 
         name = params.get('share_name', None)
         layer = self._get_share_layer(name,

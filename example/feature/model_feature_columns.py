@@ -153,5 +153,7 @@ def compare2():
 
     model.fit(train_ds, validation_data=val_ds, epochs=5)
 
+    print(val_ds)
+
 
 compare2()
