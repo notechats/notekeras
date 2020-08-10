@@ -1,8 +1,8 @@
 import numpy as np
 import tensorflow as tf
 
-from notekeras.model.yolo import Dataset, YoloDataset
-from notekeras.model.yolo import YoloBody
+from notekeras.model.yolo3 import Dataset, YoloDataset
+from notekeras.model.yolo3 import YoloBody
 from notekeras.utils import read_lines
 
 root = '/Users/liangtaoniu/workspace/MyDiary/notechats/notekeras/example/yolo'

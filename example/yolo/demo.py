@@ -4,14 +4,11 @@ import cv2
 import numpy as np
 from PIL import Image
 
-from notekeras.model.yolo import YoloBody
+from notekeras.model.yolo3 import YoloBody
 from notekeras.utils import read_lines, draw_bbox
-from notemodel.database import set_weight_path
 
 root = '/Users/liangtaoniu/workspace/MyDiary/notechats/notekeras/example/yolo'
 classes = read_lines(root + "/data/classes/coco.names")
-
-set_weight_path("/Users/liangtaoniu/workspace/MyDiary/src/tianchi/live/data/weights")
 
 
 def get_anchors():
@@ -24,8 +21,10 @@ def get_anchors():
 anchors = get_anchors()
 
 yolo_body = YoloBody(anchors=anchors, num_classes=len(classes))
-# yolo_body.load_weights("/Users/liangtaoniu/workspace/MyDiary/tmp/models/yolo/configs/yolov3.h5", freeze_body=3)
-yolo_body.load_layer_weights()
+yolo_body.load_weights("/Users/liangtaoniu/workspace/MyDiary/tmp/models/yolo/configs/yolov3.h5", freeze_body=3)
+
+
+# yolo_body.load_layer_weights()
 
 
 def image_demo(image_path):
