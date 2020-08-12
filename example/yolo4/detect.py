@@ -6,6 +6,7 @@ import tensorflow as tf
 from PIL import Image
 
 import notekeras.model.yolo4.core.utils as utils
+from notekeras.backend import plot_model
 from notekeras.model.yolo4.core.yolov4 import YOLO, decode
 from notekeras.model.yolo4.core.yolov4 import filter_boxes
 
@@ -14,32 +15,23 @@ data_root = '/Users/liangtaoniu/workspace/MyDiary/notechats/notekeras/example/yo
 
 def save_tf(weights=data_root + '/data/yolov4.weights',
             output_h5=data_root + '/models/yolov4-416.h5',
-            tiny=False,
-            input_size=416, score_thres=0.2, framework='tf', model='yolov4'):
-    STRIDES, ANCHORS, NUM_CLASS, XYSCALE = utils.load_config(tiny=tiny, model=model)
+            input_size=416, score_thres=0.2, framework='tf', model_name='yolov4'):
+    STRIDES, ANCHORS, NUM_CLASS, XYSCALE = utils.load_config(model=model_name)
 
     input_layer = tf.keras.layers.Input([input_size, input_size, 3])
-    feature_maps = YOLO(input_layer, NUM_CLASS, model, tiny)
+    feature_maps = YOLO(input_layer, NUM_CLASS, model_name)
     bbox_tensors = []
     prob_tensors = []
-    if tiny:
-        for i, fm in enumerate(feature_maps):
-            if i == 0:
-                output_tensors = decode(fm, input_size // 16, NUM_CLASS, STRIDES, ANCHORS, i, XYSCALE, framework)
-            else:
-                output_tensors = decode(fm, input_size // 32, NUM_CLASS, STRIDES, ANCHORS, i, XYSCALE, framework)
-            bbox_tensors.append(output_tensors[0])
-            prob_tensors.append(output_tensors[1])
-    else:
-        for i, fm in enumerate(feature_maps):
-            if i == 0:
-                output_tensors = decode(fm, input_size // 8, NUM_CLASS, STRIDES, ANCHORS, i, XYSCALE, framework)
-            elif i == 1:
-                output_tensors = decode(fm, input_size // 16, NUM_CLASS, STRIDES, ANCHORS, i, XYSCALE, framework)
-            else:
-                output_tensors = decode(fm, input_size // 32, NUM_CLASS, STRIDES, ANCHORS, i, XYSCALE, framework)
-            bbox_tensors.append(output_tensors[0])
-            prob_tensors.append(output_tensors[1])
+    for i, fm in enumerate(feature_maps):
+        if i == 0:
+            output_tensors = decode(fm, input_size // 8, NUM_CLASS, STRIDES, ANCHORS, i, XYSCALE, framework)
+        elif i == 1:
+            output_tensors = decode(fm, input_size // 16, NUM_CLASS, STRIDES, ANCHORS, i, XYSCALE, framework)
+        else:
+            output_tensors = decode(fm, input_size // 32, NUM_CLASS, STRIDES, ANCHORS, i, XYSCALE, framework)
+        bbox_tensors.append(output_tensors[0])
+        prob_tensors.append(output_tensors[1])
+
     pred_bbox = tf.concat(bbox_tensors, axis=1)
     pred_prob = tf.concat(prob_tensors, axis=1)
     boxes, pred_conf = filter_boxes(pred_bbox, pred_prob, score_threshold=score_thres,
@@ -47,10 +39,12 @@ def save_tf(weights=data_root + '/data/yolov4.weights',
     pred = tf.concat([boxes, pred_conf], axis=-1)
     model = tf.keras.Model(input_layer, pred)
 
+    plot_model(model, to_file='yolov4.png', show_shapes=True)
+
     if os.path.exists(output_h5):
         model.load_weights(output_h5)
     else:
-        utils.load_weights(model, weights, model, tiny)
+        utils.load_weights(model, weights, model_name)
         model.save_weights(output_h5)
 
     model.summary()
@@ -58,7 +52,7 @@ def save_tf(weights=data_root + '/data/yolov4.weights',
 
 
 def detect(image_path=data_root + '/data/kite.jpg', output=data_root + '/result2.png', input_size=416, iou=0.45,
-           score=0.25, ):
+           score=0.025, ):
     original_image = cv2.imread(image_path)
     original_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
 
@@ -94,5 +88,4 @@ def detect(image_path=data_root + '/data/kite.jpg', output=data_root + '/result2
     cv2.imwrite(output, image)
 
 
-if __name__ == '__main__':
-    detect()
+detect()
