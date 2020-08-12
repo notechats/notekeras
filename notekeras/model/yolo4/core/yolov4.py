@@ -3,21 +3,15 @@ import tensorflow as tf
 
 import notekeras.model.yolo4.core.utils as utils
 from notekeras.component.yolo.core import YoloConv, up_sample, YoloNeck
-from notekeras.model.yolo4.core.backbone import darknet53, cspdarknet53, darknet53_tiny, cspdarknet53_tiny
+from notekeras.model.yolo4.core.backbone import darknet53, cspdarknet53
 from notekeras.utils import compose
 
 
-def YOLO(input_layer, NUM_CLASS, model='yolov4', is_tiny=False):
-    if is_tiny:
-        if model == 'yolov4':
-            return YOLOv4_tiny(input_layer, NUM_CLASS)
-        elif model == 'yolov3':
-            return YOLOv3_tiny(input_layer, NUM_CLASS)
-    else:
-        if model == 'yolov4':
-            return YOLOv4(input_layer, NUM_CLASS)
-        elif model == 'yolov3':
-            return YOLOv3(input_layer, NUM_CLASS)
+def YOLO(input_layer, NUM_CLASS, model='yolov4'):
+    if model == 'yolov4':
+        return YOLOv4(input_layer, NUM_CLASS)
+    elif model == 'yolov3':
+        return YOLOv3(input_layer, NUM_CLASS)
 
 
 def YOLOv3(input_layer, NUM_CLASS):
@@ -106,42 +100,6 @@ def YOLOv4(input_layer, NUM_CLASS):
                          YoloConv(filters=3 * (NUM_CLASS + 5), kernel_size=1, activate=False, bn=False))(conv)
 
     return [conv_sbbox, conv_mbbox, conv_lbbox]
-
-
-def YOLOv4_tiny(input_layer, NUM_CLASS):
-    route_1, conv = cspdarknet53_tiny(input_layer)
-
-    conv = YoloConv(filters=256, kernel_size=1)(conv)
-
-    conv_lobj_branch = YoloConv(filters=512, kernel_size=3)(conv)
-    conv_lbbox = YoloConv(filters=3 * (NUM_CLASS + 5), kernel_size=1, activate=False, bn=False)(conv_lobj_branch)
-
-    conv = YoloConv(filters=128, kernel_size=1)(conv)
-    conv = up_sample(conv)
-    conv = tf.concat([conv, route_1], axis=-1)
-
-    conv_mobj_branch = YoloConv(filters=256, kernel_size=3)(conv)
-    conv_mbbox = YoloConv(filters=3 * (NUM_CLASS + 5), kernel_size=1, activate=False, bn=False)(conv_mobj_branch)
-
-    return [conv_mbbox, conv_lbbox]
-
-
-def YOLOv3_tiny(input_layer, NUM_CLASS):
-    route_1, conv = darknet53_tiny(input_layer)
-
-    conv = YoloConv(filters=256, kernel_size=1)(conv)
-
-    conv_lobj_branch = YoloConv(filters=512, kernel_size=3)(conv)
-    conv_lbbox = YoloConv(filters=3 * (NUM_CLASS + 5), kernel_size=1, activate=False, bn=False)(conv_lobj_branch)
-
-    conv = YoloConv(filters=128, kernel_size=1)(conv)
-    conv = up_sample(conv)
-    conv = tf.concat([conv, route_1], axis=-1)
-
-    conv_mobj_branch = YoloConv(filters=256, kernel_size=3)(conv)
-    conv_mbbox = YoloConv(filters=3 * (NUM_CLASS + 5), kernel_size=1, activate=False, bn=False)(conv_mobj_branch)
-
-    return [conv_mbbox, conv_lbbox]
 
 
 def decode(conv_output, output_size, NUM_CLASS, STRIDES, ANCHORS, i, XYSCALE=[1, 1, 1], FRAMEWORK='tf'):

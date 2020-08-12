@@ -32,21 +32,14 @@ def load_freeze_layer(model='yolov4', tiny=False):
     return freeze_layouts
 
 
-def load_weights(model, weights_file, model_name='yolov4', is_tiny=False):
-    if is_tiny:
-        if model_name == 'yolov3':
-            layer_size = 13
-            output_pos = [9, 12]
-        else:
-            layer_size = 21
-            output_pos = [17, 20]
+def load_weights(model, weights_file, model_name='yolov4'):
+    if model_name == 'yolov3':
+        layer_size = 75
+        output_pos = [58, 66, 74]
     else:
-        if model_name == 'yolov3':
-            layer_size = 75
-            output_pos = [58, 66, 74]
-        else:
-            layer_size = 110
-            output_pos = [93, 101, 109]
+        layer_size = 110
+        output_pos = [93, 101, 109]
+        
     wf = open(weights_file, 'rb')
     major, minor, revision, seen, _ = np.fromfile(wf, dtype=np.int32, count=5)
 
@@ -94,29 +87,22 @@ def read_class_names(class_file_name):
     return names
 
 
-def load_config(tiny=False, model='yolov4'):
-    if tiny:
-        _STRIDES = np.array(STRIDES_TINY)
-        _ANCHORS = get_anchors(ANCHORS_TINY, tiny)
-        _XYSCALE = XYSCALE_TINY if model == 'yolov4' else [1, 1]
-    else:
-        _STRIDES = np.array(STRIDES)
-        if model == 'yolov4':
-            _ANCHORS = get_anchors(ANCHORS, tiny)
-        elif model == 'yolov3':
-            _ANCHORS = get_anchors(ANCHORS_V3, tiny)
-        _XYSCALE = XYSCALE if model == 'yolov4' else [1, 1, 1]
+def load_config(model='yolov4'):
+    _STRIDES = np.array(STRIDES)
+    if model == 'yolov4':
+        _ANCHORS = get_anchors(ANCHORS)
+    elif model == 'yolov3':
+        _ANCHORS = get_anchors(ANCHORS_V3)
+    _XYSCALE = XYSCALE if model == 'yolov4' else [1, 1, 1]
+
     _NUM_CLASS = len(read_class_names(CLASSES))
 
     return _STRIDES, _ANCHORS, _NUM_CLASS, _XYSCALE
 
 
-def get_anchors(anchors_path, tiny=False):
+def get_anchors(anchors_path):
     anchors = np.array(anchors_path)
-    if tiny:
-        return anchors.reshape(2, 3, 2)
-    else:
-        return anchors.reshape(3, 3, 2)
+    return anchors.reshape(3, 3, 2)
 
 
 def image_preprocess(image, target_size, gt_boxes=None):

@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.keras.layers import Conv2D, ZeroPadding2D
+from tensorflow.keras.layers import ZeroPadding2D, Conv2D
 
 from notekeras.component import Component
 from notekeras.utils import compose
@@ -48,49 +48,34 @@ class YoloConv(Component):
 
         self.compose_list = None
 
-        self.layer1 = None
-        self.layer2 = None
-        self.layer3 = None
-
         kwargs.update({"layer_depth": kwargs.get("layer_depth", 1)})
-        super(YoloConv, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def build(self, input_shape):
         self.compose_list = []
         if self.down_sample:
-            zero = ZeroPadding2D(((1, 0), (1, 0)))
-            self.layer1 = zero
-            self.compose_list.append(zero)
+            self.compose_list.append(ZeroPadding2D(((1, 0), (1, 0))))
             padding = 'valid'
             strides = 2
         else:
             strides = 1
             padding = 'same'
 
-        conv = Conv2D(filters=self.filters,
-                      kernel_size=self.kernel_size,
-                      strides=strides,
-                      padding=padding,
-                      use_bias=not self.bn,
-                      kernel_regularizer=tf.keras.regularizers.l2(0.0005),
-                      kernel_initializer=tf.random_normal_initializer(stddev=0.01),
-                      bias_initializer=tf.constant_initializer(0.))
-        self.layer2 = conv
-        self.compose_list.append(conv)
+        self.compose_list.append(Conv2D(filters=self.filters,
+                                        kernel_size=self.kernel_size,
+                                        strides=strides,
+                                        padding=padding,
+                                        use_bias=not self.bn,
+                                        kernel_regularizer=tf.keras.regularizers.l2(0.0005),
+                                        kernel_initializer=tf.random_normal_initializer(stddev=0.01),
+                                        bias_initializer=tf.constant_initializer(0.)))
 
         if self.bn:
-            self.layer3 = BatchNormalization()
-            self.compose_list.append(self.layer3)
+            self.compose_list.append(BatchNormalization())
 
         self.layers.extend(self.compose_list)
 
     def call(self, inputs, **kwargs):
-        # output = inputs
-        # if self.down_sample:
-        #     output = self.layer1(output)
-        # output = self.layer2(output)
-        # if self.bn:
-        #     output = self.layer3(output)
         output = compose(*self.compose_list)(inputs)
 
         if self.activate:

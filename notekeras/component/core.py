@@ -36,7 +36,7 @@ class Component(Model):
         :param args:
         :param kwargs:
         """
-        super(Component, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.as_model = as_model
 
         self.layer_depth = layer_depth
@@ -44,20 +44,20 @@ class Component(Model):
 
         if self.as_model:
             if inputs is None:
-                raise BaseException("when as_model is True, inputs must not be None")
+                raise BaseException("when as_model is True, inputs must be not None")
             self.build(np.shape(inputs)[1:])
             self.outputs = self.call(inputs)
             self.output_layer = self.outputs
-            super(Component, self).__init__(inputs=inputs, outputs=self.outputs, *args, **kwargs)
+            super().__init__(inputs=inputs, outputs=self.outputs, *args, **kwargs)
         else:
-            super(Component, self).__init__(*args, **kwargs)
+            super().__init__(*args, **kwargs)
 
     def __call__(self, inputs, **kwargs):
         if self.as_model:
-            return super(Component, self).__call__(inputs, **kwargs)
+            return super().__call__(inputs, **kwargs)
 
         if self.layer_depth <= 0:
-            return super(Component, self).__call__(inputs=inputs, **kwargs)
+            return super().__call__(inputs=inputs, **kwargs)
         else:
             self.build(np.shape(inputs)[1:])
             return self.call(inputs, **kwargs)
