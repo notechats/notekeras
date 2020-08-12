@@ -9,5 +9,5 @@ bookdemo
 #*.apk
 work
 *.tfrecord
-example/yolo4/models/*
+example/yolo4/models
 *.pyc
