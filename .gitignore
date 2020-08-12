@@ -6,7 +6,6 @@ jdata_user_action.csv
 tmp
 books/_build/*
 bookdemo
-#*.apk
 work
 *.tfrecord
 example/yolo4/models
