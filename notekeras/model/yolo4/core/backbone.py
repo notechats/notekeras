@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.keras.layers import MaxPool2D
+from tensorflow.keras.layers import MaxPool2D,Conv2D
 
 import notekeras.model.yolo4.core.common as common
 from notekeras.component.image.core import SPPNet
