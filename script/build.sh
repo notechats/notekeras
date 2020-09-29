@@ -3,6 +3,11 @@
 name=notekeras
 echo $name
 
+if [ "push" = "push" ]; then
+  echo pull
+  git pull
+fi
+
 if [ "$1" = "build" ]; then
   echo build
   # 编译
