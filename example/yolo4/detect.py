@@ -10,7 +10,7 @@ from notekeras.backend import plot_model
 from notekeras.model.yolo4.core.yolov4 import YOLO, decode
 from notekeras.model.yolo4.core.yolov4 import filter_boxes
 
-data_root = '/Users/liangtaoniu/workspace/MyDiary/notechats/notekeras/example/yolo4'
+data_root = '/root/workspace/notechats/notekeras/example/yolo4'
 
 
 def save_tf(weights=data_root + '/data/yolov4.weights',
