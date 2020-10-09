@@ -7,8 +7,10 @@ import tensorflow as tf
 
 # CLASSES = "/root/workspace/notechats/notekeras/example/yolo4/data/classes/coco.names"
 
-ANCHORS = [12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401]
-ANCHORS_V3 = [10, 13, 16, 30, 33, 23, 30, 61, 62, 45, 59, 119, 116, 90, 156, 198, 373, 326]
+ANCHORS = [12, 16, 19, 36, 40, 28, 36, 75, 76,
+           55, 72, 146, 142, 110, 192, 243, 459, 401]
+ANCHORS_V3 = [10, 13, 16, 30, 33, 23, 30, 61,
+              62, 45, 59, 119, 116, 90, 156, 198, 373, 326]
 ANCHORS_TINY = [23, 27, 37, 58, 81, 82, 81, 82, 135, 169, 344, 319]
 STRIDES = [8, 16, 32]
 STRIDES_TINY = [16, 32]
@@ -88,7 +90,7 @@ def read_class_names(class_file_name):
     return names
 
 
-def load_config(model='yolov4'):
+def load_config(model='yolov4', num_class=80):
     _STRIDES = np.array(STRIDES)
     if model == 'yolov4':
         _ANCHORS = get_anchors(ANCHORS)
@@ -96,9 +98,7 @@ def load_config(model='yolov4'):
         _ANCHORS = get_anchors(ANCHORS_V3)
     _XYSCALE = XYSCALE if model == 'yolov4' else [1, 1, 1]
 
-    _NUM_CLASS = len(read_class_names(CLASSES))
-
-    return _STRIDES, _ANCHORS, _NUM_CLASS, _XYSCALE
+    return _STRIDES, _ANCHORS, num_class, _XYSCALE
 
 
 def get_anchors(anchors_path):

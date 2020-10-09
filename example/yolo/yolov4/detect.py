@@ -60,7 +60,7 @@ def save_tf(weights=data_root + '/models/yolov4.weights',
     return model
 
 
-def detect(image_path=data_root + '/data/image/kite.jpg', output=data_root + '/yolov4/result2.png', input_size=416, iou=0.45,
+def detect(image_path=data_root + '/data/images/kite.jpg', output=data_root + '/yolov4/result2.png', input_size=416, iou=0.45,
            score=0.025, ):
     original_image = cv2.imread(image_path)
     original_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
