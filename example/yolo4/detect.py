@@ -5,12 +5,16 @@ import numpy as np
 import tensorflow as tf
 from PIL import Image
 
+from notedrive.lanzou import LanZouCloud, CodeDetail, download
 import notekeras.model.yolo4.core.utils as utils
 from notekeras.backend import plot_model
 from notekeras.model.yolo4.core.yolov4 import YOLO, decode
 from notekeras.model.yolo4.core.yolov4 import filter_boxes
 
+
 data_root = '/root/workspace/notechats/notekeras/example/yolo4'
+
+download('https://wws.lanzous.com/b01hjn3yd', dir_pwd=data_root + '/data/')
 
 
 def save_tf(weights=data_root + '/data/yolov4.weights',
@@ -24,11 +28,14 @@ def save_tf(weights=data_root + '/data/yolov4.weights',
     prob_tensors = []
     for i, fm in enumerate(feature_maps):
         if i == 0:
-            output_tensors = decode(fm, input_size // 8, NUM_CLASS, STRIDES, ANCHORS, i, XYSCALE, framework)
+            output_tensors = decode(
+                fm, input_size // 8, NUM_CLASS, STRIDES, ANCHORS, i, XYSCALE, framework)
         elif i == 1:
-            output_tensors = decode(fm, input_size // 16, NUM_CLASS, STRIDES, ANCHORS, i, XYSCALE, framework)
+            output_tensors = decode(
+                fm, input_size // 16, NUM_CLASS, STRIDES, ANCHORS, i, XYSCALE, framework)
         else:
-            output_tensors = decode(fm, input_size // 32, NUM_CLASS, STRIDES, ANCHORS, i, XYSCALE, framework)
+            output_tensors = decode(
+                fm, input_size // 32, NUM_CLASS, STRIDES, ANCHORS, i, XYSCALE, framework)
         bbox_tensors.append(output_tensors[0])
         prob_tensors.append(output_tensors[1])
 
@@ -73,13 +80,15 @@ def detect(image_path=data_root + '/data/kite.jpg', output=data_root + '/result2
 
     boxes, scores, classes, valid_detections = tf.image.combined_non_max_suppression(
         boxes=tf.reshape(boxes, (tf.shape(boxes)[0], -1, 1, 4)),
-        scores=tf.reshape(pred_conf, (tf.shape(pred_conf)[0], -1, tf.shape(pred_conf)[-1])),
+        scores=tf.reshape(pred_conf, (tf.shape(pred_conf)[
+                          0], -1, tf.shape(pred_conf)[-1])),
         max_output_size_per_class=50,
         max_total_size=50,
         iou_threshold=iou,
         score_threshold=score
     )
-    pred_bbox = [boxes.numpy(), scores.numpy(), classes.numpy(), valid_detections.numpy()]
+    pred_bbox = [boxes.numpy(), scores.numpy(), classes.numpy(),
+                 valid_detections.numpy()]
     image = utils.draw_bbox(original_image, pred_bbox)
 
     image = Image.fromarray(image.astype(np.uint8))

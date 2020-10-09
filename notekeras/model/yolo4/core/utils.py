@@ -5,10 +5,12 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
-data_root = '/Users/liangtaoniu/workspace/MyDiary/notechats/notekeras/example/yolo4'
+data_root = '/root/workspace/notechats/notekeras/example/yolo4'
 CLASSES = data_root + "/data/classes/coco.names"
-ANCHORS = [12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401]
-ANCHORS_V3 = [10, 13, 16, 30, 33, 23, 30, 61, 62, 45, 59, 119, 116, 90, 156, 198, 373, 326]
+ANCHORS = [12, 16, 19, 36, 40, 28, 36, 75, 76,
+           55, 72, 146, 142, 110, 192, 243, 459, 401]
+ANCHORS_V3 = [10, 13, 16, 30, 33, 23, 30, 61,
+              62, 45, 59, 119, 116, 90, 156, 198, 373, 326]
 ANCHORS_TINY = [23, 27, 37, 58, 81, 82, 81, 82, 135, 169, 344, 319]
 STRIDES = [8, 16, 32]
 STRIDES_TINY = [16, 32]
@@ -39,7 +41,7 @@ def load_weights(model, weights_file, model_name='yolov4'):
     else:
         layer_size = 110
         output_pos = [93, 101, 109]
-        
+
     wf = open(weights_file, 'rb')
     major, minor, revision, seen, _ = np.fromfile(wf, dtype=np.int32, count=5)
 
@@ -65,7 +67,8 @@ def load_weights(model, weights_file, model_name='yolov4'):
 
         # darknet shape (out_dim, in_dim, height, width)
         conv_shape = (filters, in_dim, k_size, k_size)
-        conv_weights = np.fromfile(wf, dtype=np.float32, count=np.product(conv_shape))
+        conv_weights = np.fromfile(
+            wf, dtype=np.float32, count=np.product(conv_shape))
         # tf shape (height, width, in_dim, out_dim)
         conv_weights = conv_weights.reshape(conv_shape).transpose([2, 3, 1, 0])
 
@@ -132,7 +135,8 @@ def draw_bbox(image, bboxes, classes=read_class_names(CLASSES), show_label=True)
     image_h, image_w, _ = image.shape
     hsv_tuples = [(1.0 * x / num_classes, 1., 1.) for x in range(num_classes)]
     colors = list(map(lambda x: colorsys.hsv_to_rgb(*x), hsv_tuples))
-    colors = list(map(lambda x: (int(x[0] * 255), int(x[1] * 255), int(x[2] * 255)), colors))
+    colors = list(
+        map(lambda x: (int(x[0] * 255), int(x[1] * 255), int(x[2] * 255)), colors))
 
     random.seed(0)
     random.shuffle(colors)
@@ -158,9 +162,11 @@ def draw_bbox(image, bboxes, classes=read_class_names(CLASSES), show_label=True)
 
         if show_label:
             bbox_mess = '%s: %.2f' % (classes[class_ind], score)
-            t_size = cv2.getTextSize(bbox_mess, 0, fontScale, thickness=bbox_thick // 2)[0]
+            t_size = cv2.getTextSize(
+                bbox_mess, 0, fontScale, thickness=bbox_thick // 2)[0]
             c3 = (c1[0] + t_size[0], c1[1] - t_size[1] - 3)
-            cv2.rectangle(image, c1, (np.float32(c3[0]), np.float32(c3[1])), bbox_color, -1)  # filled
+            cv2.rectangle(image, c1, (np.float32(c3[0]), np.float32(
+                c3[1])), bbox_color, -1)  # filled
 
             cv2.putText(image, bbox_mess, (c1[0], np.float32(c1[1] - 2)), cv2.FONT_HERSHEY_SIMPLEX,
                         fontScale, (0, 0, 0), bbox_thick // 2, lineType=cv2.LINE_AA)
@@ -236,7 +242,8 @@ def bbox_giou(bboxes1, bboxes2):
     iou = tf.math.divide_no_nan(inter_area, union_area)
 
     enclose_left_up = tf.minimum(bboxes1_coor[..., :2], bboxes2_coor[..., :2])
-    enclose_right_down = tf.maximum(bboxes1_coor[..., 2:], bboxes2_coor[..., 2:])
+    enclose_right_down = tf.maximum(
+        bboxes1_coor[..., 2:], bboxes2_coor[..., 2:])
 
     enclose_section = enclose_right_down - enclose_left_up
     enclose_area = enclose_section[..., 0] * enclose_section[..., 1]
@@ -285,7 +292,8 @@ def bbox_ciou(bboxes1, bboxes2):
     iou = tf.math.divide_no_nan(inter_area, union_area)
 
     enclose_left_up = tf.minimum(bboxes1_coor[..., :2], bboxes2_coor[..., :2])
-    enclose_right_down = tf.maximum(bboxes1_coor[..., 2:], bboxes2_coor[..., 2:])
+    enclose_right_down = tf.maximum(
+        bboxes1_coor[..., 2:], bboxes2_coor[..., 2:])
 
     enclose_section = enclose_right_down - enclose_left_up
 
@@ -325,7 +333,8 @@ def nms(bboxes, iou_threshold, sigma=0.3, method='nms'):
             max_ind = np.argmax(cls_bboxes[:, 4])
             best_bbox = cls_bboxes[max_ind]
             best_bboxes.append(best_bbox)
-            cls_bboxes = np.concatenate([cls_bboxes[: max_ind], cls_bboxes[max_ind + 1:]])
+            cls_bboxes = np.concatenate(
+                [cls_bboxes[: max_ind], cls_bboxes[max_ind + 1:]])
             iou = bbox_iou(best_bbox[np.newaxis, :4], cls_bboxes[:, :4])
             weight = np.ones((len(iou),), dtype=np.float32)
 
