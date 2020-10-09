@@ -3,12 +3,15 @@ import time
 import cv2
 import numpy as np
 from PIL import Image
-
+from notedrive.lanzou import download
 from notekeras.model.yolo3 import YoloBody
 from notekeras.utils import read_lines, draw_bbox
 
-root = '/Users/liangtaoniu/workspace/MyDiary/notechats/notekeras/example/yolo'
+root = '/root/workspace/notechats/notekeras/example/yolo'
 classes = read_lines(root + "/data/classes/coco.names")
+
+
+download('https://wws.lanzous.com/b01hjn3aj', dir_pwd=root + '/models/')
 
 
 def get_anchors():
@@ -21,22 +24,24 @@ def get_anchors():
 anchors = get_anchors()
 
 yolo_body = YoloBody(anchors=anchors, num_classes=len(classes))
-yolo_body.load_weights("/Users/liangtaoniu/workspace/MyDiary/tmp/models/yolo/configs/yolov3.h5", freeze_body=3)
+yolo_body.load_weights(root+"/models/yolov3.h5", freeze_body=3)
 
 
 # yolo_body.load_layer_weights()
 
 
-def image_demo(image_path):
+def image_demo(image_path, output):
     original_image, boxes = yolo_body.predict_box(image_path)
     image = draw_bbox(original_image, boxes, classes=classes)
     image = Image.fromarray(image)
     print(boxes)
-    image.show()
+    image = cv2.cvtColor(np.array(image), cv2.COLOR_BGR2RGB)
+    cv2.imwrite(output, image)
 
 
 def image_demos(image_path):
-    image_path = [image_path, image_path, image_path, image_path, image_path, image_path]
+    image_path = [image_path, image_path, image_path,
+                  image_path, image_path, image_path]
     boxes = yolo_body.predict_result_batch(image_path)
     print(boxes[0])
 
@@ -68,9 +73,5 @@ def video_demo(video_path):
             break
 
 
-image_demos(root + "/docs/kite.jpg")
-
-image_demo(root + "/docs/kite.jpg")
-# image_demo("'/Users/liangtaoniu/workspace/MyDiary/tmp/models/yolo/test/bb.jpg'")
-
-# video_demo(video_path=root + "/docs/road.mp4")
+#image_demos(root + "/yolov3/docs/kite.jpg")
+image_demo(root + "/yolov3/docs/kite.jpg", root + "/yolov3/docs/kite-res.jpg")

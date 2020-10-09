@@ -11,13 +11,13 @@ from notekeras.backend import plot_model
 from notekeras.model.yolo4.core.yolov4 import YOLO, decode
 from notekeras.model.yolo4.core.yolov4 import filter_boxes
 
-
 data_root = '/root/workspace/notechats/notekeras/example/yolo4'
 
-download('https://wws.lanzous.com/b01hjn3yd', dir_pwd=data_root + '/data/')
+download('https://wws.lanzous.com/b01hjn3yd', dir_pwd=data_root + '/models/')
+download('https://wws.lanzous.com/b01hl9lej', dir_pwd=data_root + '/models/')
 
 
-def save_tf(weights=data_root + '/data/yolov4.weights',
+def save_tf(weights=data_root + '/models/yolov4.weights',
             output_h5=data_root + '/models/yolov4-416.h5',
             input_size=416, score_thres=0.2, framework='tf', model_name='yolov4'):
     STRIDES, ANCHORS, NUM_CLASS, XYSCALE = utils.load_config(model=model_name)
