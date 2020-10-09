@@ -1,6 +1,6 @@
 import os
 
-import cv2
+from cv2 import cv2
 import numpy as np
 import tensorflow as tf
 from PIL import Image
@@ -13,8 +13,10 @@ from notekeras.model.yolo4.core.yolov4 import filter_boxes
 
 data_root = '/root/workspace/notechats/notekeras/example/yolo/'
 
+# yolov4.weights
 download('https://wws.lanzous.com/b01hjn3yd', dir_pwd=data_root + '/models/')
-download('https://wws.lanzous.com/b01hl9lej', dir_pwd=data_root + '/models/')
+# yolov4-416.h5
+#download('https://wws.lanzous.com/b01hl9lej', dir_pwd=data_root + '/models/')
 
 classes = utils.read_class_names(data_root+"/data/classes/coco.names")
 
