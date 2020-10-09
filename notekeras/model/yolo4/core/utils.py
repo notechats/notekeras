@@ -5,12 +5,10 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
-data_root = '/root/workspace/notechats/notekeras/example/yolo4'
-CLASSES = data_root + "/data/classes/coco.names"
-ANCHORS = [12, 16, 19, 36, 40, 28, 36, 75, 76,
-           55, 72, 146, 142, 110, 192, 243, 459, 401]
-ANCHORS_V3 = [10, 13, 16, 30, 33, 23, 30, 61,
-              62, 45, 59, 119, 116, 90, 156, 198, 373, 326]
+# CLASSES = "/root/workspace/notechats/notekeras/example/yolo4/data/classes/coco.names"
+
+ANCHORS = [12, 16, 19, 36, 40, 28, 36, 75, 76, 55, 72, 146, 142, 110, 192, 243, 459, 401]
+ANCHORS_V3 = [10, 13, 16, 30, 33, 23, 30, 61, 62, 45, 59, 119, 116, 90, 156, 198, 373, 326]
 ANCHORS_TINY = [23, 27, 37, 58, 81, 82, 81, 82, 135, 169, 344, 319]
 STRIDES = [8, 16, 32]
 STRIDES_TINY = [16, 32]
@@ -130,7 +128,7 @@ def image_preprocess(image, target_size, gt_boxes=None):
         return image_paded, gt_boxes
 
 
-def draw_bbox(image, bboxes, classes=read_class_names(CLASSES), show_label=True):
+def draw_bbox(image, bboxes, classes, show_label=True):
     num_classes = len(classes)
     image_h, image_w, _ = image.shape
     hsv_tuples = [(1.0 * x / num_classes, 1., 1.) for x in range(num_classes)]

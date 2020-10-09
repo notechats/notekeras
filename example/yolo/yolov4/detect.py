@@ -11,10 +11,12 @@ from notekeras.backend import plot_model
 from notekeras.model.yolo4.core.yolov4 import YOLO, decode
 from notekeras.model.yolo4.core.yolov4 import filter_boxes
 
-data_root = '/root/workspace/notechats/notekeras/example/yolo4'
+data_root = '/root/workspace/notechats/notekeras/example/yolo/'
 
 download('https://wws.lanzous.com/b01hjn3yd', dir_pwd=data_root + '/models/')
 download('https://wws.lanzous.com/b01hl9lej', dir_pwd=data_root + '/models/')
+
+classes = utils.read_class_names(data_root+"/data/classes/coco.names")
 
 
 def save_tf(weights=data_root + '/models/yolov4.weights',
@@ -58,7 +60,7 @@ def save_tf(weights=data_root + '/models/yolov4.weights',
     return model
 
 
-def detect(image_path=data_root + '/data/kite.jpg', output=data_root + '/result2.png', input_size=416, iou=0.45,
+def detect(image_path=data_root + '/data/image/kite.jpg', output=data_root + '/yolov4/result2.png', input_size=416, iou=0.45,
            score=0.025, ):
     original_image = cv2.imread(image_path)
     original_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
@@ -89,7 +91,7 @@ def detect(image_path=data_root + '/data/kite.jpg', output=data_root + '/result2
     )
     pred_bbox = [boxes.numpy(), scores.numpy(), classes.numpy(),
                  valid_detections.numpy()]
-    image = utils.draw_bbox(original_image, pred_bbox)
+    image = utils.draw_bbox(original_image, pred_bbox, classes=classes)
 
     image = Image.fromarray(image.astype(np.uint8))
     image.show()

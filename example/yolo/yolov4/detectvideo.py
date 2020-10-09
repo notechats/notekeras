@@ -22,6 +22,8 @@ flags.DEFINE_float('iou', 0.45, 'iou threshold')
 flags.DEFINE_float('score', 0.25, 'score threshold')
 
 
+classes = utils.read_class_names(data_root+"/data/classes/coco.names")
+
 def main(_argv):
     input_size = FLAGS.size
     video_path = FLAGS.video
@@ -80,7 +82,7 @@ def main(_argv):
             score_threshold=FLAGS.score
         )
         pred_bbox = [boxes.numpy(), scores.numpy(), classes.numpy(), valid_detections.numpy()]
-        image = utils.draw_bbox(frame, pred_bbox)
+        image = utils.draw_bbox(frame, pred_bbox,classes=classes)
         curr_time = time.time()
         exec_time = curr_time - prev_time
         result = np.asarray(image)

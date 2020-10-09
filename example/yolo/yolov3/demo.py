@@ -74,4 +74,5 @@ def video_demo(video_path):
 
 
 #image_demos(root + "/yolov3/docs/kite.jpg")
-image_demo(root + "/yolov3/docs/kite.jpg", root + "/yolov3/docs/kite-res.jpg")
+image_demo(root + "/data/images/kite.jpg",
+           root + "/yolov3/results/kite-res.jpg")
