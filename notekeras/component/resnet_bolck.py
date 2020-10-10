@@ -1,5 +1,5 @@
 from tensorflow import keras
-
+from tensorflow.keras import layers
 from notekeras.layer import BatchNormalizationFreeze
 
 parameters = {
@@ -50,12 +50,12 @@ def basic_1d(filters, stage=0, block=0, kernel_size=3, numerical_name=False, str
     stage_char = str(stage + 2)
 
     def f(x):
-        y = keras.layers.ZeroPadding1D(
+        y = layers.ZeroPadding1D(
             padding=1,
             name="padding{}{}_branch2a".format(stage_char, block_char)
         )(x)
 
-        y = keras.layers.Conv1D(
+        y = layers.Conv1D(
             filters,
             kernel_size,
             strides=stride,
@@ -71,17 +71,17 @@ def basic_1d(filters, stage=0, block=0, kernel_size=3, numerical_name=False, str
             name="bn{}{}_branch2a".format(stage_char, block_char)
         )(y)
 
-        y = keras.layers.Activation(
+        y = layers.Activation(
             "relu",
             name="res{}{}_branch2a_relu".format(stage_char, block_char)
         )(y)
 
-        y = keras.layers.ZeroPadding1D(
+        y = layers.ZeroPadding1D(
             padding=1,
             name="padding{}{}_branch2b".format(stage_char, block_char)
         )(y)
 
-        y = keras.layers.Conv1D(
+        y = layers.Conv1D(
             filters,
             kernel_size,
             use_bias=False,
@@ -97,7 +97,7 @@ def basic_1d(filters, stage=0, block=0, kernel_size=3, numerical_name=False, str
         )(y)
 
         if block == 0:
-            shortcut = keras.layers.Conv1D(
+            shortcut = layers.Conv1D(
                 filters,
                 1,
                 strides=stride,
@@ -115,11 +115,11 @@ def basic_1d(filters, stage=0, block=0, kernel_size=3, numerical_name=False, str
         else:
             shortcut = x
 
-        y = keras.layers.Add(
+        y = layers.Add(
             name="res{}{}".format(stage_char, block_char)
         )([y, shortcut])
 
-        y = keras.layers.Activation(
+        y = layers.Activation(
             "relu",
             name="res{}{}_relu".format(stage_char, block_char)
         )(y)
@@ -169,7 +169,7 @@ def bottleneck_1d(filters, stage=0, block=0, kernel_size=3, numerical_name=False
     stage_char = str(stage + 2)
 
     def f(x):
-        y = keras.layers.Conv1D(
+        y = layers.Conv1D(
             filters,
             1,
             strides=stride,
@@ -185,17 +185,17 @@ def bottleneck_1d(filters, stage=0, block=0, kernel_size=3, numerical_name=False
             name="bn{}{}_branch2a".format(stage_char, block_char)
         )(y)
 
-        y = keras.layers.Activation(
+        y = layers.Activation(
             "relu",
             name="res{}{}_branch2a_relu".format(stage_char, block_char)
         )(y)
 
-        y = keras.layers.ZeroPadding1D(
+        y = layers.ZeroPadding1D(
             padding=1,
             name="padding{}{}_branch2b".format(stage_char, block_char)
         )(y)
 
-        y = keras.layers.Conv1D(
+        y = layers.Conv1D(
             filters,
             kernel_size,
             use_bias=False,
@@ -210,18 +210,11 @@ def bottleneck_1d(filters, stage=0, block=0, kernel_size=3, numerical_name=False
             name="bn{}{}_branch2b".format(stage_char, block_char)
         )(y)
 
-        y = keras.layers.Activation(
-            "relu",
-            name="res{}{}_branch2b_relu".format(stage_char, block_char)
-        )(y)
+        y = layers.Activation(
+            "relu", name="res{}{}_branch2b_relu".format(stage_char, block_char))(y)
 
-        y = keras.layers.Conv1D(
-            filters * 4,
-            1,
-            use_bias=False,
-            name="res{}{}_branch2c".format(stage_char, block_char),
-            **parameters
-        )(y)
+        y = layers.Conv1D(filters * 4, 1, use_bias=False,
+                          name="res{}{}_branch2c".format(stage_char, block_char), **parameters)(y)
 
         y = BatchNormalizationFreeze(
             axis=axis,
@@ -231,7 +224,7 @@ def bottleneck_1d(filters, stage=0, block=0, kernel_size=3, numerical_name=False
         )(y)
 
         if block == 0:
-            shortcut = keras.layers.Conv1D(
+            shortcut = layers.Conv1D(
                 filters * 4,
                 1,
                 strides=stride,
@@ -249,11 +242,11 @@ def bottleneck_1d(filters, stage=0, block=0, kernel_size=3, numerical_name=False
         else:
             shortcut = x
 
-        y = keras.layers.Add(
+        y = layers.Add(
             name="res{}{}".format(stage_char, block_char)
         )([y, shortcut])
 
-        y = keras.layers.Activation(
+        y = layers.Activation(
             "relu",
             name="res{}{}_relu".format(stage_char, block_char)
         )(y)
@@ -306,27 +299,30 @@ def basic_2d(filters, stage=0, block=0, kernel_size=3, numerical_name=False, str
     stage_char = str(stage + 2)
 
     def f(x):
-        y = keras.layers.ZeroPadding2D(padding=1, name="padding{}{}_branch2a".format(stage_char, block_char))(x)
+        y = layers.ZeroPadding2D(
+            padding=1, name="padding{}{}_branch2a".format(stage_char, block_char))(x)
 
-        y = keras.layers.Conv2D(filters, kernel_size, strides=stride, use_bias=False,
-                                name="res{}{}_branch2a".format(stage_char, block_char), **parameters)(y)
+        y = layers.Conv2D(filters, kernel_size, strides=stride, use_bias=False,
+                          name="res{}{}_branch2a".format(stage_char, block_char), **parameters)(y)
 
         y = BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn,
                                      name="bn{}{}_branch2a".format(stage_char, block_char))(y)
 
-        y = keras.layers.Activation("relu", name="res{}{}_branch2a_relu".format(stage_char, block_char))(y)
+        y = layers.Activation(
+            "relu", name="res{}{}_branch2a_relu".format(stage_char, block_char))(y)
 
-        y = keras.layers.ZeroPadding2D(padding=1, name="padding{}{}_branch2b".format(stage_char, block_char))(y)
+        y = layers.ZeroPadding2D(
+            padding=1, name="padding{}{}_branch2b".format(stage_char, block_char))(y)
 
-        y = keras.layers.Conv2D(filters, kernel_size, use_bias=False,
-                                name="res{}{}_branch2b".format(stage_char, block_char), **parameters)(y)
+        y = layers.Conv2D(filters, kernel_size, use_bias=False,
+                          name="res{}{}_branch2b".format(stage_char, block_char), **parameters)(y)
 
         y = BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn,
                                      name="bn{}{}_branch2b".format(stage_char, block_char))(y)
 
         if block == 0:
-            shortcut = keras.layers.Conv2D(filters, (1, 1), strides=stride, use_bias=False,
-                                           name="res{}{}_branch1".format(stage_char, block_char), **parameters)(x)
+            shortcut = layers.Conv2D(filters, (1, 1), strides=stride, use_bias=False,
+                                     name="res{}{}_branch1".format(stage_char, block_char), **parameters)(x)
 
             shortcut = BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn,
                                                 name="bn{}{}_branch1".format(stage_char, block_char))(
@@ -334,9 +330,11 @@ def basic_2d(filters, stage=0, block=0, kernel_size=3, numerical_name=False, str
         else:
             shortcut = x
 
-        y = keras.layers.Add(name="res{}{}".format(stage_char, block_char))([y, shortcut])
+        y = layers.Add(name="res{}{}".format(
+            stage_char, block_char))([y, shortcut])
 
-        y = keras.layers.Activation("relu", name="res{}{}_relu".format(stage_char, block_char))(y)
+        y = layers.Activation(
+            "relu", name="res{}{}_relu".format(stage_char, block_char))(y)
 
         return y
 
@@ -386,33 +384,36 @@ def bottleneck_2d(filters, stage=0, block=0, kernel_size=3, numerical_name=False
     stage_char = str(stage + 2)
 
     def f(x):
-        y = keras.layers.Conv2D(filters, (1, 1), strides=stride, use_bias=False,
-                                name="res{}{}_branch2a".format(stage_char, block_char), **parameters)(x)
+        y = layers.Conv2D(filters, (1, 1), strides=stride, use_bias=False,
+                          name="res{}{}_branch2a".format(stage_char, block_char), **parameters)(x)
 
         y = BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn,
                                      name="bn{}{}_branch2a".format(stage_char, block_char))(y)
 
-        y = keras.layers.Activation("relu", name="res{}{}_branch2a_relu".format(stage_char, block_char))(y)
+        y = layers.Activation(
+            "relu", name="res{}{}_branch2a_relu".format(stage_char, block_char))(y)
 
-        y = keras.layers.ZeroPadding2D(padding=1, name="padding{}{}_branch2b".format(stage_char, block_char))(y)
+        y = layers.ZeroPadding2D(
+            padding=1, name="padding{}{}_branch2b".format(stage_char, block_char))(y)
 
-        y = keras.layers.Conv2D(filters, kernel_size, use_bias=False,
-                                name="res{}{}_branch2b".format(stage_char, block_char), **parameters)(y)
+        y = layers.Conv2D(filters, kernel_size, use_bias=False,
+                          name="res{}{}_branch2b".format(stage_char, block_char), **parameters)(y)
 
         y = BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn,
                                      name="bn{}{}_branch2b".format(stage_char, block_char))(y)
 
-        y = keras.layers.Activation("relu", name="res{}{}_branch2b_relu".format(stage_char, block_char))(y)
+        y = layers.Activation(
+            "relu", name="res{}{}_branch2b_relu".format(stage_char, block_char))(y)
 
-        y = keras.layers.Conv2D(filters * 4, (1, 1), use_bias=False,
-                                name="res{}{}_branch2c".format(stage_char, block_char), **parameters)(y)
+        y = layers.Conv2D(filters * 4, (1, 1), use_bias=False,
+                          name="res{}{}_branch2c".format(stage_char, block_char), **parameters)(y)
 
         y = BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn,
                                      name="bn{}{}_branch2c".format(stage_char, block_char))(y)
 
         if block == 0:
-            shortcut = keras.layers.Conv2D(filters * 4, (1, 1), strides=stride, use_bias=False,
-                                           name="res{}{}_branch1".format(stage_char, block_char), **parameters)(x)
+            shortcut = layers.Conv2D(filters * 4, (1, 1), strides=stride, use_bias=False,
+                                     name="res{}{}_branch1".format(stage_char, block_char), **parameters)(x)
 
             shortcut = BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn,
                                                 name="bn{}{}_branch1".format(stage_char, block_char))(
@@ -420,9 +421,11 @@ def bottleneck_2d(filters, stage=0, block=0, kernel_size=3, numerical_name=False
         else:
             shortcut = x
 
-        y = keras.layers.Add(name="res{}{}".format(stage_char, block_char))([y, shortcut])
+        y = layers.Add(name="res{}{}".format(
+            stage_char, block_char))([y, shortcut])
 
-        y = keras.layers.Activation("relu", name="res{}{}_relu".format(stage_char, block_char))(y)
+        y = layers.Activation(
+            "relu", name="res{}{}_relu".format(stage_char, block_char))(y)
 
         return y
 
@@ -472,27 +475,30 @@ def basic_3d(filters, stage=0, block=0, kernel_size=3, numerical_name=False, str
     stage_char = str(stage + 2)
 
     def f(x):
-        y = keras.layers.ZeroPadding3D(padding=1, name="padding{}{}_branch2a".format(stage_char, block_char))(x)
+        y = layers.ZeroPadding3D(
+            padding=1, name="padding{}{}_branch2a".format(stage_char, block_char))(x)
 
-        y = keras.layers.Conv3D(filters, kernel_size, strides=stride, use_bias=False,
-                                name="res{}{}_branch2a".format(stage_char, block_char), **parameters)(y)
+        y = layers.Conv3D(filters, kernel_size, strides=stride, use_bias=False,
+                          name="res{}{}_branch2a".format(stage_char, block_char), **parameters)(y)
 
         y = BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn,
                                      name="bn{}{}_branch2a".format(stage_char, block_char))(y)
 
-        y = keras.layers.Activation("relu", name="res{}{}_branch2a_relu".format(stage_char, block_char))(y)
+        y = layers.Activation(
+            "relu", name="res{}{}_branch2a_relu".format(stage_char, block_char))(y)
 
-        y = keras.layers.ZeroPadding3D(padding=1, name="padding{}{}_branch2b".format(stage_char, block_char))(y)
+        y = layers.ZeroPadding3D(
+            padding=1, name="padding{}{}_branch2b".format(stage_char, block_char))(y)
 
-        y = keras.layers.Conv3D(filters, kernel_size, use_bias=False,
-                                name="res{}{}_branch2b".format(stage_char, block_char), **parameters)(y)
+        y = layers.Conv3D(filters, kernel_size, use_bias=False,
+                          name="res{}{}_branch2b".format(stage_char, block_char), **parameters)(y)
 
         y = BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn,
                                      name="bn{}{}_branch2b".format(stage_char, block_char))(y)
 
         if block == 0:
-            shortcut = keras.layers.Conv3D(filters, (1, 1), strides=stride, use_bias=False,
-                                           name="res{}{}_branch1".format(stage_char, block_char), **parameters)(x)
+            shortcut = layers.Conv3D(filters, (1, 1), strides=stride, use_bias=False,
+                                     name="res{}{}_branch1".format(stage_char, block_char), **parameters)(x)
 
             shortcut = BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn,
                                                 name="bn{}{}_branch1".format(stage_char, block_char))(
@@ -500,9 +506,11 @@ def basic_3d(filters, stage=0, block=0, kernel_size=3, numerical_name=False, str
         else:
             shortcut = x
 
-        y = keras.layers.Add(name="res{}{}".format(stage_char, block_char))([y, shortcut])
+        y = layers.Add(name="res{}{}".format(
+            stage_char, block_char))([y, shortcut])
 
-        y = keras.layers.Activation("relu", name="res{}{}_relu".format(stage_char, block_char))(y)
+        y = layers.Activation(
+            "relu", name="res{}{}_relu".format(stage_char, block_char))(y)
 
         return y
 
@@ -552,33 +560,36 @@ def bottleneck_3d(filters, stage=0, block=0, kernel_size=3, numerical_name=False
     stage_char = str(stage + 2)
 
     def f(x):
-        y = keras.layers.Conv3D(filters, (1, 1), strides=stride, use_bias=False,
-                                name="res{}{}_branch2a".format(stage_char, block_char), **parameters)(x)
+        y = layers.Conv3D(filters, (1, 1), strides=stride, use_bias=False,
+                          name="res{}{}_branch2a".format(stage_char, block_char), **parameters)(x)
 
         y = BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn,
                                      name="bn{}{}_branch2a".format(stage_char, block_char))(y)
 
-        y = keras.layers.Activation("relu", name="res{}{}_branch2a_relu".format(stage_char, block_char))(y)
+        y = layers.Activation(
+            "relu", name="res{}{}_branch2a_relu".format(stage_char, block_char))(y)
 
-        y = keras.layers.ZeroPadding3D(padding=1, name="padding{}{}_branch2b".format(stage_char, block_char))(y)
+        y = layers.ZeroPadding3D(
+            padding=1, name="padding{}{}_branch2b".format(stage_char, block_char))(y)
 
-        y = keras.layers.Conv3D(filters, kernel_size, use_bias=False,
-                                name="res{}{}_branch2b".format(stage_char, block_char), **parameters)(y)
+        y = layers.Conv3D(filters, kernel_size, use_bias=False,
+                          name="res{}{}_branch2b".format(stage_char, block_char), **parameters)(y)
 
         y = BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn,
                                      name="bn{}{}_branch2b".format(stage_char, block_char))(y)
 
-        y = keras.layers.Activation("relu", name="res{}{}_branch2b_relu".format(stage_char, block_char))(y)
+        y = layers.Activation(
+            "relu", name="res{}{}_branch2b_relu".format(stage_char, block_char))(y)
 
-        y = keras.layers.Conv3D(filters * 4, (1, 1), use_bias=False,
-                                name="res{}{}_branch2c".format(stage_char, block_char), **parameters)(y)
+        y = layers.Conv3D(filters * 4, (1, 1), use_bias=False,
+                          name="res{}{}_branch2c".format(stage_char, block_char), **parameters)(y)
 
         y = BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn,
                                      name="bn{}{}_branch2c".format(stage_char, block_char))(y)
 
         if block == 0:
-            shortcut = keras.layers.Conv3D(filters * 4, (1, 1), strides=stride, use_bias=False,
-                                           name="res{}{}_branch1".format(stage_char, block_char), **parameters)(x)
+            shortcut = layers.Conv3D(filters * 4, (1, 1), strides=stride, use_bias=False,
+                                     name="res{}{}_branch1".format(stage_char, block_char), **parameters)(x)
 
             shortcut = BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn,
                                                 name="bn{}{}_branch1".format(stage_char, block_char))(
@@ -586,9 +597,11 @@ def bottleneck_3d(filters, stage=0, block=0, kernel_size=3, numerical_name=False
         else:
             shortcut = x
 
-        y = keras.layers.Add(name="res{}{}".format(stage_char, block_char))([y, shortcut])
+        y = layers.Add(name="res{}{}".format(
+            stage_char, block_char))([y, shortcut])
 
-        y = keras.layers.Activation("relu", name="res{}{}_relu".format(stage_char, block_char))(y)
+        y = layers.Activation(
+            "relu", name="res{}{}_relu".format(stage_char, block_char))(y)
 
         return y
 
@@ -641,45 +654,51 @@ def time_distributed_basic_2d(filters, stage=0, block=0, kernel_size=3, numerica
     stage_char = str(stage + 2)
 
     def f(x):
-        y = keras.layers.TimeDistributed(keras.layers.ZeroPadding2D(padding=1),
-                                         name="padding{}{}_branch2a".format(stage_char, block_char))(x)
+        y = layers.TimeDistributed(layers.ZeroPadding2D(padding=1),
+                                   name="padding{}{}_branch2a".format(stage_char, block_char))(x)
 
-        y = keras.layers.TimeDistributed(
-            keras.layers.Conv2D(filters, kernel_size, strides=stride, use_bias=False, **parameters),
+        y = layers.TimeDistributed(
+            layers.Conv2D(filters, kernel_size,
+                          strides=stride, use_bias=False, **parameters),
             name="res{}{}_branch2a".format(stage_char, block_char))(y)
 
-        y = keras.layers.TimeDistributed(
-            BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn),
+        y = layers.TimeDistributed(
+            BatchNormalizationFreeze(
+                axis=axis, epsilon=1e-5, freeze=freeze_bn),
             name="bn{}{}_branch2a".format(stage_char, block_char))(y)
 
-        y = keras.layers.TimeDistributed(keras.layers.Activation("relu"),
-                                         name="res{}{}_branch2a_relu".format(stage_char, block_char))(y)
+        y = layers.TimeDistributed(layers.Activation("relu"),
+                                   name="res{}{}_branch2a_relu".format(stage_char, block_char))(y)
 
-        y = keras.layers.TimeDistributed(keras.layers.ZeroPadding2D(padding=1),
-                                         name="padding{}{}_branch2b".format(stage_char, block_char))(y)
+        y = layers.TimeDistributed(layers.ZeroPadding2D(padding=1),
+                                   name="padding{}{}_branch2b".format(stage_char, block_char))(y)
 
-        y = keras.layers.TimeDistributed(keras.layers.Conv2D(filters, kernel_size, use_bias=False, **parameters),
-                                         name="res{}{}_branch2b".format(stage_char, block_char))(y)
+        y = layers.TimeDistributed(layers.Conv2D(filters, kernel_size, use_bias=False, **parameters),
+                                   name="res{}{}_branch2b".format(stage_char, block_char))(y)
 
-        y = keras.layers.TimeDistributed(
-            BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn),
+        y = layers.TimeDistributed(
+            BatchNormalizationFreeze(
+                axis=axis, epsilon=1e-5, freeze=freeze_bn),
             name="bn{}{}_branch2b".format(stage_char, block_char))(y)
 
         if block == 0:
-            shortcut = keras.layers.TimeDistributed(
-                keras.layers.Conv2D(filters, (1, 1), strides=stride, use_bias=False, **parameters),
+            shortcut = layers.TimeDistributed(
+                layers.Conv2D(
+                    filters, (1, 1), strides=stride, use_bias=False, **parameters),
                 name="res{}{}_branch1".format(stage_char, block_char))(x)
 
-            shortcut = keras.layers.TimeDistributed(
-                BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn),
+            shortcut = layers.TimeDistributed(
+                BatchNormalizationFreeze(
+                    axis=axis, epsilon=1e-5, freeze=freeze_bn),
                 name="bn{}{}_branch1".format(stage_char, block_char))(shortcut)
         else:
             shortcut = x
 
-        y = keras.layers.Add(name="res{}{}".format(stage_char, block_char))([y, shortcut])
+        y = layers.Add(name="res{}{}".format(
+            stage_char, block_char))([y, shortcut])
 
-        y = keras.layers.TimeDistributed(keras.layers.Activation("relu"),
-                                         name="res{}{}_relu".format(stage_char, block_char))(y)
+        y = layers.TimeDistributed(layers.Activation("relu"),
+                                   name="res{}{}_relu".format(stage_char, block_char))(y)
 
         return y
 
@@ -732,52 +751,59 @@ def time_distributed_bottleneck_2d(filters, stage=0, block=0, kernel_size=3, num
     stage_char = str(stage + 2)
 
     def f(x):
-        y = keras.layers.TimeDistributed(
-            keras.layers.Conv2D(filters, (1, 1), strides=stride, use_bias=False, **parameters),
+        y = layers.TimeDistributed(
+            layers.Conv2D(filters, (1, 1), strides=stride,
+                          use_bias=False, **parameters),
             name="res{}{}_branch2a".format(stage_char, block_char))(x)
 
-        y = keras.layers.TimeDistributed(
-            BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn),
+        y = layers.TimeDistributed(
+            BatchNormalizationFreeze(
+                axis=axis, epsilon=1e-5, freeze=freeze_bn),
             name="bn{}{}_branch2a".format(stage_char, block_char))(y)
 
-        y = keras.layers.TimeDistributed(keras.layers.Activation("relu"),
-                                         name="res{}{}_branch2a_relu".format(stage_char, block_char))(y)
+        y = layers.TimeDistributed(layers.Activation("relu"),
+                                   name="res{}{}_branch2a_relu".format(stage_char, block_char))(y)
 
-        y = keras.layers.TimeDistributed(keras.layers.ZeroPadding2D(padding=1),
-                                         name="padding{}{}_branch2b".format(stage_char, block_char))(y)
+        y = layers.TimeDistributed(layers.ZeroPadding2D(padding=1),
+                                   name="padding{}{}_branch2b".format(stage_char, block_char))(y)
 
-        y = keras.layers.TimeDistributed(keras.layers.Conv2D(filters, kernel_size, use_bias=False, **parameters),
-                                         name="res{}{}_branch2b".format(stage_char, block_char))(y)
+        y = layers.TimeDistributed(layers.Conv2D(filters, kernel_size, use_bias=False, **parameters),
+                                   name="res{}{}_branch2b".format(stage_char, block_char))(y)
 
-        y = keras.layers.TimeDistributed(
-            BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn),
+        y = layers.TimeDistributed(
+            BatchNormalizationFreeze(
+                axis=axis, epsilon=1e-5, freeze=freeze_bn),
             name="bn{}{}_branch2b".format(stage_char, block_char))(y)
 
-        y = keras.layers.TimeDistributed(keras.layers.Activation("relu"),
-                                         name="res{}{}_branch2b_relu".format(stage_char, block_char))(y)
+        y = layers.TimeDistributed(layers.Activation("relu"),
+                                   name="res{}{}_branch2b_relu".format(stage_char, block_char))(y)
 
-        y = keras.layers.TimeDistributed(keras.layers.Conv2D(filters * 4, (1, 1), use_bias=False, **parameters),
-                                         name="res{}{}_branch2c".format(stage_char, block_char))(y)
+        y = layers.TimeDistributed(layers.Conv2D(filters * 4, (1, 1), use_bias=False, **parameters),
+                                   name="res{}{}_branch2c".format(stage_char, block_char))(y)
 
-        y = keras.layers.TimeDistributed(
-            BatchNormalizationFreeze(axis=axis, epsilon=1e-5, freeze=freeze_bn),
+        y = layers.TimeDistributed(
+            BatchNormalizationFreeze(
+                axis=axis, epsilon=1e-5, freeze=freeze_bn),
             name="bn{}{}_branch2c".format(stage_char, block_char))(y)
 
         if block == 0:
-            shortcut = keras.layers.TimeDistributed(
-                keras.layers.Conv2D(filters * 4, (1, 1), strides=stride, use_bias=False, **parameters),
+            shortcut = layers.TimeDistributed(
+                layers.Conv2D(
+                    filters * 4, (1, 1), strides=stride, use_bias=False, **parameters),
                 name="res{}{}_branch1".format(stage_char, block_char))(x)
 
-            shortcut = keras.layers.TimeDistributed(
-                keras.layers.BatchNormalization(axis=axis, epsilon=1e-5, freeze=freeze_bn),
+            shortcut = layers.TimeDistributed(
+                layers.BatchNormalization(
+                    axis=axis, epsilon=1e-5, freeze=freeze_bn),
                 name="bn{}{}_branch1".format(stage_char, block_char))(shortcut)
         else:
             shortcut = x
 
-        y = keras.layers.Add(name="res{}{}".format(stage_char, block_char))([y, shortcut])
+        y = layers.Add(name="res{}{}".format(
+            stage_char, block_char))([y, shortcut])
 
-        y = keras.layers.TimeDistributed(keras.layers.Activation("relu"),
-                                         name="res{}{}_relu".format(stage_char, block_char))(y)
+        y = layers.TimeDistributed(layers.Activation("relu"),
+                                   name="res{}{}_relu".format(stage_char, block_char))(y)
 
         return y
 
