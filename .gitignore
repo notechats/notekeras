@@ -10,10 +10,3 @@ work
 *.tfrecord
 example/yolo4/models
 *.pyc
-
-yolov3.h5
-yolov3.weights
-
-yolov4.h5
-yolov4-416.h5
-yolov4.weights
