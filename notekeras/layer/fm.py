@@ -1,7 +1,12 @@
+from tensorflow import keras
+from tensorflow.keras import backend as K
 from tensorflow.keras.layers import Layer
 
 
 class FactorizationMachine(Layer):
+    """
+    """
+
     def __init__(self,
                  output_dim=30,
                  name='FM',
@@ -9,6 +14,8 @@ class FactorizationMachine(Layer):
                  use_weight=True,
                  use_bias=True,
                  **kwargs):
+        """
+        """
         super(FactorizationMachine, self).__init__(name=name, **kwargs)
         self.output_dim = output_dim
         self.activate = activation
