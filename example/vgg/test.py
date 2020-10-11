@@ -4,7 +4,7 @@ from notekeras.model.vgg.vgg19 import VGG19
 #from tensorflow.keras.applications.vgg16 import VGG16
 #from tensorflow.keras.applications.vgg19 import VGG19
 
-#from tensorflow.keras.applications.vgg16 import preprocess_input
+from tensorflow.keras.applications.vgg16 import preprocess_input
 from tensorflow.keras.applications.vgg19 import preprocess_input
 
 from tensorflow.keras.preprocessing import image
@@ -28,7 +28,6 @@ def vgg16_test():
 
 
 def vgg19_test():
-
     base_model = VGG19(weights='imagenet')
     model = Model(inputs=base_model.input,
                   outputs=base_model.get_layer('block4_pool').output)
@@ -40,6 +39,8 @@ def vgg19_test():
     x = preprocess_input(x)
 
     block4_pool_features = model.predict(x)
+    print(block4_pool_features)
 
 
-vgg19_test()
+vgg16_test()
+# vgg19_test()
