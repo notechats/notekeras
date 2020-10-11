@@ -67,7 +67,4 @@ class FactorizationMachine(Layer):
         assert input_shape and len(input_shape) == 2
         return input_shape[0], self.output_dim
 
-
-class FM(FactorizationMachine):
-    def __init__(self, *args, **kwargs):
-        super(FM, self).__init__(*args, **kwargs)
+FM = FactorizationMachine
