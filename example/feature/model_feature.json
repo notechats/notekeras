@@ -15,7 +15,18 @@
         "type": "BucketizedColumn",
         "parameters": {
           "key": "age",
-          "boundaries": [18, 25, 30, 35, 40, 45, 50, 55, 60, 65],
+          "boundaries": [
+            18,
+            25,
+            30,
+            35,
+            40,
+            45,
+            50,
+            55,
+            60,
+            65
+          ],
           "output_tensor": "banner_index_num",
           "dtype": "float32"
         }
@@ -24,7 +35,18 @@
         "type": "BucketIndicatorColumn",
         "parameters": {
           "key": "age",
-          "boundaries": [18, 25, 30, 35, 40, 45, 50, 55, 60, 65],
+          "boundaries": [
+            18,
+            25,
+            30,
+            35,
+            40,
+            45,
+            50,
+            55,
+            60,
+            65
+          ],
           "output_tensor": "banner_index_num",
           "dtype": "float32"
         }
@@ -33,18 +55,21 @@
         "type": "BucketEmbeddingColumn",
         "parameters": {
           "key": "age",
-          "boundaries": [18, 25, 30, 35, 40, 45, 50, 55, 60, 65],
+          "boundaries": [
+            18,
+            25,
+            30,
+            35,
+            40,
+            45,
+            50,
+            55,
+            60,
+            65
+          ],
           "output_tensor": "banner_index_num",
           "dtype": "float32",
           "dimension": 17
-        }
-      },
-      {
-        "type": "NumericColumn",
-        "parameters": {
-          "key": "arr3",
-          "dtype": "float32",
-          "length": 4
         }
       },
       {
@@ -134,91 +159,6 @@
       }
     ]
   },
-  "layer1": {
-    "name": "multi-concat",
-    "type": "single",
-    "inputs": [
-      {
-        "type": "BucketizedColumn",
-        "parameters": {
-          "key": "age",
-          "output_tensor": "p_order_1d_bucket",
-          "boundaries": [18, 25, 30, 35, 40, 45, 50, 55, 60, 65],
-          "dtype": "int"
-        }
-      },
-      {
-        "type": "NumericColumn",
-        "parameters": {
-          "key": "age",
-          "output_tensor": "banner_index_num",
-          "dtype": "int"
-        }
-      },
-      {
-        "type": "NumericColumn",
-        "parameters": {
-          "key": "trestbps",
-          "output_tensor": "banner_index_num",
-          "dtype": "int"
-        }
-      },
-      {
-        "type": "NumericColumn",
-        "parameters": {
-          "key": "chol",
-          "output_tensor": "banner_index_num",
-          "dtype": "int"
-        }
-      },
-      {
-        "type": "NumericColumn",
-        "parameters": {
-          "key": "thalach",
-          "output_tensor": "banner_index_num",
-          "dtype": "int"
-        }
-      },
-      {
-        "type": "NumericColumn",
-        "parameters": {
-          "key": "oldpeak",
-          "output_tensor": "banner_index_num",
-          "dtype": "int"
-        }
-      },
-      {
-        "type": "NumericColumn",
-        "parameters": {
-          "key": "slope",
-          "output_tensor": "banner_index_num",
-          "dtype": "int"
-        }
-      },
-      {
-        "type": "NumericColumn",
-        "parameters": {
-          "key": "ca",
-          "output_tensor": "banner_index_num",
-          "dtype": "int"
-        }
-      },
-      {
-        "type": "CateEmbeddingColumn",
-        "parameters": {
-          "key": "thal",
-          "output_tensor": "thal_embdding",
-          "dimension": 4,
-          "vocabulary": [
-            "fixed",
-            "normal",
-            "reversible"
-          ],
-          "dtype": "string"
-        }
-      }
-    ]
-  },
   "layer2": {
     "name": "sequence1",
     "type": "sequence1",
@@ -244,17 +184,17 @@
     ]
   },
   "layer3": {
-    "name": "sequence1",
-    "type": "sequence1",
+    "name": "sequence2",
+    "type": "sequence2",
     "inputs": [
       {
         "type": "SequenceCateEmbddingColumn",
         "parameters": {
-          "key": "arr",
+          "key": "arr2",
           "share_name": "item_id",
           "dtype": "string",
           "length": 4,
-          "dimension": 11,
+          "dimension": 9,
           "vocabulary": [
             "a",
             "b",

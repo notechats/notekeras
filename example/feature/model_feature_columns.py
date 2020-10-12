@@ -33,8 +33,8 @@ def get_data():
 
     URL = 'https://storage.googleapis.com/applied-dl/heart.csv'
     dataframe = pd.read_csv(URL)
-    #dataframe['arr'] = arr_c(len(dataframe))
-    #dataframe['arr2'] = arr_c(len(dataframe))
+    dataframe['arr'] = arr_c(len(dataframe))
+    dataframe['arr2'] = arr_c(len(dataframe))
     #dataframe['arr3'] = arr_c(len(dataframe))
     dataframe['thal2'] = dataframe['thal']
     dataframe = pd.DataFrame(dataframe)
@@ -45,11 +45,12 @@ def get_data():
     def df_to_dataset(dataframe, shuffle=True, batch_size=32):
         dataframe = dataframe.copy()
         labels = dataframe.pop('target')
-        # arr = np.vstack(dataframe.pop('arr'))
+        arr = np.vstack(dataframe.pop('arr'))
+        arr2 = np.vstack(dataframe.pop('arr2'))
 
         data = dict(dataframe)
-        # data['arr'] = arr
-        print(data)
+        data['arr'] = arr
+        data['arr2'] = arr2
         ds = tf.data.Dataset.from_tensor_slices((data, labels))
 
         if shuffle:
@@ -154,11 +155,10 @@ def compare2():
         parse.feature_dict.values()), outputs=[l3])
     model.compile(optimizer='adam', loss='binary_crossentropy', )
     model.summary()
-    plot_model(model, to_file='feature2.png', show_shapes=True)
+    #plot_model(model, to_file='feature2.png', show_shapes=True)
+    plot_model(model, to_file='feature2.png')
 
     model.fit(train_ds, validation_data=val_ds, epochs=5)
-
-    print(val_ds)
 
 
 compare2()
