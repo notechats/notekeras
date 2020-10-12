@@ -1,13 +1,14 @@
 import pickle
 
 import tensorflow as tf
-from tensorflow.keras import backend as K
-from tensorflow.keras.layers import DenseFeatures, Input, Embedding, Layer
-from tensorflow.python.feature_column import feature_column_v2 as fc
-from tensorflow.python.feature_column import sequence_feature_column as sfc
-
 from notekeras.feature import IndicatorColumnDef
 from notekeras.layer import TrigPosEmbedding
+from tensorflow.keras import backend as K
+from tensorflow.keras.layers import DenseFeatures, Embedding, Input, Layer
+from tensorflow.python.feature_column import feature_column_v2 as fc
+from tensorflow.python.feature_column import sequence_feature_column as sfc
+from tensorflow.python.feature_column.feature_column_lib import \
+    SequenceFeatures
 
 field_type_map = {
     'int': tf.dtypes.int32,
@@ -179,7 +180,7 @@ class ParseFeatureConfig:
         feature = _get_sequence_categorical_column(params)
         column = IndicatorColumnDef(feature, size=params['length'])
 
-        sequence_input, sequence_length = sfc.SequenceFeatures(column)({key: inputs})
+        sequence_input, sequence_length = SequenceFeatures(column)({key: inputs})
 
         return sequence_input, sequence_length
 
@@ -195,7 +196,7 @@ class ParseFeatureConfig:
         feature = _get_sequence_categorical_column(params)
         column = IndicatorColumnDef(feature, size=params['length'])
 
-        sequence_input, sequence_length = sfc.SequenceFeatures(column)({key: inputs})
+        sequence_input, sequence_length = SequenceFeatures(column)({key: inputs})
 
         sequence_input = tf.keras.backend.sum(sequence_input, axis=-1)
 
