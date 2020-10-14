@@ -9,15 +9,14 @@ from tensorflow.keras.optimizers import Adam
 
 from .model import FM
 
-
 criteo = CriteoData()
 
 
-def download():
-    criteo.download()
+def download(model=1):
+    criteo.download(mode=mode)
 
 
-def train():
+def train(mode=1):
     # ========================= Hyper Parameters =======================
     read_part = True
     sample_num = 100000
@@ -29,7 +28,7 @@ def train():
     batch_size = 512
     epochs = 5
 
-    feature_columns, train, test = criteo.build_dataset()
+    feature_columns, train, test = criteo.build_dataset(mode=mode)
     train_X, train_y = train
     test_X, test_y = test
     # ============================Build Model==========================
