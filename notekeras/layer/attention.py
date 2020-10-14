@@ -1,3 +1,6 @@
+"""
+
+"""
 from tensorflow import keras
 from tensorflow.keras import backend as K
 from tensorflow.keras.layers import Layer
@@ -86,9 +89,12 @@ class ScaledDotProductAttention(Layer):
         if isinstance(mask, list):
             mask = mask[1]
         feature_dim = K.shape(query)[-1]
-        e = K.batch_dot(query, key, axes=2)  # [batch_size, query_size, key_size] 计算query和每个key的相似度
-        e = e / K.sqrt(K.cast(feature_dim, dtype=K.floatx()))  # [batch_size, query_size, key_size]
-        e = K.exp(e - K.max(e, axis=-1, keepdims=True))  # [batch_size, query_size, key_size]
+        # [batch_size, query_size, key_size] 计算query和每个key的相似度
+        e = K.batch_dot(query, key, axes=2)
+        # [batch_size, query_size, key_size]
+        e = e / K.sqrt(K.cast(feature_dim, dtype=K.floatx()))
+        # [batch_size, query_size, key_size]
+        e = K.exp(e - K.max(e, axis=-1, keepdims=True))
 
         # 只能用历史数据，如第5个query只能计算前5个key的相似度，只能用前5个value的线性加权
         if self.history_only:
@@ -101,8 +107,10 @@ class ScaledDotProductAttention(Layer):
         if mask is not None:
             e *= K.cast(K.expand_dims(mask, axis=-2), K.floatx())
 
-        a = e / (K.sum(e, axis=-1, keepdims=True) + K.epsilon())  # [batch_size, query_size, key_size] softmax归一化 权重
-        v = K.batch_dot(a, value)  # [batch_size, query_size, feature_dim] 不同的values进行加权
+        # [batch_size, query_size, key_size] softmax归一化 权重
+        a = e / (K.sum(e, axis=-1, keepdims=True) + K.epsilon())
+        # [batch_size, query_size, feature_dim] 不同的values进行加权
+        v = K.batch_dot(a, value)
         if self.return_attention:
             return [v, a]
         return v
@@ -112,7 +120,8 @@ class SeqSelfAttention(Layer):
     ATTENTION_TYPE_ADD = 'additive'
     ATTENTION_TYPE_MUL = 'multiplicative'
 
-    def __init__(self, units=32,
+    def __init__(self,
+                 units=32,
                  attention_width=None,
                  attention_type=ATTENTION_TYPE_ADD,
                  return_attention=False,
@@ -178,7 +187,8 @@ class SeqSelfAttention(Layer):
         elif attention_type == SeqSelfAttention.ATTENTION_TYPE_MUL:
             self.Wa, self.ba = None, None
         else:
-            raise NotImplementedError('No implementation for attention type : ' + attention_type)
+            raise NotImplementedError(
+                'No implementation for attention type : ' + attention_type)
 
     def get_config(self):
         config = {
@@ -274,11 +284,13 @@ class SeqSelfAttention(Layer):
             lower = K.expand_dims(lower, axis=-1)
             upper = lower + self.attention_width
             indices = K.expand_dims(K.arange(0, input_len), axis=0)
-            e = e * K.cast(lower <= indices, K.floatx()) * K.cast(indices < upper, K.floatx())
+            e = e * K.cast(lower <= indices, K.floatx()) * \
+                K.cast(indices < upper, K.floatx())
         if mask is not None:
             mask = K.cast(mask, K.floatx())
             mask = K.expand_dims(mask)
-            e = K.permute_dimensions(K.permute_dimensions(e * mask, (0, 2, 1)) * mask, (0, 2, 1))
+            e = K.permute_dimensions(K.permute_dimensions(
+                e * mask, (0, 2, 1)) * mask, (0, 2, 1))
 
         # a_{t} = \text{softmax}(e_t)
         s = K.sum(e, axis=-1, keepdims=True)
@@ -307,14 +319,17 @@ class SeqSelfAttention(Layer):
 
         # e_{t, t'} = W_a h_{t, t'} + b_a
         if self.use_attention_bias:
-            e = K.reshape(K.dot(h, self.Wa) + self.ba, (batch_size, input_len, input_len))
+            e = K.reshape(K.dot(h, self.Wa) + self.ba,
+                          (batch_size, input_len, input_len))
         else:
-            e = K.reshape(K.dot(h, self.Wa), (batch_size, input_len, input_len))
+            e = K.reshape(K.dot(h, self.Wa),
+                          (batch_size, input_len, input_len))
         return e
 
     def _call_multiplicative_emission(self, inputs):
         # e_{t, t'} = x_t^T W_a x_{t'} + b_a
-        e = K.batch_dot(K.dot(inputs, self.Wa), K.permute_dimensions(inputs, (0, 2, 1)))
+        e = K.batch_dot(K.dot(inputs, self.Wa),
+                        K.permute_dimensions(inputs, (0, 2, 1)))
         if self.use_attention_bias:
             e += self.ba[0]
         return e
@@ -493,7 +508,8 @@ class MultiHeadAttention(Layer):
             q = k = v = input_shape
         feature_dim = int(v[-1])
         if feature_dim % self.head_num != 0:
-            raise IndexError('Invalid head number %d with the given input dim %d' % (self.head_num, feature_dim))
+            raise IndexError('Invalid head number %d with the given input dim %d' % (
+                self.head_num, feature_dim))
         self.Wq = self.add_weight(shape=(int(q[-1]), feature_dim),
                                   initializer=self.kernel_initializer,
                                   regularizer=self.kernel_regularizer,
@@ -561,7 +577,8 @@ class MultiHeadAttention(Layer):
     def _reshape_from_batches(x, head_num):
         input_shape = K.shape(x)
         batch_size, seq_len, feature_dim = input_shape[0], input_shape[1], input_shape[2]
-        x = K.reshape(x, (batch_size // head_num, head_num, seq_len, feature_dim))
+        x = K.reshape(x, (batch_size // head_num,
+                          head_num, seq_len, feature_dim))
         x = K.permute_dimensions(x, [0, 2, 1, 3])
         return K.reshape(x, (batch_size // head_num, seq_len, feature_dim * head_num))
 
@@ -575,6 +592,10 @@ class MultiHeadAttention(Layer):
         return K.reshape(mask, (-1, seq_len))
 
     def call(self, inputs, mask=None):
+        """
+        :param inputs: 
+        :param mask: 
+        """
         if isinstance(inputs, list):
             q, k, v = inputs
         else:
@@ -597,15 +618,20 @@ class MultiHeadAttention(Layer):
         y = ScaledDotProductAttention(history_only=self.history_only,
                                       name='%s-Attention' % self.name,
                                       )(inputs=[self._reshape_to_batches(q, self.head_num),
-                                                self._reshape_to_batches(k, self.head_num),
-                                                self._reshape_to_batches(v, self.head_num),
+                                                self._reshape_to_batches(
+                                                    k, self.head_num),
+                                                self._reshape_to_batches(
+                                                    v, self.head_num),
                                                 ],
                                         mask=[
-                                            self._reshape_mask(q_mask, self.head_num),
-                                            self._reshape_mask(k_mask, self.head_num),
-                                            self._reshape_mask(v_mask, self.head_num),
-                                        ],
-                                        )
+                                            self._reshape_mask(
+                                                q_mask, self.head_num),
+                                            self._reshape_mask(
+                                                k_mask, self.head_num),
+                                            self._reshape_mask(
+                                                v_mask, self.head_num),
+                                      ],
+        )
         y = self._reshape_from_batches(y, self.head_num)
         y = K.dot(y, self.Wo)
         if self.use_bias:
