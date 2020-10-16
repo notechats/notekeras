@@ -8,7 +8,7 @@ from tensorflow.keras.losses import binary_crossentropy
 from tensorflow.keras.metrics import AUC
 from tensorflow.keras.optimizers import Adam
 
-from .model import AFM, FFM, FM
+from .model import AFM, FFM, FM, NFM
 from .model2 import DeepFM
 from .model3 import xDeepFM
 
