@@ -64,7 +64,6 @@ def train_afm(mode=1):
     test_size = 0.2
 
     embed_dim = 8
-    mode = 'avg'  # 'max', 'avg'
 
     learning_rate = 0.001
     batch_size = 4096
@@ -75,6 +74,7 @@ def train_afm(mode=1):
     train_X, train_y = train
     test_X, test_y = test
     # ============================Build Model==========================
+    mode = 'avg'  # 'max', 'avg'
     model = AFM(feature_columns, mode)
     model.summary()
     # ============================model checkpoint======================
