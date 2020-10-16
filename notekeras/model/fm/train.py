@@ -10,6 +10,7 @@ from tensorflow.keras.optimizers import Adam
 
 from .model import AFM, FFM, FM
 from .model2 import DeepFM
+from .model3 import xDeepFM
 
 criteo = CriteoData()
 
