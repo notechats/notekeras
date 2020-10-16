@@ -155,7 +155,7 @@ def train_nfm(mode=1):
     train_X, train_y = train
     test_X, test_y = test
     # ============================Build Model==========================
-    model = NFM(feature_columns, hidden_units, dropout_rate=dnn_dropout)
+    model = NFM(feature_columns, hidden_units, dnn_dropout=dnn_dropout)
     model.summary()
     # ============================model checkpoint======================
     # check_path = 'save/nfm_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
