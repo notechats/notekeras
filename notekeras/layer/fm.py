@@ -1,6 +1,7 @@
 from tensorflow import keras
 from tensorflow.keras import backend as K
 from tensorflow.keras.layers import Layer
+from tensorflow.keras.regularizers import l2
 
 
 class FactorizationMachine(Layer):
@@ -31,12 +32,14 @@ class FactorizationMachine(Layer):
         self.kernel = self.add_weight(name='kernel',
                                       shape=(input_shape[1], self.factor_dim),
                                       initializer='glorot_uniform',
+                                      regularizer=l2(1e-4),
                                       trainable=True)
         if self.user_weight:
             self.weight = self.add_weight(name='weight',
                                           shape=(
                                               input_shape[1], self.output_dim),
                                           initializer='glorot_uniform',
+                                          regularizer=l2(1e-4),
                                           trainable=True)
         if self.use_bias:
             self.bias = self.add_weight(name='bias',
