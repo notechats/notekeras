@@ -82,8 +82,7 @@ class DNN(layers.Layer):
 
 class DeepFM(keras.Model):
     def __init__(self, feature_columns, k=10, hidden_units=(200, 200, 200), dnn_dropout=0.,
-                 activation='relu', fm_w_reg=1e-4, fm_v_reg=1e-4, embed_reg=1e-4, fm_type=1
-                 ):
+                 activation='relu', fm_w_reg=1e-4, fm_v_reg=1e-4, embed_reg=1e-4, fm_type=1):
         """
         DeepFM
         :param feature_columns: A list. a list containing dense and sparse column feature information.
@@ -105,10 +104,11 @@ class DeepFM(keras.Model):
                                          embeddings_regularizer=l2(embed_reg))
             for i, feat in enumerate(self.sparse_feature_columns)
         }
+
         if fm_type == 1:
-			self.fm = FM(k, fm_w_reg, fm_v_reg)
-		else:
-			self.fm = FactorizationMachine(k, fm_w_reg, fm_v_reg)
+            self.fm = FM(k, fm_w_reg, fm_v_reg)
+        else:
+            self.fm = FactorizationMachine(k, fm_w_reg, fm_v_reg)
 
         self.dnn = DNN(hidden_units, activation, dnn_dropout)
         self.dense = Dense(1, activation=None)
