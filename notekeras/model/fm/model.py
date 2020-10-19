@@ -48,7 +48,7 @@ class FM_Layer(Layer):
 
 
 class FM(keras.Model):
-    def __init__(self, feature_columns, k, w_reg=1e-4, v_reg=1e-4):
+    def __init__(self, feature_columns, k, w_reg=1e-4, v_reg=1e-4, fm_type=1):
         """
         Factorization Machines
         :param feature_columns: a list containing dense and sparse column feature information
@@ -60,10 +60,13 @@ class FM(keras.Model):
         self.dense_feature_columns, self.sparse_feature_columns = feature_columns
         self.fm = FM_Layer(feature_columns, k, w_reg, v_reg)
         self.fm2 = FactorizationMachine(output_dim=1)
+        self.fm_type = fm_type
 
     def call(self, inputs, **kwargs):
-        #fm_outputs = self.fm(inputs)
-        fm_outputs = self.fm2(inputs)
+        if self.fm_type == 1:
+            fm_outputs = self.fm(inputs)
+        else:
+            fm_outputs = self.fm2(inputs)
         outputs = tf.nn.sigmoid(fm_outputs)
         return outputs
 
@@ -72,13 +75,13 @@ class FM(keras.Model):
             shape=(len(self.dense_feature_columns),), dtype=tf.float32)
         sparse_inputs = tf.keras.Input(
             shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
-        sparse_inputs = tf.concat(
+        sparse_input2 = tf.concat(
             [tf.one_hot(sparse_inputs[:, i],
                         depth=self.sparse_feature_columns[i]['feat_num'])
              for i in range(sparse_inputs.shape[1])
              ], axis=1)
 
-        stack = tf.concat([dense_inputs, sparse_inputs], axis=1)
+        stack = tf.concat([dense_inputs, sparse_input2], axis=1)
 
         tf.keras.Model(inputs=[dense_inputs, sparse_inputs],
                        outputs=self.call(stack)).summary()
