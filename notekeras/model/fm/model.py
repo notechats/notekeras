@@ -75,9 +75,10 @@ class FM(keras.Model):
             shape=(len(self.dense_feature_columns),), dtype=tf.float32)
         sparse_inputs = tf.keras.Input(
             shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
+
         sparse_input2 = tf.concat(
             [tf.one_hot(sparse_inputs[:, i],
-                        depth=self.sparse_feature_columns[i]['feat_num'])
+                        depth=self.sparse_feature_columns[i]['feat_num'], dtype=tf.float32)
              for i in range(sparse_inputs.shape[1])
              ], axis=1)
 
