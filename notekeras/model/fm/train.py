@@ -245,7 +245,7 @@ def train_x_deep_fm(mode=1):
     test_X, test_y = test
     # ============================Build Model==========================
     model = xDeepFM(feature_columns, hidden_units, cin_size)
-    # model.summary()
+    model.summary()
     # ============================model checkpoint======================
     # check_path = 'save/xdeepfm_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
     # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True,

@@ -108,7 +108,7 @@ class DeepFM(keras.Model):
         if fm_type == 1:
             self.fm = FM(k, fm_w_reg, fm_v_reg)
         else:
-            self.fm = FactorizationMachine(k, fm_w_reg, fm_v_reg)
+            self.fm = FactorizationMachine(k, fm_w_reg, fm_v_reg, name='FMM')
 
         self.dnn = DNN(hidden_units, activation, dnn_dropout)
         self.dense = Dense(1, activation=None)
