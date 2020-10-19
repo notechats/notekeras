@@ -138,9 +138,9 @@ class DeepFM(keras.Model):
         return outputs
 
     def summary(self):
-        dense_inputs = Input(
-            shape=(len(self.dense_feature_columns),), dtype=tf.float32)
-        sparse_inputs = Input(
-            shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
+        dense_inputs = Input(name='i111',
+                             shape=(len(self.dense_feature_columns),), dtype=tf.float32)
+        sparse_inputs = Input(name='i222',
+                              shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
         keras.Model(name='deep-fm', inputs=[dense_inputs, sparse_inputs], outputs=self.call(
             [dense_inputs, sparse_inputs])).summary()
