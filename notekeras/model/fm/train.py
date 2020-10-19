@@ -8,8 +8,7 @@ from tensorflow.keras.losses import binary_crossentropy
 from tensorflow.keras.metrics import AUC
 from tensorflow.keras.optimizers import Adam
 
-from .model import AFM, FFM, FM, NFM
-from .model2 import DeepFM
+from .model import AFM, FFM, FM, NFM, DeepFM
 from .model3 import xDeepFM
 
 criteo = CriteoData()
@@ -178,7 +177,7 @@ def train_nfm(mode=1):
     print('test AUC: %f' % model.evaluate(test_X, test_y)[1])
 
 
-def train_deep_fm(mode=1, fm_type=1):
+def train_deep_fm(mode=1):
     # ========================= Hyper Parameters =======================
     # you can modify your file path
 
@@ -201,7 +200,7 @@ def train_deep_fm(mode=1, fm_type=1):
     test_X, test_y = test
     # ============================Build Model==========================
     model = DeepFM(feature_columns, k=k,
-                   hidden_units=hidden_units, dnn_dropout=dnn_dropout, fm_type=fm_type)
+                   hidden_units=hidden_units, dnn_dropout=dnn_dropout)
     model.summary()
     # ============================model checkpoint======================
     # check_path = '../save/deepfm_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
