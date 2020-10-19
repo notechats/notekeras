@@ -5,6 +5,8 @@ from tensorflow.keras.layers import (BatchNormalization, Dense, Dropout,
                                      Embedding, Input, Layer)
 from tensorflow.keras.regularizers import l2
 
+from ...layer.fm import FactorizationMachine
+
 
 class FM_Layer(Layer):
     def __init__(self, feature_columns, k, w_reg=1e-4, v_reg=1e-4):
@@ -57,9 +59,11 @@ class FM(keras.Model):
         super(FM, self).__init__()
         self.dense_feature_columns, self.sparse_feature_columns = feature_columns
         self.fm = FM_Layer(feature_columns, k, w_reg, v_reg)
+        self.fm2 = FactorizationMachine(output_dim=1)
 
     def call(self, inputs, **kwargs):
-        fm_outputs = self.fm(inputs)
+        #fm_outputs = self.fm(inputs)
+        fm_outputs = self.fm2(inputs)
         outputs = tf.nn.sigmoid(fm_outputs)
         return outputs
 
