@@ -1,10 +1,9 @@
+from notekeras.layers.attention import MultiHeadAttention
+from notekeras.layers.embedding import (EmbeddingRet, EmbeddingSim,
+                                        TrigPosEmbedding)
+from notekeras.layers.feed_forward import FeedForward
+from notekeras.layers.normalize import LayerNormalization
 from tensorflow import keras
-
-from notekeras.layer.attention import MultiHeadAttention
-from notekeras.layer.embedding import EmbeddingRet, EmbeddingSim
-from notekeras.layer.embedding import TrigPosEmbedding
-from notekeras.layer.feed_forward import FeedForward
-from notekeras.layer.normalize import LayerNormalization
 
 __all__ = []
 
@@ -48,24 +47,28 @@ class WrapLayer0(keras.models.Model):
 
     def _build(self):
         if self.dropout_rate > 0.0:
-            self.dropout_layer1 = keras.layers.Dropout(rate=self.dropout_rate, name='%s-Dropout' % self.name, )
+            self.dropout_layer1 = keras.layers.Dropout(
+                rate=self.dropout_rate, name='%s-Dropout' % self.name, )
             self.layers.append(self.dropout_layer1)
 
         if self.use_adapter:
             self.adapter = FeedForward(units=self.adapter_units,
                                        activation=self.adapter_activation,
-                                       kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0, stddev=0.001),
+                                       kernel_initializer=keras.initializers.TruncatedNormal(
+                                           mean=0.0, stddev=0.001),
                                        name='%s-Adapter' % self.name,
                                        )
             self.layers.append(self.adapter)
-            self.dropout_layer2 = keras.layers.Add(name='%s-Adapter-Add' % self.name)
+            self.dropout_layer2 = keras.layers.Add(
+                name='%s-Adapter-Add' % self.name)
             self.layers.append(self.dropout_layer2)
         #
         self.add_layer = keras.layers.Add(name='%s-Add' % self.name)
         self.layers.append(self.add_layer)
 
         # 正则化
-        self.normal_layer = LayerNormalization(trainable=self.trainable, name='%s-Norm' % self.name, )
+        self.normal_layer = LayerNormalization(
+            trainable=self.trainable, name='%s-Norm' % self.name, )
         self.layers.append(self.normal_layer)
 
     def compute_output_shape(self, input_shape):

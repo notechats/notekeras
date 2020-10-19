@@ -1,6 +1,6 @@
+from notekeras.layers import BatchNormalizationFreeze
 from tensorflow import keras
 from tensorflow.keras import layers
-from notekeras.layer import BatchNormalizationFreeze
 
 parameters = {
     "kernel_initializer": "he_normal"

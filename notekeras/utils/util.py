@@ -3,14 +3,14 @@ from collections import namedtuple
 from functools import reduce
 
 import numpy as np
-from PIL import Image
-from matplotlib.colors import rgb_to_hsv, hsv_to_rgb
-
+from matplotlib.colors import hsv_to_rgb, rgb_to_hsv
 from notekeras.backend import backend as K
 from notekeras.backend import keras
-from notekeras.layer import Extract, MaskedGlobalMaxPool1D
-from notekeras.model.loader import load_trained_model_from_checkpoint, load_vocabulary
+from notekeras.layers import Extract, MaskedGlobalMaxPool1D
+from notekeras.models.loader import (load_trained_model_from_checkpoint,
+                                     load_vocabulary)
 from notekeras.tokenizer import Tokenizer
+from PIL import Image
 
 __all__ = [
     'POOL_NSP', 'POOL_MAX', 'POOL_AVE',

@@ -2,7 +2,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 from notekeras.backend import backend as K
-from notekeras.layer import SelfSum, MaskFlatten
+from notekeras.layers import SelfSum, MaskFlatten
 
 Layer = layers.Layer
 Dense = layers.Dense
