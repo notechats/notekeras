@@ -34,7 +34,7 @@ def train_fm(mode=1):
     test_X, test_y = test
     # ============================Build Model==========================
     model = FM(feature_columns=feature_columns, k=k)
-    model.summary()
+    # model.summary()
     # ============================model checkpoint======================
     # check_path = '../save/fm_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
     # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True,
@@ -74,7 +74,7 @@ def train_afm(mode=1):
     # ============================Build Model==========================
     mode = 'avg'  # 'max', 'avg'
     model = AFM(feature_columns, mode)
-    model.summary()
+    # model.summary()
     # ============================model checkpoint======================
     # check_path = 'save/afm_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
     # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True,
@@ -114,7 +114,7 @@ def train_ffm(mode=1):
     test_X, test_y = test
     # ============================Build Model==========================
     model = FFM(feature_columns=feature_columns, k=k)
-    model.summary()
+    # model.summary()
     # ============================model checkpoint======================
     # check_path = '../save/fm_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
     # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True,
@@ -154,7 +154,7 @@ def train_nfm(mode=1):
     test_X, test_y = test
     # ============================Build Model==========================
     model = NFM(feature_columns, hidden_units, dnn_dropout=dnn_dropout)
-    model.summary()
+    # model.summary()
     # ============================model checkpoint======================
     # check_path = 'save/nfm_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
     # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True,
@@ -200,7 +200,7 @@ def train_deep_fm(mode=1):
     # ============================Build Model==========================
     model = DeepFM(feature_columns, k=k,
                    hidden_units=hidden_units, dnn_dropout=dnn_dropout)
-    model.summary()
+    # model.summary()
     # ============================model checkpoint======================
     # check_path = '../save/deepfm_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
     # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True,
@@ -243,7 +243,7 @@ def train_x_deep_fm(mode=1):
     test_X, test_y = test
     # ============================Build Model==========================
     model = xDeepFM(feature_columns, hidden_units, cin_size)
-    model.summary()
+    # model.summary()
     # ============================model checkpoint======================
     # check_path = 'save/xdeepfm_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
     # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True,
