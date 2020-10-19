@@ -19,7 +19,7 @@ def download(mode=1):
     criteo.download(mode=mode)
 
 
-def train_fm(mode=1):
+def train_fm(mode=1, fm_type=1):
     # ========================= Hyper Parameters =======================
     read_part = True
     sample_num = 100000
@@ -35,7 +35,7 @@ def train_fm(mode=1):
     train_X, train_y = train
     test_X, test_y = test
     # ============================Build Model==========================
-    model = FM(feature_columns=feature_columns, k=k)
+    model = FM(feature_columns=feature_columns, k=k, fm_type=fm_type)
     model.summary()
     # ============================model checkpoint======================
     # check_path = '../save/fm_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
