@@ -63,19 +63,7 @@ class FM(keras.Model):
         self.fm_type = fm_type
 
     def call(self, inputs, **kwargs):
-        if self.fm_type == 1:
-            fm_outputs = self.fm(inputs)
-        else:
-            fm_outputs = self.fm2(inputs)
-        outputs = tf.nn.sigmoid(fm_outputs)
-        return outputs
-
-    def summary(self, **kwargs):
-        dense_inputs = tf.keras.Input(name='iiiiii1',
-                                      shape=(len(self.dense_feature_columns),), dtype=tf.float32)
-        sparse_inputs = tf.keras.Input(name='iiiiii2',
-                                       shape=(len(self.sparse_feature_columns),), dtype=tf.float32)
-
+        dense_inputs, sparse_inputs = inputs
         sparse_input2 = tf.concat(
             [tf.one_hot(sparse_inputs[:, i],
                         depth=self.sparse_feature_columns[i]['feat_num'], dtype=tf.float32)
@@ -84,8 +72,21 @@ class FM(keras.Model):
 
         stack = tf.concat([dense_inputs, sparse_input2], axis=1)
 
-        tf.keras.Model(inputs=[dense_inputs, sparse_inputs],
-                       outputs=self.call(stack)).summary()
+        if self.fm_type == 1:
+            fm_outputs = self.fm(stack)
+        else:
+            fm_outputs = self.fm2(stack)
+        outputs = tf.nn.sigmoid(fm_outputs)
+        return outputs
+
+    def summary(self, **kwargs):
+        dense_inputs = keras.Input(name='iiiiii1',
+                                   shape=(len(self.dense_feature_columns),), dtype=tf.float32)
+        sparse_inputs = keras.Input(name='iiiiii2',
+                                    shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
+
+        keras.Model(inputs=[dense_inputs, sparse_inputs],
+                    outputs=self.call([dense_inputs, sparse_inputs])).summary()
 
 
 class AFM(keras.Model):
