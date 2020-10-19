@@ -37,20 +37,10 @@ class FM_Layer(Layer):
                                  trainable=True)
 
     def call(self, inputs, **kwargs):
-        dense_inputs, sparse_inputs = inputs
-        # one-hot encoding
-        sparse_inputs = tf.concat(
-            [tf.one_hot(sparse_inputs[:, i],
-                        depth=self.sparse_feature_columns[i]['feat_num'])
-             for i in range(sparse_inputs.shape[1])
-             ], axis=1)
-        stack = tf.concat([dense_inputs, sparse_inputs], axis=1)
-        # first order
-        first_order = self.w0 + tf.matmul(stack, self.w)
-        # second order
+        first_order = self.w0 + tf.matmul(inputs, self.w)
         second_order = 0.5 * tf.reduce_sum(
-            tf.pow(tf.matmul(stack, tf.transpose(self.V)), 2) -
-            tf.matmul(tf.pow(stack, 2), tf.pow(tf.transpose(self.V), 2)), axis=1, keepdims=True)
+            tf.pow(tf.matmul(inputs, tf.transpose(self.V)), 2) -
+            tf.matmul(tf.pow(inputs, 2), tf.pow(tf.transpose(self.V), 2)), axis=1, keepdims=True)
         outputs = first_order + second_order
         return outputs
 
@@ -78,8 +68,16 @@ class FM(keras.Model):
             shape=(len(self.dense_feature_columns),), dtype=tf.float32)
         sparse_inputs = tf.keras.Input(
             shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
-        tf.keras.Model(inputs=[dense_inputs, sparse_inputs], outputs=self.call(
-            [dense_inputs, sparse_inputs])).summary()
+        sparse_inputs = tf.concat(
+            [tf.one_hot(sparse_inputs[:, i],
+                        depth=self.sparse_feature_columns[i]['feat_num'])
+             for i in range(sparse_inputs.shape[1])
+             ], axis=1)
+
+        stack = tf.concat([dense_inputs, sparse_inputs], axis=1)
+
+        tf.keras.Model(inputs=[dense_inputs, sparse_inputs],
+                       outputs=self.call(stack)).summary()
 
 
 class AFM(keras.Model):
