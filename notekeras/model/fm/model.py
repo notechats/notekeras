@@ -8,59 +8,11 @@ from tensorflow.keras.regularizers import l2
 from ...layer.fm import FactorizationMachine
 
 
-class FM_Layer(Layer):
-    def __init__(self, feature_columns, k, w_reg=1e-4, v_reg=1e-4):
-        """
-        Factorization Machines
-        :param feature_columns: a list containing dense and sparse column feature information
-        :param k: the latent vector
-        :param w_reg: the regularization coefficient of parameter w
-        :param v_reg: the regularization coefficient of parameter v
-        """
-        super(FM_Layer, self).__init__()
-        self.dense_feature_columns, self.sparse_feature_columns = feature_columns
-        self.feature_length = sum([feat['feat_num'] for feat in self.sparse_feature_columns]) \
-            + len(self.dense_feature_columns)
-        self.k = k
-        self.w_reg = w_reg
-        self.v_reg = v_reg
-
-    def build(self, input_shape):
-        self.w0 = self.add_weight(name='w0', shape=(1,),
-                                  initializer=tf.zeros_initializer(),
-                                  trainable=True)
-        self.w = self.add_weight(name='w', shape=(self.feature_length, 1),
-                                 initializer=tf.random_normal_initializer(),
-                                 regularizer=l2(self.w_reg),
-                                 trainable=True)
-        self.V = self.add_weight(name='V', shape=(self.k, self.feature_length),
-                                 initializer=tf.random_normal_initializer(),
-                                 regularizer=l2(self.v_reg),
-                                 trainable=True)
-
-    def call(self, inputs, **kwargs):
-        first_order = self.w0 + tf.matmul(inputs, self.w)
-        second_order = 0.5 * tf.reduce_sum(
-            tf.pow(tf.matmul(inputs, tf.transpose(self.V)), 2) -
-            tf.matmul(tf.pow(inputs, 2), tf.pow(tf.transpose(self.V), 2)), axis=1, keepdims=True)
-        outputs = first_order + second_order
-        return outputs
-
-
 class FM(keras.Model):
-    def __init__(self, feature_columns, k, w_reg=1e-4, v_reg=1e-4, fm_type=1):
-        """
-        Factorization Machines
-        :param feature_columns: a list containing dense and sparse column feature information
-        :param k: the latent vector
-        :param w_reg: the regularization coefficient of parameter w
-                :param v_reg: the regularization coefficient of parameter v
-        """
+    def __init__(self, feature_columns, k, w_reg=1e-4, v_reg=1e-4):
         super(FM, self).__init__()
         self.dense_feature_columns, self.sparse_feature_columns = feature_columns
-        self.fm = FM_Layer(feature_columns, k, w_reg, v_reg)
-        self.fm2 = FactorizationMachine(output_dim=1)
-        self.fm_type = fm_type
+        self.fm = FactorizationMachine(output_dim=1)
 
     def call(self, inputs, **kwargs):
         dense_inputs, sparse_inputs = inputs
@@ -72,10 +24,7 @@ class FM(keras.Model):
 
         stack = tf.concat([dense_inputs, sparse_input2], axis=1)
 
-        if self.fm_type == 1:
-            fm_outputs = self.fm(stack)
-        else:
-            fm_outputs = self.fm2(stack)
+        fm_outputs = self.fm(stack)
         outputs = tf.nn.sigmoid(fm_outputs)
         return outputs
 
@@ -117,9 +66,7 @@ class AFM(keras.Model):
         self.dense = Dense(units=1, activation=None)
 
     def call(self, inputs):
-        # Input Layer
         dense_inputs, sparse_inputs = inputs
-        # Embedding Layer
         embed = [self.embed_layers['embed_{}'.format(i)](
             sparse_inputs[:, i]) for i in range(sparse_inputs.shape[1])]
         # (None, len(sparse_inputs), embed_dim)
@@ -136,15 +83,11 @@ class AFM(keras.Model):
             tf.stack(element_wise_product_list), [1, 0, 2])  # (None, t, k)
         # mode
         if self.mode == 'max':
-            # MaxPooling Layer
             x = tf.reduce_sum(element_wise_product, axis=1)   # (None, k)
         elif self.mode == 'avg':
-            # AvgPooling Layer
             x = tf.reduce_mean(element_wise_product, axis=1)  # (None, k)
         else:
-            # Attention Layer
             x = self.attention(element_wise_product)  # (None, k)
-        # Output Layer
         outputs = tf.nn.sigmoid(self.dense(x))
 
         return outputs
@@ -226,7 +169,7 @@ class FFM_Layer(Layer):
         return first_order + second_order
 
 
-class FFM(tf.keras.Model):
+class FFM(keras.Model):
     def __init__(self, feature_columns, k, w_reg=1e-4, v_reg=1e-4):
         """
         FFM architecture
