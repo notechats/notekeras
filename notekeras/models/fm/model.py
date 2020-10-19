@@ -5,6 +5,7 @@ from tensorflow.keras.layers import (BatchNormalization, Dense, Dropout,
                                      Embedding, Flatten, Input, Layer)
 from tensorflow.keras.regularizers import l2
 
+from ...layers import DNN
 from ...layers import FFM as FFM_Layer
 from ...layers import Linear
 from ...layers.fm import FactorizationMachine
