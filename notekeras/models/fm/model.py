@@ -354,8 +354,7 @@ class xDeepFM(keras.Model):
         }
         self.linear = Linear()
         self.cin = CIN(cin_size=cin_size, l2_reg=cin_reg)
-        self.dnn = DNN(hidden_units=hidden_units,
-                       dnn_dropout=dnn_dropout, dnn_activation=dnn_activation)
+        self.dnn = DNN(hidden_units=hidden_units, dropout == dnn_dropout, activation == dnn_activation)
         self.cin_dense = Dense(1)
         self.dnn_dense = Dense(1)
         self.bias = self.add_weight(name='bias', shape=(
