@@ -71,10 +71,10 @@ class FM(keras.Model):
         return outputs
 
     def summary(self, **kwargs):
-        dense_inputs = tf.keras.Input(
-            shape=(len(self.dense_feature_columns),), dtype=tf.float32)
-        sparse_inputs = tf.keras.Input(
-            shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
+        dense_inputs = tf.keras.Input(name='iiiiii1',
+                                      shape=(len(self.dense_feature_columns),), dtype=tf.float32)
+        sparse_inputs = tf.keras.Input(name='iiiiii2',
+                                       shape=(len(self.sparse_feature_columns),), dtype=tf.float32)
 
         sparse_input2 = tf.concat(
             [tf.one_hot(sparse_inputs[:, i],
