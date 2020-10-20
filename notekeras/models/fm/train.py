@@ -289,15 +289,14 @@ def train_mf(mode=1):
     # model.summary()
     # ============================model checkpoint======================
     # check_path = '../save/mf_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
-    # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True,
-    #                                                 verbose=1, period=5)
+    # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True, verbose=1, period=5)
     # ============================Compile============================
     if implicit:
-        model.compile(loss=binary_crossentropy, optimizer=Adam(learning_rate=learning_rate),
-                      metrics=[AUC()])
+        model.compile(loss=binary_crossentropy, optimizer=Adam(
+            learning_rate=learning_rate), metrics=[AUC()])
     else:
-        model.compile(loss='mse', optimizer=Adam(learning_rate=learning_rate),
-                      metrics=['mse'])
+        model.compile(loss='mse', optimizer=Adam(
+            learning_rate=learning_rate), metrics=['mse'])
     # ==============================Fit==============================
     model.fit(
         train_X,
@@ -466,18 +465,17 @@ def train_deep_cross(mode=1):
     # model.summary()
     # ============================model checkpoint======================
     # check_path = 'save/deep_crossing_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
-    # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True,
-    #                                                 verbose=1, period=5)
+    # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True,verbose=1, period=5)
     # =========================Compile============================
-    model.compile(loss=binary_crossentropy, optimizer=Adam(learning_rate=learning_rate),
-                  metrics=[AUC()])
+    model.compile(loss=binary_crossentropy, optimizer=Adam(
+        learning_rate=learning_rate), metrics=[AUC()])
     # ===========================Fit==============================
     model.fit(
         train_X,
         train_y,
         epochs=epochs,
         callbacks=[EarlyStopping(
-            monitor='val_auc', patience=2, restore_best_weights=True)],  # checkpoint
+            monitor='val_auc', patience=2, restore_best_weights=True)],
         batch_size=batch_size,
         validation_split=0.1
     )

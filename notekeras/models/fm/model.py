@@ -34,15 +34,6 @@ class FM(keras.Model):
         outputs = tf.nn.sigmoid(fm_outputs)
         return outputs
 
-    def summary(self, **kwargs):
-        dense_inputs = keras.Input(name='iiiiii1',
-                                   shape=(len(self.dense_feature_columns),), dtype=tf.float32)
-        sparse_inputs = keras.Input(name='iiiiii2',
-                                    shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
-
-        keras.Model(inputs=[dense_inputs, sparse_inputs],
-                    outputs=self.call([dense_inputs, sparse_inputs])).summary()
-
 
 class AFM(keras.Model):
     def __init__(self, feature_columns, mode, activation='relu', embed_reg=1e-4):
@@ -98,14 +89,6 @@ class AFM(keras.Model):
 
         return outputs
 
-    def summary(self):
-        dense_inputs = Input(
-            shape=(len(self.dense_feature_columns),), dtype=tf.float32)
-        sparse_inputs = Input(
-            shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
-        keras.Model(inputs=[dense_inputs, sparse_inputs], outputs=self.call(
-            [dense_inputs, sparse_inputs])).summary()
-
     def attention(self, keys):
         a = self.attention_W(keys)  # (None, t, t)
         a = self.attention_dense(a)  # (None, t, 1)
@@ -135,14 +118,6 @@ class FFM(keras.Model):
         outputs = tf.nn.sigmoid(result_ffm)
 
         return outputs
-
-    def summary(self, **kwargs):
-        dense_inputs = Input(
-            shape=(len(self.dense_feature_columns),), dtype=tf.float32)
-        sparse_inputs = Input(
-            shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
-        tf.keras.Model(inputs=[dense_inputs, sparse_inputs],
-                       outputs=self.call([dense_inputs, sparse_inputs])).summary()
 
 
 class NFM(keras.Model):
@@ -190,14 +165,6 @@ class NFM(keras.Model):
         x = self.dnn_network(x)
         outputs = tf.nn.sigmoid(self.dense(x))
         return outputs
-
-    def summary(self):
-        dense_inputs = Input(
-            shape=(len(self.dense_feature_columns),), dtype=tf.float32)
-        sparse_inputs = Input(
-            shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
-        keras.Model(inputs=[dense_inputs, sparse_inputs],
-                    outputs=self.call([dense_inputs, sparse_inputs])).summary()
 
 
 class DeepFM(keras.Model):
@@ -254,14 +221,6 @@ class DeepFM(keras.Model):
         outputs = tf.nn.sigmoid(
             tf.add(tf.add(self.w1 * wide_outputs, self.w2 * deep_outputs), self.bias))
         return outputs
-
-    def summary(self):
-        dense_inputs = Input(name='i111',
-                             shape=(len(self.dense_feature_columns),), dtype=tf.float32)
-        sparse_inputs = Input(name='i222',
-                              shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
-        keras.Model(name='deep-fm', inputs=[dense_inputs, sparse_inputs], outputs=self.call(
-            [dense_inputs, sparse_inputs])).summary()
 
 
 class CIN(layers.Layer):
@@ -384,14 +343,6 @@ class xDeepFM(keras.Model):
         output = tf.nn.sigmoid(cin_out + dnn_out + self.bias)
         return output
 
-    def summary(self):
-        dense_inputs = Input(
-            shape=(len(self.dense_feature_columns),), dtype=tf.float32)
-        sparse_inputs = Input(
-            shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
-        keras.Model(inputs=[dense_inputs, sparse_inputs], outputs=self.call(
-            [dense_inputs, sparse_inputs])).summary()
-
 
 class MF_layer(Layer):
     def __init__(self, user_num, item_num, latent_dim, implicit=False, use_bias=False, user_reg=1e-4, item_reg=1e-4,
@@ -460,13 +411,6 @@ class MF_layer(Layer):
             outputs = tf.nn.sigmoid(outputs)
         return outputs
 
-    def summary(self):
-        user_id = tf.keras.Input(shape=(), dtype=tf.int32)
-        item_id = tf.keras.Input(shape=(), dtype=tf.int32)
-        avg_score = tf.keras.Input(shape=(), dtype=tf.float32)
-        tf.keras.Model(inputs=[user_id, item_id, avg_score], outputs=self.call(
-            [user_id, item_id, avg_score])).summary()
-
 
 class MF(tf.keras.Model):
     def __init__(self, feature_columns, implicit=False, use_bias=False, user_reg=1e-4, item_reg=1e-4,
@@ -495,14 +439,6 @@ class MF(tf.keras.Model):
         avg_score = dense_inputs
         outputs = self.mf_layer([user_id, item_id, avg_score])
         return outputs
-
-    def summary(self, **kwargs):
-        dense_inputs = tf.keras.Input(
-            shape=(len(self.dense_feature_columns),), dtype=tf.float32)
-        sparse_inputs = tf.keras.Input(
-            shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
-        tf.keras.Model(inputs=[dense_inputs, sparse_inputs], outputs=self.call(
-            [dense_inputs, sparse_inputs])).summary()
 
 
 class WideDeep(keras.Model):
@@ -544,14 +480,6 @@ class WideDeep(keras.Model):
         # out
         outputs = tf.nn.sigmoid(0.5 * (wide_out + deep_out))
         return outputs
-
-    def summary(self, **kwargs):
-        dense_inputs = Input(
-            shape=(len(self.dense_feature_columns),), dtype=tf.float32)
-        sparse_inputs = Input(
-            shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
-        keras.Model(inputs=[dense_inputs, sparse_inputs],
-                    outputs=self.call([dense_inputs, sparse_inputs])).summary()
 
 
 class CrossNetwork(Layer):
@@ -644,14 +572,6 @@ class DCN(keras.Model):
         outputs = tf.nn.sigmoid(self.dense_final(total_x))
         return outputs
 
-    def summary(self):
-        dense_inputs = Input(
-            shape=(len(self.dense_feature_columns),), dtype=tf.float32)
-        sparse_inputs = Input(
-            shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
-        keras.Model(inputs=[dense_inputs, sparse_inputs],
-                    outputs=self.call([dense_inputs, sparse_inputs])).summary()
-
 
 class PNN(keras.Model):
     def __init__(self, feature_columns, hidden_units, mode='in', dnn_dropout=0.,
@@ -741,14 +661,6 @@ class PNN(keras.Model):
         outputs = tf.nn.sigmoid(self.dense_final(dnn_x))
         return outputs
 
-    def summary(self):
-        dense_inputs = Input(
-            shape=(len(self.dense_feature_columns),), dtype=tf.float32)
-        sparse_inputs = Input(
-            shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
-        keras.Model(inputs=[dense_inputs, sparse_inputs],
-                    outputs=self.call([dense_inputs, sparse_inputs])).summary()
-
 
 class Residual_Units(Layer):
     """
@@ -813,11 +725,3 @@ class Deep_Crossing(keras.Model):
         r = self.res_dropout(r)
         outputs = tf.nn.sigmoid(self.dense(r))
         return outputs
-
-    def summary(self):
-        dense_inputs = Input(
-            shape=(len(self.dense_feature_columns),), dtype=tf.float32)
-        sparse_inputs = Input(
-            shape=(len(self.sparse_feature_columns),), dtype=tf.int32)
-        keras.Model(inputs=[dense_inputs, sparse_inputs],
-                    outputs=self.call([dense_inputs, sparse_inputs])).summary()
