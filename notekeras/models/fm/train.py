@@ -286,7 +286,7 @@ def train_mf(mode=1):
     test_X, test_y = test
     # ============================Build Model==========================
     model = MF(feature_columns, implicit, use_bias)
-    model.summary()
+    # model.summary()
     # ============================model checkpoint======================
     # check_path = '../save/mf_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
     # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True,
@@ -334,7 +334,7 @@ def train_wide_deep(mode=1):
     # ============================Build Model==========================
     model = WideDeep(feature_columns, hidden_units=hidden_units,
                      dnn_dropout=dnn_dropout)
-    model.summary()
+    # model.summary()
     # ============================model checkpoint======================
     # check_path = '../save/wide_deep_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
     # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True,
@@ -376,7 +376,7 @@ def train_dcn(mode=1):
     test_X, test_y = test
     # ============================Build Model==========================
     model = DCN(feature_columns, hidden_units, dnn_dropout=dnn_dropout)
-    model.summary()
+    # model.summary()
     # ============================model checkpoint======================
     # check_path = 'save/dcn_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
     # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True,
@@ -406,7 +406,7 @@ def train_pnn(mode=1):
     test_size = 0.2
 
     embed_dim = 8
-    mode = 'in'
+
     dnn_dropout = 0.5
     hidden_units = [256, 128, 64]
 
@@ -418,8 +418,9 @@ def train_pnn(mode=1):
     train_X, train_y = train
     test_X, test_y = test
     # ============================Build Model==========================
+    mode = 'in'
     model = PNN(feature_columns, hidden_units, dnn_dropout)
-    model.summary()
+    # model.summary()
     # ============================model checkpoint======================
     # check_path = 'save/pnn_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
     # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True,
@@ -462,7 +463,7 @@ def train_deep_cross(mode=1):
     test_X, test_y = test
     # ============================Build Model==========================
     model = Deep_Crossing(feature_columns, hidden_units)
-    model.summary()
+    # model.summary()
     # ============================model checkpoint======================
     # check_path = 'save/deep_crossing_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
     # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True,

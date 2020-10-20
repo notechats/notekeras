@@ -420,6 +420,7 @@ class MF_layer(Layer):
         self.item_bias_reg = item_bias_reg
 
     def build(self, input_shape):
+        keras.layers.Embedding
         self.p = self.add_weight(name='user_latent_matrix',
                                  shape=(self.user_num, self.latent_dim),
                                  initializer=tf.random_normal_initializer(),
