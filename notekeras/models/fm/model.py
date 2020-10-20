@@ -6,6 +6,7 @@ from tensorflow.keras import layers, losses, optimizers
 from tensorflow.keras.layers import (BatchNormalization, Concatenate, Dense,
                                      Dropout, Embedding, Flatten, Input, Layer,
                                      ReLU)
+from tensorflow.keras.models import Model
 from tensorflow.keras.regularizers import l2
 
 from ...layers import DNN
@@ -14,7 +15,7 @@ from ...layers import Linear
 from ...layers.fm import FactorizationMachine
 
 
-class FM(keras.Model):
+class FM(Model):
     def __init__(self, feature_columns, k, w_reg=1e-4, v_reg=1e-4):
         super(FM, self).__init__()
         self.dense_feature_columns, self.sparse_feature_columns = feature_columns
@@ -35,7 +36,7 @@ class FM(keras.Model):
         return outputs
 
 
-class AFM(keras.Model):
+class AFM(Model):
     def __init__(self, feature_columns, mode, activation='relu', embed_reg=1e-4):
         """
         AFM 
@@ -99,7 +100,7 @@ class AFM(keras.Model):
         return outputs
 
 
-class FFM(keras.Model):
+class FFM(Model):
     def __init__(self, feature_columns, k, w_reg=1e-4, v_reg=1e-4):
         """
         FFM architecture
@@ -120,7 +121,7 @@ class FFM(keras.Model):
         return outputs
 
 
-class NFM(keras.Model):
+class NFM(Model):
     def __init__(self, feature_columns, hidden_units, dnn_dropout=0., activation='relu', bn_use=True, embed_reg=1e-4):
         """
         NFM architecture
@@ -167,7 +168,7 @@ class NFM(keras.Model):
         return outputs
 
 
-class DeepFM(keras.Model):
+class DeepFM(Model):
     def __init__(self, feature_columns, k=10, hidden_units=(200, 200, 200), dnn_dropout=0.,
                  activation='relu', fm_w_reg=1e-4, fm_v_reg=1e-4, embed_reg=1e-4):
         """
@@ -223,7 +224,7 @@ class DeepFM(keras.Model):
         return outputs
 
 
-class CIN(layers.Layer):
+class CIN(Layer):
     """
     CIN part
     """
@@ -239,9 +240,7 @@ class CIN(layers.Layer):
         self.l2_reg = l2_reg
 
     def build(self, input_shape):
-        # get the number of embedding fields
         self.embedding_nums = input_shape[1]
-        # a list of the number of CIN
         self.field_nums = [self.embedding_nums] + self.cin_size
         # filters
         self.cin_W = {
@@ -290,7 +289,7 @@ class CIN(layers.Layer):
         return result
 
 
-class xDeepFM(keras.Model):
+class xDeepFM(Model):
     def __init__(self, feature_columns, hidden_units, cin_size, dnn_dropout=0, dnn_activation='relu',
                  embed_reg=1e-5, cin_reg=1e-5):
         """
@@ -412,7 +411,7 @@ class MF_layer(Layer):
         return outputs
 
 
-class MF(tf.keras.Model):
+class MF(Model):
     def __init__(self, feature_columns, implicit=False, use_bias=False, user_reg=1e-4, item_reg=1e-4,
                  user_bias_reg=1e-4, item_bias_reg=1e-4):
         """
@@ -441,7 +440,7 @@ class MF(tf.keras.Model):
         return outputs
 
 
-class WideDeep(keras.Model):
+class WideDeep(Model):
     def __init__(self, feature_columns, hidden_units, activation='relu',
                  dnn_dropout=0., embed_reg=1e-4):
         """
@@ -529,7 +528,7 @@ class CrossNetwork(Layer):
         return x_l
 
 
-class DCN(keras.Model):
+class DCN(Model):
     def __init__(self, feature_columns, hidden_units, activation='relu',
                  dnn_dropout=0., embed_reg=1e-4, cross_w_reg=1e-4, cross_b_reg=1e-4):
         """
@@ -573,7 +572,7 @@ class DCN(keras.Model):
         return outputs
 
 
-class PNN(keras.Model):
+class PNN(Model):
     def __init__(self, feature_columns, hidden_units, mode='in', dnn_dropout=0.,
                  activation='relu', embed_reg=1e-4, w_z_reg=1e-4, w_p_reg=1e-4, l_b_reg=1e-4):
         """
@@ -685,7 +684,7 @@ class Residual_Units(Layer):
         return outputs
 
 
-class Deep_Crossing(keras.Model):
+class Deep_Crossing(Model):
     def __init__(self, feature_columns, hidden_units, res_dropout=0., embed_reg=1e-4):
         """
         Deep&Crossing
