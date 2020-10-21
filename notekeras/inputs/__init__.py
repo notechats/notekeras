@@ -1,1 +1,1 @@
-from .inputs import *
+from .core import *

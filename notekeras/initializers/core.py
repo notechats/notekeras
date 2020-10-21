@@ -20,6 +20,7 @@ class PriorProbability(Initializer):
         # set bias to -log((1 - p)/p) for foreground
         if type(dtype) is not str:
             dtype = 'float32'
-        result = np.ones(shape, dtype=dtype) * -math.log((1 - self.probability) / self.probability)
+        result = np.ones(shape, dtype=dtype) * - \
+            math.log((1 - self.probability) / self.probability)
 
         return result

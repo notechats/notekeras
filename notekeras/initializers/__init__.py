@@ -1,1 +1,1 @@
-from notekeras.initializers.core import PriorProbability
+from .core import PriorProbability

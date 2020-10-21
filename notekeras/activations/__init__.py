@@ -1,1 +1,1 @@
-from .gelu_selection import gelu
+from .core import gelu, gelu2
