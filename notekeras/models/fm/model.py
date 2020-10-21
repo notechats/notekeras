@@ -730,6 +730,10 @@ class Deep_Crossing(Model):
 class Dice(Layer):
     def __init__(self):
         super(Dice, self).__init__()
+        self.bn = None
+        self.alpha = None
+
+    def build(self, input_shape):
         self.bn = layers.BatchNormalization(center=False, scale=False)
         self.alpha = self.add_weight(shape=(), dtype=tf.float32, name='alpha')
 
@@ -752,31 +756,31 @@ class DIN(Model):
         super(DIN, self).__init__()
         self.cate_list = tf.convert_to_tensor(cate_list, dtype=tf.int32)
         self.hidden_units = hidden_units
-        # self.user_embed = tf.keras.layers.Embedding(
+        # self.user_embed = layers.Embedding(
         #     input_dim=user_num, output_dim=hidden_units, embeddings_initializer='random_uniform',
         #     embeddings_regularizer=tf.keras.regularizers.l2(0.01), name='user_embed')
-        self.item_embed = tf.keras.layers.Embedding(
+        self.item_embed = layers.Embedding(
             input_dim=item_num, output_dim=self.hidden_units, embeddings_initializer='random_uniform',
             embeddings_regularizer=tf.keras.regularizers.l2(0.01), name='item_embed')
-        self.cate_embed = tf.keras.layers.Embedding(
+        self.cate_embed = layers.Embedding(
             input_dim=cate_num, output_dim=self.hidden_units, embeddings_initializer='random_uniform',
             embeddings_regularizer=tf.keras.regularizers.l2(0.01), name='cate_embed'
         )
-        self.dense = tf.keras.layers.Dense(self.hidden_units)
-        self.bn1 = tf.keras.layers.BatchNormalization()
-        self.concat = tf.keras.layers.Concatenate(axis=-1)
-        self.att_dense1 = tf.keras.layers.Dense(80, activation='sigmoid')
-        self.att_dense2 = tf.keras.layers.Dense(40, activation='sigmoid')
-        self.att_dense3 = tf.keras.layers.Dense(1)
-        self.bn2 = tf.keras.layers.BatchNormalization()
-        self.concat2 = tf.keras.layers.Concatenate(axis=-1)
-        self.dense1 = tf.keras.layers.Dense(80, activation='sigmoid')
-        self.activation1 = tf.keras.layers.PReLU()
+        self.dense = layers.Dense(self.hidden_units)
+        self.bn1 = layers.BatchNormalization()
+        self.concat = layers.Concatenate(axis=-1)
+        self.att_dense1 = layers.Dense(80, activation='sigmoid')
+        self.att_dense2 = layers.Dense(40, activation='sigmoid')
+        self.att_dense3 = layers.Dense(1)
+        self.bn2 = layers.BatchNormalization()
+        self.concat2 = layers.Concatenate(axis=-1)
+        self.dense1 = layers.Dense(80, activation='sigmoid')
+        self.activation1 = layers.PReLU()
         # self.activation1 = Dice()
-        self.dense2 = tf.keras.layers.Dense(40, activation='sigmoid')
-        self.activation2 = tf.keras.layers.PReLU()
+        self.dense2 = layers.Dense(40, activation='sigmoid')
+        self.activation2 = layers.PReLU()
         # self.activation2 = Dice()
-        self.dense3 = tf.keras.layers.Dense(1, activation=None)
+        self.dense3 = layers.Dense(1, activation=None)
 
     def call(self, inputs):
         user, item, hist, sl = inputs[0], tf.squeeze(
@@ -803,12 +807,11 @@ class DIN(Model):
         return outputs
 
     def summary(self):
-        user = tf.keras.Input(shape=(1,), dtype=tf.int32)
-        item = tf.keras.Input(shape=(1,), dtype=tf.int32)
-        sl = tf.keras.Input(shape=(1,), dtype=tf.int32)
-        hist = tf.keras.Input(shape=(431,), dtype=tf.int32)
-        tf.keras.Model(inputs=[user, item, hist, sl], outputs=self.call(
-            [user, item, hist, sl])).summary()
+        user = Input(shape=(1,), dtype=tf.int32)
+        item = Input(shape=(1,), dtype=tf.int32)
+        sl = Input(shape=(1,), dtype=tf.int32)
+        hist = Input(shape=(431,), dtype=tf.int32)
+        Model(inputs=[user, item, hist, sl], outputs=self.call([user, item, hist, sl])).summary()
 
     def concat_embed(self, item):
         """

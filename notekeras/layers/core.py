@@ -240,6 +240,7 @@ class DNN(Layer):
         self.hidden_units = hidden_units
         self.activation = activation
         self.dropout = dropout
+        self.dnn_network = None
 
     def build(self, input_shape):
         self.dnn_network = [Dense(units=unit, activation=self.activation)

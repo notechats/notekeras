@@ -492,7 +492,7 @@ def input_data(dataset, max_sl):
     user = np.array(dataset[:, 0], dtype='int32')
     item = np.array(dataset[:, 1], dtype='int32')
     hist = dataset[:, 2]
-    hist_matrix = tf.keras.preprocessing.sequence.pad_sequences(
+    hist_matrix = keras.preprocessing.sequence.pad_sequences(
         hist, maxlen=max_sl, padding='post')
 
     sl = np.array(dataset[:, 3], dtype='int32')
