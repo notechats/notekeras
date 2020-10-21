@@ -12,6 +12,8 @@ from tensorflow.keras.losses import binary_crossentropy
 from tensorflow.keras.metrics import AUC
 from tensorflow.keras.optimizers import Adam
 
+from notekeras.models.fm.model import *
+
 from .model import *
 
 criteo = CriteoData()
@@ -143,11 +145,6 @@ def train_ffm(mode=1):
 
 def train_nfm(mode=1):
     # ========================= Hyper Parameters =======================
-    read_part = True
-    sample_num = 5000000
-    test_size = 0.2
-
-    embed_dim = 8
     dnn_dropout = 0.5
     hidden_units = [256, 128, 64]
 
@@ -161,10 +158,7 @@ def train_nfm(mode=1):
     # ============================Build Model==========================
     model = NFM(feature_columns, hidden_units, dnn_dropout=dnn_dropout)
     # model.summary()
-    # ============================model checkpoint======================
-    # check_path = 'save/nfm_weights.epoch_{epoch:04d}.val_loss_{val_loss:.4f}.ckpt'
-    # checkpoint = tf.keras.callbacks.ModelCheckpoint(check_path, save_weights_only=True,
-    #                                                 verbose=1, period=5)
+
     # =========================Compile============================
     model.compile(loss=binary_crossentropy, optimizer=Adam(learning_rate=learning_rate),
                   metrics=[AUC()])
