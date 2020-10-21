@@ -12,7 +12,7 @@ from tensorflow.keras.regularizers import l2
 
 from ...layers import DNN
 from ...layers import FFM as FFM_Layer
-from ...layers import Linear
+from ...layers import Dice, Linear
 from ...layers.fm import FactorizationMachine
 
 
@@ -725,23 +725,6 @@ class Deep_Crossing(Model):
         r = self.res_dropout(r)
         outputs = tf.nn.sigmoid(self.dense(r))
         return outputs
-
-
-class Dice(Layer):
-    def __init__(self):
-        super(Dice, self).__init__()
-        self.bn = None
-        self.alpha = None
-
-    def build(self, input_shape):
-        self.bn = layers.BatchNormalization(center=False, scale=False)
-        self.alpha = self.add_weight(shape=(), dtype=tf.float32, name='alpha')
-
-    def call(self, x):
-        x_normed = self.bn(x)
-        x_p = tf.sigmoid(x_normed)
-
-        return self.alpha * (1.0 - x_p) * x + x_p * x
 
 
 class DIN(Model):

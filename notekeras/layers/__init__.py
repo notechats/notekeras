@@ -1,3 +1,4 @@
+from .activations import Dice
 from .attention import (MultiHeadAttention, ScaledDotProductAttention,
                         SeqSelfAttention, SeqWeightedAttention)
 from .conv import MaskedConv1D
