@@ -73,3 +73,4 @@ class AutoEncoder(Component):
         for size in self.encode_size:
             output = Dense(size, activation='tanh')(output)
         return output
+

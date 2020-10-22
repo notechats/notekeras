@@ -185,6 +185,8 @@ class DeepFM(Model):
         """
         super(DeepFM, self).__init__()
         self.dense_feature_columns, self.sparse_feature_columns = feature_columns
+        self.build()
+
         self.embed_layers = {
             'embed_' + str(i): Embedding(input_dim=feat['feat_num'],
                                          input_length=1,
@@ -194,20 +196,16 @@ class DeepFM(Model):
             for i, feat in enumerate(self.sparse_feature_columns)
         }
 
-        self.fm = FactorizationMachine(
-            output_dim=1, factor_dim=k, kernal_reg=fm_v_reg, weight_reg=fm_w_reg,                                           name='FMM')
+        self.fm = FactorizationMachine(output_dim=1, factor_dim=k, kernal_reg=fm_v_reg,
+                                       weight_reg=fm_w_reg, name='FMM')
 
         self.dnn = DNN(hidden_units, activation, dnn_dropout)
         self.dense = Dense(1, activation=None)
-        self.w1 = self.add_weight(name='wide_weight',
-                                  shape=(1,),
-                                  trainable=True)
-        self.w2 = self.add_weight(name='deep_weight',
-                                  shape=(1,),
-                                  trainable=True)
-        self.bias = self.add_weight(name='bias',
-                                    shape=(1,),
-                                    trainable=True)
+        self.w1 = self.add_weight(
+            name='wide_weight', shape=(1,), trainable=True)
+        self.w2 = self.add_weight(
+            name='deep_weight', shape=(1,), trainable=True)
+        self.bias = self.add_weight(name='bias', shape=(1,), trainable=True)
 
     def call(self, inputs, **kwargs):
         dense_inputs, sparse_inputs = inputs
@@ -794,7 +792,8 @@ class DIN(Model):
         item = Input(shape=(1,), dtype=tf.int32)
         sl = Input(shape=(1,), dtype=tf.int32)
         hist = Input(shape=(431,), dtype=tf.int32)
-        Model(inputs=[user, item, hist, sl], outputs=self.call([user, item, hist, sl])).summary()
+        Model(inputs=[user, item, hist, sl], outputs=self.call(
+            [user, item, hist, sl])).summary()
 
     def concat_embed(self, item):
         """
