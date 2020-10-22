@@ -63,11 +63,18 @@ def train_all(mode=1, name='FM'):
     if model is not None:
         model.compile(loss=binary_crossentropy, optimizer=Adam(
             learning_rate=learning_rate), metrics=[AUC()])
+
     # model.summary()
     # ==============================Fit==============================
 
     if model is not None:
-        check_path = './save/{name}_weights.epoch_{epoch}.val_loss.ckpt'.format(
+        plot_model(model, to_file=criteo.path_root +
+                   '/'+name+'.png', show_shapes=True)
+        plot_model(model, to_file=criteo.path_root +
+                   '/'+name+'-extend.png',
+                   show_shapes=True, expand_nested=True)
+
+        check_path = criteo.path_root+'/save/{name}_weights.epoch_{epoch}.val_loss.ckpt'.format(
             epoch=epochs, name=name)
         checkpoint = callbacks.ModelCheckpoint(
             check_path, save_weights_only=True, verbose=1, period=5)
