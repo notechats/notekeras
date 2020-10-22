@@ -1,2 +1,2 @@
-from notekeras.feature.feature_column_def import IndicatorColumnDef
-from notekeras.feature.feature_parse import ParseFeatureConfig
+from .feature_column_def import IndicatorColumnDef
+from .feature_parse import ParseFeatureConfig
