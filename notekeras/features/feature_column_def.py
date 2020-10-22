@@ -1,7 +1,7 @@
 from tensorflow.python.feature_column import feature_column as fc_old
 from tensorflow.python.feature_column import utils as fc_utils
-from tensorflow.python.feature_column.feature_column_v2 import DenseColumn, SequenceDenseColumn
-from tensorflow.python.feature_column.feature_column_v2 import FeatureColumn, SequenceCategoricalColumn
+from tensorflow.python.feature_column.feature_column_v2 import (
+    DenseColumn, FeatureColumn, SequenceCategoricalColumn, SequenceDenseColumn)
 from tensorflow.python.framework import tensor_shape
 from tensorflow.python.ops import sparse_ops
 from tensorflow.python.util import deprecation
@@ -28,7 +28,8 @@ class IndicatorColumnDef(DenseColumn, SequenceDenseColumn, fc_old._DenseColumn, 
     def _transform_id_weight_pair(self, id_weight_pair):
         id_tensor = id_weight_pair.id_tensor
 
-        dense_id_tensor = sparse_ops.sparse_tensor_to_dense(id_tensor, default_value=-1)
+        dense_id_tensor = sparse_ops.sparse_tensor_to_dense(
+            id_tensor, default_value=-1)
 
         # One hot must be float for tf.concat reasons since all other inputs to input_layer are float32.
         # one_hot_id_tensor = array_ops.one_hot(dense_id_tensor, depth=self.categorical_column.num_buckets, on_value=1.0,
@@ -40,7 +41,8 @@ class IndicatorColumnDef(DenseColumn, SequenceDenseColumn, fc_old._DenseColumn, 
         # return id_tensor
 
     def transform_feature(self, transformation_cache, state_manager):
-        id_weight_pair = self.categorical_column.get_sparse_tensors(transformation_cache, state_manager)
+        id_weight_pair = self.categorical_column.get_sparse_tensors(
+            transformation_cache, state_manager)
         return self._transform_id_weight_pair(id_weight_pair)
 
     @property
@@ -83,8 +85,10 @@ class IndicatorColumnDef(DenseColumn, SequenceDenseColumn, fc_old._DenseColumn, 
                 'Given (type {}): {}'.format(self.name, type(self.categorical_column), self.categorical_column))
         # Feature has been already transformed. Return the intermediate representation created by transform_feature.
         dense_tensor = transformation_cache.get(self, state_manager)
-        sparse_tensors = self.categorical_column.get_sparse_tensors(transformation_cache, state_manager)
-        sequence_length = fc_utils.sequence_length_from_sparse_tensor(sparse_tensors.id_tensor)
+        sparse_tensors = self.categorical_column.get_sparse_tensors(
+            transformation_cache, state_manager)
+        sequence_length = fc_utils.sequence_length_from_sparse_tensor(
+            sparse_tensors.id_tensor)
         return SequenceDenseColumn.TensorSequenceLengthPair(dense_tensor=dense_tensor, sequence_length=sequence_length)
 
     @property
@@ -96,7 +100,8 @@ class IndicatorColumnDef(DenseColumn, SequenceDenseColumn, fc_old._DenseColumn, 
         """See 'FeatureColumn` base class."""
         from tensorflow.python.feature_column.serialization import serialize_feature_column
         config = dict(zip(self._fields, self))
-        config['categorical_column'] = serialize_feature_column(self.categorical_column)
+        config['categorical_column'] = serialize_feature_column(
+            self.categorical_column)
         return config
 
     @classmethod
@@ -112,7 +117,8 @@ class IndicatorColumnDef(DenseColumn, SequenceDenseColumn, fc_old._DenseColumn, 
 
     @deprecation.deprecated(_FEATURE_COLUMN_DEPRECATION_DATE, _FEATURE_COLUMN_DEPRECATION)
     def _transform_feature(self, inputs):
-        id_weight_pair = self.categorical_column._get_sparse_tensors(inputs)  # pylint: disable=protected-access
+        id_weight_pair = self.categorical_column._get_sparse_tensors(
+            inputs)  # pylint: disable=protected-access
         return self._transform_id_weight_pair(id_weight_pair)
 
     @property
@@ -172,7 +178,8 @@ class IndicatorColumnDef(DenseColumn, SequenceDenseColumn, fc_old._DenseColumn, 
         # Feature has been already transformed. Return the intermediate
         # representation created by _transform_feature.
         dense_tensor = inputs.get(self)
-        sparse_tensors = self.categorical_column._get_sparse_tensors(inputs)  # pylint: disable=protected-access
+        sparse_tensors = self.categorical_column._get_sparse_tensors(
+            inputs)  # pylint: disable=protected-access
         sequence_length = fc_utils.sequence_length_from_sparse_tensor(
             sparse_tensors.id_tensor)
         return SequenceDenseColumn.TensorSequenceLengthPair(
@@ -182,7 +189,8 @@ class IndicatorColumnDef(DenseColumn, SequenceDenseColumn, fc_old._DenseColumn, 
 def _check_config_keys(config, expected_keys):
     """Checks that a config has all expected_keys."""
     if set(config.keys()) != set(expected_keys):
-        raise ValueError('Invalid config: {}, expected keys: {}'.format(config, expected_keys))
+        raise ValueError(
+            'Invalid config: {}, expected keys: {}'.format(config, expected_keys))
 
 
 def _standardize_and_copy_config(config):

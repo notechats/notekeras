@@ -1,7 +1,7 @@
 import pickle
 
 import tensorflow as tf
-from notekeras.feature import IndicatorColumnDef
+from .feature_column_def import IndicatorColumnDef
 from notekeras.layers import TrigPosEmbedding
 from tensorflow.keras import backend as K
 from tensorflow.keras.layers import DenseFeatures, Embedding, Input, Layer
