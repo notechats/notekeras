@@ -9,6 +9,7 @@ from tensorflow.keras.losses import binary_crossentropy
 from tensorflow.keras.metrics import AUC
 from tensorflow.keras.optimizers import Adam
 
+from notekeras.backend import plot_model
 from notekeras.models.fm.model import *
 
 from .model import *

@@ -3,8 +3,9 @@ import tensorflow as tf
 from tensorflow import keras
 
 from notekeras.backend import plot_model
-from notekeras.component.transformer import EncoderComponent, EncoderList, DecoderList
-from notekeras.layer import MultiHeadAttention, ScaledDotProductAttention
+from notekeras.component.transformer import (DecoderList, EncoderComponent,
+                                             EncoderList)
+from notekeras.layers import MultiHeadAttention, ScaledDotProductAttention
 
 tf.keras.backend.set_floatx('float64')
 
@@ -46,7 +47,8 @@ def wrap_attention_example():
     key, query, value = data_mock()
 
     # layer = WrapCodeModel2(name='wrap', head_num=2, hidden_dim=2, as_layer=True, input_shape=np.shape(key))
-    input = keras.layers.Input(shape=np.shape(key), name='Encoder-Input', dtype=tf.float32)
+    input = keras.layers.Input(shape=np.shape(
+        key), name='Encoder-Input', dtype=tf.float32)
     layer = WrapCodeModel(name='aaa', head_num=2,
                           hidden_dim=2,
                           use_attention=False,
@@ -55,7 +57,8 @@ def wrap_attention_example():
     output = keras.layers.Dense(4)(output)
     model = keras.models.Model(input, output)
     plot_model(model, to_file='wrap_attention_example.png', show_shapes=True)
-    plot_model(model, to_file='wrap_attention_example-expand.png', show_shapes=True, expand_nested=True)
+    plot_model(model, to_file='wrap_attention_example-expand.png',
+               show_shapes=True, expand_nested=True)
 
     print("self-multi attention")
     print(model(key))
@@ -81,7 +84,8 @@ def encode_example():
 
     # model = EncoderModel3(name='wrap', head_num=2, hidden_dim=2, input_shape=np.shape(key))
     plot_model(model, to_file='encode.png', show_shapes=True)
-    plot_model(model, to_file='encode-expand.png', show_shapes=True, expand_nested=True)
+    plot_model(model, to_file='encode-expand.png',
+               show_shapes=True, expand_nested=True)
 
     print("self-multi attention")
     print(model(key))
@@ -96,19 +100,23 @@ def encode_list_example():
     print(np.shape(key))
     print(np.shape(input)[1:])
 
-    output1 = EncoderComponent(name='wrap', head_num=2, hidden_dim=2, layer_depth=0)(input)
-    output2 = EncoderComponent(name='wrap_2', head_num=2, hidden_dim=2)(output1)
+    output1 = EncoderComponent(
+        name='wrap', head_num=2, hidden_dim=2, layer_depth=0)(input)
+    output2 = EncoderComponent(
+        name='wrap_2', head_num=2, hidden_dim=2)(output1)
     output3 = EncoderComponent(name='wrap3', head_num=2, hidden_dim=2)(output2)
     output4 = EncoderComponent(name='wrap4', head_num=2, hidden_dim=2)(output3)
     output5 = EncoderComponent(name='wrap5', head_num=2, hidden_dim=2)(output4)
 
     output6 = EncoderList(encoder_num=4, head_num=2, hidden_dim=2)(output5)
-    output = DecoderList(decoder_num=4, head_num=2, hidden_dim=2)([output5, output6])
+    output = DecoderList(decoder_num=4, head_num=2,
+                         hidden_dim=2)([output5, output6])
 
     model = keras.models.Model(input, output)
 
     plot_model(model, to_file='encode-list.png', show_shapes=True)
-    plot_model(model, to_file='encode-list-expand.png', show_shapes=True, expand_nested=True)
+    plot_model(model, to_file='encode-list-expand.png',
+               show_shapes=True, expand_nested=True)
 
     print("self-multi attention")
     print(model(key))
