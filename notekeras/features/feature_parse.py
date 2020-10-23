@@ -1,7 +1,6 @@
 import pickle
 
 import tensorflow as tf
-from .feature_column_def import IndicatorColumnDef
 from notekeras.layers import TrigPosEmbedding
 from tensorflow.keras import backend as K
 from tensorflow.keras.layers import DenseFeatures, Embedding, Input, Layer
@@ -9,6 +8,8 @@ from tensorflow.python.feature_column import feature_column_v2 as fc
 from tensorflow.python.feature_column import sequence_feature_column as sfc
 from tensorflow.python.feature_column.feature_column_lib import \
     SequenceFeatures
+
+from .feature_column_def import IndicatorColumnDef
 
 field_type_map = {
     'int': tf.dtypes.int32,
@@ -33,7 +34,8 @@ def _parse_vocabulary(vocabulary):
 def _get_categorical_column(params: dict) -> fc.CategoricalColumn:
     if 'vocabulary' in params.keys():
         feature = fc.categorical_column_with_vocabulary_list(params['key'],
-                                                             vocabulary_list=_parse_vocabulary(params['vocabulary']),
+                                                             vocabulary_list=_parse_vocabulary(
+                                                                 params['vocabulary']),
                                                              default_value=0)
     elif 'bucket_size' in params.keys():
         feature = fc.categorical_column_with_hash_bucket(params['key'],
@@ -46,7 +48,8 @@ def _get_categorical_column(params: dict) -> fc.CategoricalColumn:
         feature = fc.categorical_column_with_identity(params['key'],
                                                       num_buckets=params['num_buckets'])
     elif 'boundaries' in params.keys():
-        feature = fc.bucketized_column(fc.numeric_column(params['key']), boundaries=params['boundaries'])
+        feature = fc.bucketized_column(fc.numeric_column(
+            params['key']), boundaries=params['boundaries'])
     else:
         raise Exception("params error")
 
@@ -61,7 +64,8 @@ def _get_sequence_categorical_column(params: dict) -> fc.SequenceCategoricalColu
                                                                            params['vocabulary']),
                                                                        default_value=0)
     elif 'bucket_size' in params.keys():
-        feature = sfc.sequence_categorical_column_with_hash_bucket(key, hash_bucket_size=params['bucket_size'])
+        feature = sfc.sequence_categorical_column_with_hash_bucket(
+            key, hash_bucket_size=params['bucket_size'])
     elif 'file' in params.keys():
         feature = sfc.sequence_categorical_column_with_vocabulary_file(key,
                                                                        vocabulary_file=params['file'],
@@ -137,7 +141,8 @@ class ParseFeatureConfig:
         feature = _get_categorical_column(params)
         feature_column = fc.indicator_column(feature)
 
-        outputs = DenseFeatures(feature_column, name=params.get('name', None))({key: inputs})
+        outputs = DenseFeatures(
+            feature_column, name=params.get('name', None))({key: inputs})
 
         return outputs
 
@@ -180,7 +185,8 @@ class ParseFeatureConfig:
         feature = _get_sequence_categorical_column(params)
         column = IndicatorColumnDef(feature, size=params['length'])
 
-        sequence_input, sequence_length = SequenceFeatures(column)({key: inputs})
+        sequence_input, sequence_length = SequenceFeatures(column)({
+            key: inputs})
 
         return sequence_input, sequence_length
 
@@ -196,7 +202,8 @@ class ParseFeatureConfig:
         feature = _get_sequence_categorical_column(params)
         column = IndicatorColumnDef(feature, size=params['length'])
 
-        sequence_input, sequence_length = SequenceFeatures(column)({key: inputs})
+        sequence_input, sequence_length = SequenceFeatures(column)({
+            key: inputs})
 
         sequence_input = tf.keras.backend.sum(sequence_input, axis=-1)
 
@@ -208,7 +215,8 @@ class ParseFeatureConfig:
                                                 weights=[pickle.load(open(params['weights'],
                                                                           'rb'))] if 'weights' in params.keys() else None,
 
-                                                trainable=params.get('trainable', True),
+                                                trainable=params.get(
+                                                    'trainable', True),
                                                 # embeddings_regularizer=tf.keras.regularizers.l2(0.01),
                                                 # activity_regularizer=tf.keras.regularizers.l2(0.01),
                                                 name=name))
@@ -270,3 +278,46 @@ class ParseFeatureConfig:
 
         sequence_input, sequence_length = method(feature_para)
         return sequence_input, sequence_length
+
+    def parse_feature(self, layer_dict):
+        values = []
+        if isinstance(layer_dict, dict):
+            values = layer_dict.values()
+        elif isinstance(layer_dict, list):
+            values = layer_dict
+
+        outputs = []
+        for value in values:
+            if value['type'] == 'single':
+                outputs.append(self.parse_feature_json(value))
+            elif value['type'] == 'sequence':
+                outputs.append(self.parse_sequence_feature_json(value))
+        return outputs
+
+
+def define_feature_json(key,
+                        feature_type='NumericColumn',
+                        feature_lenth=1,
+                        feature_dtype='float32',
+                        dimension=10,
+                        share_name='item',
+                        vocabulary='',
+                        bucket_size=16,
+                        num_buckets=16,
+                        *args, **kwargs):
+    para = {
+        "key": key,
+        "length": feature_lenth,
+        "dtype": feature_dtype,
+        "share_name": share_name,
+        "dimension": dimension,
+        "vocabulary": vocabulary,
+        "bucket_size": bucket_size,
+        "num_buckets": num_buckets
+    }
+    para.update(kwargs)
+
+    return {
+        "type": feature_type,
+        "parameters": para
+    }

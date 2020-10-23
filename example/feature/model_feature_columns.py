@@ -68,64 +68,6 @@ def get_data():
 train_ds, val_ds, test_ds = get_data()
 
 
-def compare1():
-    fields = [('age', 'int32'),
-              ('trestbps', 'int32'),
-              ('chol', 'int32'),
-              ('thalach', 'int32'),
-              ('oldpeak', 'int32'),
-              ('slope', 'int32'),
-              ('ca', 'int32'),
-              ('thal', 'string'),
-              ]
-
-    # 将源数据的变量输入进来
-    feature_dict = {}
-    for field in fields:
-        field_name = field[0]
-        if field[1] == 'int32':
-            field_type = tf.dtypes.int32
-        else:
-            field_type = tf.dtypes.string
-
-        feature_dict[field_name] = tf.keras.Input(
-            (1,), dtype=field_type, name=field_name)
-
-    # 对源数据字段进行处理
-    feature_columns = []
-    for header in ['age', 'trestbps', 'chol', 'thalach', 'oldpeak', 'slope', 'ca']:
-        feature_columns.append(feature_column.numeric_column(header))
-
-    age = feature_column.numeric_column("age")
-    age_buckets = feature_column.bucketized_column(
-        age, boundaries=[18, 25, 30, 35, 40, 45, 50, 55, 60, 65])
-    feature_columns.append(age_buckets)
-
-    thal = feature_column.categorical_column_with_vocabulary_list(
-        'thal', ['fixed', 'normal', 'reversible'])
-    feature_columns.append(feature_column.indicator_column(thal))
-    feature_columns.append(feature_column.embedding_column(thal, dimension=8))
-
-    # crossed_feature = feature_column.crossed_column([age_buckets, thal], hash_bucket_size=1000)
-    # crossed_feature = feature_column.indicator_column(crossed_feature)
-    # feature_columns.append(crossed_feature)
-
-    feature_layer = layers.DenseFeatures(feature_columns)
-
-    l0 = feature_layer(feature_dict)
-    l1 = layers.Dense(128, activation='relu')(l0)
-    l2 = layers.Dense(128, activation='relu')(l1)
-    l3 = layers.Dense(1, activation='sigmoid')(l2)
-
-    model = keras.models.Model(inputs=list(
-        feature_dict.values()), outputs=[l3])
-    model.compile(optimizer='adam', loss='binary_crossentropy', )
-    model.summary()
-    plot_model(model, to_file='feature.png', show_shapes=True)
-
-    model.fit(train_ds, validation_data=val_ds, epochs=5)
-
-
 def compare2():
     feature_json = open('model_feature.json', 'r').read()
     feature_json = demjson.decode(feature_json)
