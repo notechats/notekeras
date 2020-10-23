@@ -28,7 +28,7 @@ def _parse_vocabulary(vocabulary):
     elif isinstance(vocabulary, str):
         return eval(vocabulary)
     else:
-        return []
+        return [i for i in vocabulary]
 
 
 def _get_categorical_column(params: dict) -> fc.CategoricalColumn:
