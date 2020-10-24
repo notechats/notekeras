@@ -1,15 +1,16 @@
 import sys
 from os import path
 
-from setuptools import setup, find_packages
-
 from notebuild.tool import get_version
+from setuptools import find_packages, setup
 
-version_path = path.join(path.abspath(path.dirname(__file__)), 'script/__version__.md')
+version_path = path.join(path.abspath(
+    path.dirname(__file__)), 'script/__version__.md')
 
-version = get_version(sys.argv, version_path, step=16)
+version = get_version(sys.argv, version_path, step=32)
 
-install_requires = ['tensorflow', 'numpy', 'scipy', 'opencv-python', 'pillow', 'tqdm']
+install_requires = ['tensorflow', 'numpy',
+                    'scipy', 'opencv-python', 'pillow', 'tqdm']
 
 setup(name='notekeras',
       version=version,
