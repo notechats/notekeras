@@ -264,7 +264,7 @@ class ParseFeatureConfig:
             outputs.append(method(feature_para))
 
         #outputs = tf.keras.backend.concatenate(outputs)
-        outputs = Concatenate(outputs)
+        outputs = Concatenate()(outputs)
 
         return outputs
 
