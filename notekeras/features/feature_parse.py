@@ -3,7 +3,8 @@ import pickle
 import tensorflow as tf
 from notekeras.layers import TrigPosEmbedding
 from tensorflow.keras import backend as K
-from tensorflow.keras.layers import DenseFeatures, Embedding, Input, Layer
+from tensorflow.keras.layers import (Concatenate, DenseFeatures, Embedding,
+                                     Input, Layer)
 from tensorflow.python.feature_column import feature_column_v2 as fc
 from tensorflow.python.feature_column import sequence_feature_column as sfc
 from tensorflow.python.feature_column.feature_column_lib import \
@@ -262,7 +263,8 @@ class ParseFeatureConfig:
 
             outputs.append(method(feature_para))
 
-        outputs = tf.keras.backend.concatenate(outputs)
+        #outputs = tf.keras.backend.concatenate(outputs)
+        outputs = Concatenate(outputs)
 
         return outputs
 
