@@ -298,12 +298,12 @@ class ParseFeatureConfig:
 def define_feature_json(key,
                         feature_type='NumericColumn',
                         feature_lenth=1,
-                        feature_dtype='float32',
-                        dimension=10,
-                        share_name='item',
-                        vocabulary='',
-                        bucket_size=16,
-                        num_buckets=16,
+                        feature_dtype=None,
+                        dimension=None,
+                        share_name=None,
+                        vocabulary=None,
+                        bucket_size=None,
+                        num_buckets=None,
                         *args, **kwargs):
     para = {
         "key": key,
