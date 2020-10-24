@@ -316,9 +316,6 @@ def define_feature_json(key,
         "num_buckets": num_buckets
     }
     para.update(kwargs)
-    for key in para.keys():
-        if key is None or para[key] is None:
-            para.pop(key)
     para = {k: v for k, v in para.items() if k is not None and v is not None}
 
     return {
