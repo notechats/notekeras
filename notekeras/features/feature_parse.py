@@ -129,12 +129,9 @@ class ParseFeatureConfig:
             elif params['transform'] == 'sqrt':
                 inputs = K.sqrt(inputs)
 
-        column = numeric_column(
-            params['key'], shape=(params.get('length', 1),))
-
-        outputs = DenseFeatures(column)({key: inputs})
-
-        return outputs
+        #column = numeric_column(params['key'], shape=(params.get('length', 1),))
+        #outputs = DenseFeatures(column)({key: inputs})
+        return inputs
 
     def _cate_indicator_column(self, params: dict) -> DenseFeatures:
         """
