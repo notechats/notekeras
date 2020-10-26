@@ -1,5 +1,7 @@
+import tensorflow as tf
 from notekeras.component import Component
-from notekeras.models.fm.model import *
+from notekeras.models.fm.model import DNN, FactorizationMachine
+from tensorflow.keras.layers import Dense
 
 
 class DeepFM(Component):
