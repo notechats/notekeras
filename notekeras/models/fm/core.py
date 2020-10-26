@@ -1,8 +1,5 @@
-"""
-"""
 from notekeras.component import Component
-from notekeras.models.fm.model import DNN, FactorizationMachine
-from tensorflow.keras.layers import Concatenate, Dense
+from notekeras.models.fm.model import *
 
 
 class DeepFM(Component):
@@ -19,7 +16,7 @@ class DeepFM(Component):
         :param fm_v_reg: A scalar. The regularizer of v in fm.
         :param embed_reg: A scalar. The regularizer of embedding.
         """
-        super(DeepFM2, self).__init__(*args, **kwargs)
+        super(DeepFM, self).__init__(*args, **kwargs)
         self.factor_dim = k
         self.hidden_units = hidden_units
         self.activation = activation
@@ -38,6 +35,6 @@ class DeepFM(Component):
     def call(self, inputs, **kwargs):
         wide_outputs = self.fm(inputs)
         deep_outputs = self.dnn(inputs)
-        outputs = Concatenate()([wide_outputs, deep_outputs])
+        outputs = tf.keras.layers.Concatenate()([wide_outputs, deep_outputs])
         outputs = self.dense(outputs)
         return outputs
