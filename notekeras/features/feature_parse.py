@@ -7,8 +7,8 @@ from tensorflow.keras.layers import (Concatenate, DenseFeatures, Embedding,
                                      Input, Layer)
 from tensorflow.python.feature_column import feature_column_v2 as fc
 from tensorflow.python.feature_column import sequence_feature_column as sfc
-from tensorflow.python.feature_column.feature_column_lib import \
-    SequenceFeatures
+from tensorflow.python.feature_column.feature_column_lib import (
+    NumericColumn, SequenceFeatures, numeric_column)
 
 from .feature_column_def import IndicatorColumnDef
 
@@ -128,7 +128,13 @@ class ParseFeatureConfig:
                 inputs = K.log(inputs)
             elif params['transform'] == 'sqrt':
                 inputs = K.sqrt(inputs)
-        return inputs
+
+        column = numeric_column(
+            params['key'], shape=(params.get('length', 1),))
+
+        outputs = DenseFeatures(column)({key: inputs})
+
+        return outputs
 
     def _cate_indicator_column(self, params: dict) -> DenseFeatures:
         """
