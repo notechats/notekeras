@@ -32,7 +32,7 @@ class DeepFM(Component):
                                        weight_reg=self.fm_w_reg, name='FM')
 
         self.dnn = DNN(self.hidden_units, self.activation, self.dnn_dropout)
-        self.dense = Dense(1, activation='softmax')
+        self.dense = Dense(1, activation='sigmoid')
 
     def call(self, inputs, **kwargs):
         wide_outputs = self.fm(inputs)
