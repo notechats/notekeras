@@ -1,7 +1,9 @@
 import tensorflow as tf
+from notekeras.layers.core import SelfSum
 from tensorflow.keras import backend as K
 from tensorflow.keras.layers import Concatenate, Embedding, Input, Layer
-from tensorflow.keras.layers.experimental.preprocessing import StringLookup, CategoryEncoding, Hashing, IntegerLookup
+from tensorflow.keras.layers.experimental.preprocessing import (
+    CategoryEncoding, Hashing, IntegerLookup, StringLookup)
 
 field_type_map = {
     'int': tf.dtypes.int32,
@@ -110,16 +112,25 @@ class ParseFeatureConfig:
                                      vocabulary=params['vocabulary_list'])(input_layer)
 
     def _category_embedding(self, params: dict):
-        id_input = self._category_lookup(params)
+        if 'vocabulary_size' in params.keys():
+            vocabulary_size = params['vocabulary_size']
+            key, input_layer = self._get_input_layer(params)
+        else:
+            input_layer = self._category_lookup(params)
+            vocabulary_size = len(params['vocabulary_list'])
 
-        embedding_input = Embedding(input_dim=len(params['vocabulary_list']),
-                                    output_dim=params['dimension'],
-                                    trainable=True,
-                                    mask_zero=True,
-                                    # embeddings_initializer=initializer,
-                                    # embeddings_constraint=MaxNorm(max_norm)
-                                    )(id_input)
-        embedding_input = tf.reduce_sum(embedding_input, axis=-2)
+        name = params.get('share_name', params['key'] + '-emb')
+        embedding_layer = self._get_share_layer(name, Embedding(name=name,
+                                                                input_dim=vocabulary_size,
+                                                                output_dim=params['dimension'],
+                                                                trainable=True,
+                                                                mask_zero=True,
+                                                                embeddings_regularizer=tf.keras.regularizers.l2(0.01),
+                                                                activity_regularizer=tf.keras.regularizers.l2(0.01),
+                                                                ))
+        embedding_input = embedding_layer(input_layer)
+
+        embedding_input = SelfSum(axis=-2, name=params['key'] + 'sum')(embedding_input)
 
         return embedding_input
 

@@ -49,7 +49,7 @@ class SelfSum(Layer):
         # do not pass the mask to the next layers
         return None
 
-    def call(self, x, mask=None):
+    def call(self, x, mask=None, *args, **kwargs):
         if mask is not None:
             # mask (batch, time)
             mask = K.cast(mask, K.floatx())
