@@ -111,8 +111,22 @@ class ParseFeatureConfig:
                                      mask_value=None,
                                      vocabulary=params['vocabulary_list'])(input_layer)
 
+    def _category_onehot(self, params: dict):
+        if params['dtype'] in ('int', 'int32', 'int64'):
+            num_buckets = params['num_buckets']
+            key, input_layer = self._get_input_layer(params)
+        else:
+            input_layer = self._category_lookup(params)
+            num_buckets = len(params['vocabulary_list'])
+
+        name = params.get('name', params['key'] + '-onehot')
+        cate_encode = CategoryEncoding(
+            max_tokens=num_buckets, output_mode="binary", name=name)
+        output = cate_encode(input_layer)
+        return output
+
     def _category_embedding(self, params: dict):
-        if 'vocabulary_size' in params.keys():
+        if params['dtype'] in ('int', 'int32', 'int64'):
             vocabulary_size = params['vocabulary_size']
             key, input_layer = self._get_input_layer(params)
         else:
@@ -125,12 +139,15 @@ class ParseFeatureConfig:
                                                                 output_dim=params['dimension'],
                                                                 trainable=True,
                                                                 mask_zero=True,
-                                                                embeddings_regularizer=tf.keras.regularizers.l2(0.01),
-                                                                activity_regularizer=tf.keras.regularizers.l2(0.01),
+                                                                embeddings_regularizer=tf.keras.regularizers.l2(
+                                                                    0.01),
+                                                                activity_regularizer=tf.keras.regularizers.l2(
+                                                                    0.01),
                                                                 ))
         embedding_input = embedding_layer(input_layer)
 
-        embedding_input = SelfSum(axis=-2, name=params['key'] + 'sum')(embedding_input)
+        embedding_input = SelfSum(
+            axis=-2, name=params['key'] + 'sum')(embedding_input)
 
         return embedding_input
 
@@ -165,6 +182,8 @@ class ParseFeatureConfig:
             "FileIndicatorColumn": self._category_indicate,  # 读取文件产生的类别对应的one_hot
             "HashIndicatorColumn": self._category_indicate,  # 关键词hash映射产生的类别对应的one_hot
             "BucketIndicatorColumn": self._category_indicate,  # 数值分桶产生的类别对应的one_hot
+
+            "CateOneHotColumn": self._category_onehot,  # one-hot
 
             "CateEmbeddingColumn": self._category_embedding,  # embedding
             "FileEmbeddingColumn": self._category_embedding,
