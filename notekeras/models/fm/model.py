@@ -16,27 +16,6 @@ from ...layers import Dice, Linear
 from ...layers.fm import FactorizationMachine
 
 
-class FM(Model):
-    def __init__(self, feature_columns, k, w_reg=1e-4, v_reg=1e-4):
-        super(FM, self).__init__()
-        self.dense_feature_columns, self.sparse_feature_columns = feature_columns
-        self.fm = FactorizationMachine(output_dim=1)
-
-    def call(self, inputs, **kwargs):
-        dense_inputs, sparse_inputs = inputs
-        sparse_input2 = tf.concat(
-            [tf.one_hot(sparse_inputs[:, i],
-                        depth=self.sparse_feature_columns[i]['feat_num'], dtype=tf.float32)
-             for i in range(sparse_inputs.shape[1])
-             ], axis=1)
-
-        stack = tf.concat([dense_inputs, sparse_input2], axis=1)
-
-        fm_outputs = self.fm(stack)
-        outputs = tf.nn.sigmoid(fm_outputs)
-        return outputs
-
-
 class AFM(Model):
     def __init__(self, feature_columns, mode, activation='relu', embed_reg=1e-4):
         """
@@ -166,60 +145,6 @@ class NFM(Model):
         # Hidden Layers
         x = self.dnn_network(x)
         outputs = tf.nn.sigmoid(self.dense(x))
-        return outputs
-
-
-class DeepFM(Model):
-    def __init__(self, feature_columns, k=10, hidden_units=(200, 200, 200), dnn_dropout=0.,
-                 activation='relu', fm_w_reg=1e-4, fm_v_reg=1e-4, embed_reg=1e-4):
-        """
-        DeepFM
-        :param feature_columns: A list. a list containing dense and sparse column feature information.
-        :param k: A scalar. fm's latent vector number.
-        :param hidden_units: A list. A list of dnn hidden units.
-        :param dnn_dropout: A scalar. Dropout of dnn.
-        :param activation: A string. Activation function of dnn.
-        :param fm_w_reg: A scalar. The regularizer of w in fm.
-        :param fm_v_reg: A scalar. The regularizer of v in fm.
-        :param embed_reg: A scalar. The regularizer of embedding.
-        """
-        super(DeepFM, self).__init__()
-        self.dense_feature_columns, self.sparse_feature_columns = feature_columns
-        self.build()
-
-        self.embed_layers = {
-            'embed_' + str(i): Embedding(input_dim=feat['feat_num'],
-                                         input_length=1,
-                                         output_dim=feat['embed_dim'],
-                                         embeddings_initializer='random_uniform',
-                                         embeddings_regularizer=l2(embed_reg))
-            for i, feat in enumerate(self.sparse_feature_columns)
-        }
-
-        self.fm = FactorizationMachine(output_dim=1, factor_dim=k, kernal_reg=fm_v_reg,
-                                       weight_reg=fm_w_reg, name='FMM')
-
-        self.dnn = DNN(hidden_units, activation, dnn_dropout)
-        self.dense = Dense(1, activation=None)
-        self.w1 = self.add_weight(
-            name='wide_weight', shape=(1,), trainable=True)
-        self.w2 = self.add_weight(
-            name='deep_weight', shape=(1,), trainable=True)
-        self.bias = self.add_weight(name='bias', shape=(1,), trainable=True)
-
-    def call(self, inputs, **kwargs):
-        dense_inputs, sparse_inputs = inputs
-        sparse_embed = tf.concat([self.embed_layers['embed_{}'.format(i)](sparse_inputs[:, i])
-                                  for i in range(sparse_inputs.shape[1])], axis=-1)
-        stack = tf.concat([dense_inputs, sparse_embed], axis=-1)
-        # wide
-        wide_outputs = self.fm(stack)
-        # deep
-        deep_outputs = self.dnn(stack)
-        deep_outputs = self.dense(deep_outputs)
-
-        outputs = tf.nn.sigmoid(
-            tf.add(tf.add(self.w1 * wide_outputs, self.w2 * deep_outputs), self.bias))
         return outputs
 
 
