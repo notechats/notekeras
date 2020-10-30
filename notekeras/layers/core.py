@@ -92,49 +92,6 @@ class MaskFlatten(Layer):
         return input_shape[0], np.prod(input_shape[1:])
 
 
-class CrossLayer(Layer):
-    """
-    https://keras.io/layers/writing-your-own-keras-layers/
-    """
-
-    def __init__(self,
-                 num_layer,
-                 name='Cross',
-                 **kwargs):
-        super(CrossLayer, self).__init__(name=name, **kwargs)
-        self.num_layer = num_layer
-        self.input_dim = self.W = self.bias = None
-
-    def build(self, input_shape):
-        self.input_dim = input_shape[1]
-        self.W = []
-        self.bias = []
-        for i in range(self.num_layer):
-            self.W.append(self.add_weight(shape=[1, self.input_dim],
-                                          initializer='glorot_uniform',
-                                          name='w_' + str(i),
-                                          trainable=True))
-            self.bias.append(self.add_weight(shape=[1, self.input_dim],
-                                             initializer='zeros', name='b_' + str(i),
-                                             trainable=True))
-        super(CrossLayer, self).build(input_shape)
-
-    def call(self, inputs, **kwargs):
-        inputs = K.reshape(inputs, (-1, 1, self.input_dim))
-
-        cross = inputs
-        for i in range(self.num_layer):
-            cross = layers.Lambda(lambda x: layers.Add()(
-                [K.sum(self.W[i] * K.batch_dot(K.reshape(x, (-1, self.input_dim, 1)), inputs), 1, keepdims=True),
-                 self.bias[i], inputs]))(cross)
-
-        cross = K.reshape(cross, (-1, self.input_dim))
-        return cross
-
-    def compute_output_shape(self, input_shape):
-        return input_shape
-
-
 class AutoEncoder(Layer):
     """
     https://keras.io/layers/writing-your-own-keras-layers/
@@ -208,6 +165,44 @@ class AutoEncoder(Layer):
 
     def compute_output_shape(self, input_shape):
         return input_shape
+
+
+class CrossLayer(Layer):
+    def __init__(self, layer_num=5, reg_weight=1e-4, reg_bias=1e-4, *args, **kwargs):
+        super(CrossLayer, self).__init__(*args, **kwargs)
+        self.layer_num = layer_num
+        self.reg_weight = reg_weight
+        self.reg_bias = reg_bias
+        self.kernels = self.biases = None
+
+    def build(self, input_shape):
+        dim = int(input_shape[1])
+        self.kernels = [self.add_weight(name='weight_' + str(i),
+                                        shape=(dim, 1),
+                                        initializer='random_uniform',
+                                        regularizer=l2(self.reg_weight),
+                                        trainable=True, ) for i in range(self.layer_num)]
+
+        self.biases = [self.add_weight(name='bias_' + str(i),
+                                       shape=(dim, 1),
+                                       initializer='random_uniform',
+                                       regularizer=l2(self.reg_bias),
+                                       trainable=True, ) for i in range(self.layer_num)]
+
+    def call(self, inputs, **kwargs):
+        # (None, dim, 1)
+        x_0 = tf.expand_dims(inputs, axis=2)
+        # (None, dim, 1)
+        x_l = x_0
+        for i in range(self.layer_num):
+            # (None, dim, dim)
+            x_l1 = tf.tensordot(x_l, self.kernels[i], axes=[1, 0])
+            # (None, dim, 1)
+            x_l = tf.matmul(x_0, x_l1) + self.biases[i] + x_l
+
+        # (None, dim)
+        x_l = tf.squeeze(x_l, axis=2)
+        return x_l
 
 
 class Linear(Dense):

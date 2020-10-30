@@ -80,26 +80,6 @@ class AFM(Model):
         return outputs
 
 
-class FFM(Model):
-    def __init__(self, feature_columns, k, w_reg=1e-4, v_reg=1e-4):
-        """
-        FFM architecture
-        :param feature_columns:  a list containing dense and sparse column feature information
-        :param k: the latent vector
-        :param w_reg: the regularization coefficient of parameter w
-                :param field_reg_reg: the regularization coefficient of parameter v
-        """
-        super(FFM, self).__init__()
-        self.dense_feature_columns, self.sparse_feature_columns = feature_columns
-        self.ffm = FFM_Layer(self.dense_feature_columns, self.sparse_feature_columns,
-                             k, w_reg, v_reg)
-
-    def call(self, inputs, **kwargs):
-        result_ffm = self.ffm(inputs)
-        outputs = tf.nn.sigmoid(result_ffm)
-
-        return outputs
-
 
 class NFM(Model):
     def __init__(self, feature_columns, hidden_units, dnn_dropout=0., activation='relu', bn_use=True, embed_reg=1e-4):
