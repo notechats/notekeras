@@ -2,7 +2,7 @@ from .activations import Dice
 from .attention import (MultiHeadAttention, ScaledDotProductAttention,
                         SeqSelfAttention, SeqWeightedAttention)
 from .conv import MaskedConv1D
-from .core import DNN, Linear, MaskFlatten, SelfMean, SelfSum
+from .core import DNN, CrossLayer, Linear, MaskFlatten, SelfMean, SelfSum
 from .embedding import (EmbeddingRet, EmbeddingSim, EmbeddingSimilarity,
                         PositionEmbedding, TaskEmbedding, TokenEmbedding,
                         TrigPosEmbedding)
