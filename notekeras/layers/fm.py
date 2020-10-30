@@ -2,9 +2,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import activations
 from tensorflow.keras import backend as K
-from tensorflow.keras import losses, optimizers
-from tensorflow.keras.layers import (BatchNormalization, Dense, Dropout,
-                                     Embedding, Flatten, Input, Layer)
+from tensorflow.keras.layers import  Layer
 from tensorflow.keras.regularizers import l2
 
 
