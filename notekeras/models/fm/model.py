@@ -385,7 +385,6 @@ class WideDeep(Model):
         return outputs
 
 
-
 class DCN(Model):
     def __init__(self, feature_columns, hidden_units, activation='relu',
                  dnn_dropout=0., embed_reg=1e-4, cross_w_reg=1e-4, cross_b_reg=1e-4):
