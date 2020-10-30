@@ -1,7 +1,8 @@
 import tensorflow as tf
 from tensorflow import keras
+from tensorflow.keras import activations
 from tensorflow.keras import backend as K
-from tensorflow.keras import layers, losses, optimizers
+from tensorflow.keras import losses, optimizers
 from tensorflow.keras.layers import (BatchNormalization, Dense, Dropout,
                                      Embedding, Flatten, Input, Layer)
 from tensorflow.keras.regularizers import l2
@@ -88,61 +89,67 @@ class FactorizationMachine(Layer):
 FM = FactorizationMachine
 
 
-
 class FFM(Layer):
-    def __init__(self, dense_feature_columns, sparse_feature_columns, k, w_reg=1e-4, v_reg=1e-4):
+    def __init__(self,
+                 field_num=3,
+                 factor_dim=10,
+                 use_weight=True,
+                 use_bias=True,
+                 weight_reg=1e-3,
+                 kernel_reg=5e-2,
+                 activation=None):
         """
-
-        :param dense_feature_columns:
-        :param sparse_feature_columns:
-        :param k: the latent vector
-        :param w_reg: the regularization coefficient of parameter w
-                :param v_reg: the regularization coefficient of parameter v
+        :param factor_dim:
+        :param field_num:
+        :param weight_reg:
+        :param kernel_reg:
         """
         super(FFM, self).__init__()
-        self.dense_feature_columns = dense_feature_columns
-        self.sparse_feature_columns = sparse_feature_columns
-        self.k = k
-        self.w_reg = w_reg
-        self.v_reg = v_reg
-        self.feature_num = sum([feat['feat_num'] for feat in self.sparse_feature_columns]) \
-            + len(self.dense_feature_columns)
-        self.field_num = len(self.dense_feature_columns) + \
-            len(self.sparse_feature_columns)
+        self.field_num = field_num
+        self.factor_dim = factor_dim
+
+        self.use_weight = use_weight
+        self.use_bias = use_bias
+
+        self.weight_reg = weight_reg
+        self.kernel_reg = kernel_reg
+        self.activation = activation
+
+        self.kernel = self.weight = self.bias = self.activate_layer = None
 
     def build(self, input_shape):
-        self.w0 = self.add_weight(name='w0', shape=(1,),
-                                  initializer=tf.zeros_initializer(),
-                                  trainable=True)
-        self.w = self.add_weight(name='w', shape=(self.feature_num, 1),
-                                 initializer=tf.random_normal_initializer(),
-                                 regularizer=l2(self.w_reg),
-                                 trainable=True)
-        self.v = self.add_weight(name='v',
-                                 shape=(self.feature_num,
-                                        self.field_num, self.k),
-                                 initializer=tf.random_normal_initializer(),
-                                 regularizer=l2(self.v_reg),
-                                 trainable=True)
+        self.kernel = self.add_weight(name='kernel',
+                                      shape=(
+                                          input_shape[1], self.field_num, self.factor_dim),
+                                      initializer=tf.random_normal_initializer(),
+                                      regularizer=l2(self.kernel_reg),
+                                      trainable=True)
+
+        self.weight = self.add_weight(name='weight', shape=(input_shape[1], 1),
+                                      initializer=tf.random_normal_initializer(),
+                                      regularizer=l2(self.weight_reg),
+                                      trainable=True)
+
+        self.bias = self.add_weight(name='bias', shape=(
+            1,), initializer=tf.zeros_initializer(), trainable=True)
+        self.activate_layer = activations.get(self.activation)
 
     def call(self, inputs, **kwargs):
-        dense_inputs, sparse_inputs = inputs
-        stack = dense_inputs
-        # one-hot encoding
-        for i in range(sparse_inputs.shape[1]):
-            stack = tf.concat(
-                [stack, tf.one_hot(sparse_inputs[:, i],
-                                   depth=self.sparse_feature_columns[i]['feat_num'])], axis=-1)
-        # first order
-        first_order = self.w0 + tf.matmul(tf.concat(stack, axis=-1), self.w)
-        # field second order
-        second_order = 0
-        field_f = tf.tensordot(stack, self.v, axes=[1, 0])
-        for i in range(self.field_num):
-            for j in range(i+1, self.field_num):
-                second_order += tf.reduce_sum(
-                    tf.multiply(field_f[:, i], field_f[:, j]),
-                    axis=1, keepdims=True
-                )
+        field_f = tf.tensordot(inputs, self.kernel, axes=[1, 0])
 
-        return first_order + second_order
+        output = 0
+        for i in range(self.field_num):
+            for j in range(i + 1, self.field_num):
+                output += tf.reduce_sum(tf.multiply(
+                    field_f[:, i], field_f[:, j]), axis=1, keepdims=True)
+
+        if self.use_weight:
+            output += tf.matmul(inputs, self.weight)
+
+        if self.use_bias:
+            output += self.bias
+
+        if self.activate_layer:
+            output = self.activate_layer(output)
+
+        return output
