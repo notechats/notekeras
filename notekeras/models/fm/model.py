@@ -246,6 +246,9 @@ class xDeepFM(Model):
         output = tf.nn.sigmoid(cin_out + dnn_out + self.bias)
         return output
 
+    def get_config(self):
+        pass
+
 
 class MF_layer(Layer):
     def __init__(self, user_num, item_num, latent_dim, implicit=False, use_bias=False, user_reg=1e-4, item_reg=1e-4,
