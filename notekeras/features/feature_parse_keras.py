@@ -211,8 +211,8 @@ class ParseFeatureConfig:
                 continue
 
             outputs.append(method(feature_para))
-
-        outputs = Concatenate()(outputs)
+        if len(outputs) > 1:
+            outputs = Concatenate()(outputs)
 
         return outputs
 
