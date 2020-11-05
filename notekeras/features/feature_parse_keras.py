@@ -213,6 +213,10 @@ class ParseFeatureConfig:
             outputs.append(method(feature_para))
         if len(outputs) > 1:
             outputs = Concatenate()(outputs)
+        elif len(outputs) == 1:
+            outputs = outputs[0]
+        else:
+            raise Exception("Empty")
 
         return outputs
 
