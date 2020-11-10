@@ -1,3 +1,7 @@
+"""
+参考网址
+https://github.com/tensorflow/community/blob/master/rfcs/20191212-keras-categorical-inputs.md
+"""
 import tensorflow as tf
 from notekeras.layers.core import SelfSum
 from tensorflow.keras import backend as K
