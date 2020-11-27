@@ -30,6 +30,9 @@ def _parse_vocabulary(vocabulary):
 
 
 class ParseFeatureConfig:
+    embeddings_regularizer = 1e-4
+    activity_regularizer = 1e-4
+
     def __init__(self):
         self.feature_dict = {}
         self.share_layer = {}
@@ -144,9 +147,9 @@ class ParseFeatureConfig:
                                                                 trainable=True,
                                                                 mask_zero=True,
                                                                 embeddings_regularizer=tf.keras.regularizers.l2(
-                                                                    0.01),
+                                                                    embeddings_regularizer),
                                                                 activity_regularizer=tf.keras.regularizers.l2(
-                                                                    0.01),
+                                                                    activity_regularizer),
                                                                 ))
         embedding_input = embedding_layer(input_layer)
 
