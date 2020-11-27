@@ -147,9 +147,9 @@ class ParseFeatureConfig:
                                                                 trainable=True,
                                                                 mask_zero=True,
                                                                 embeddings_regularizer=tf.keras.regularizers.l2(
-                                                                    embeddings_regularizer),
+                                                                    self.embeddings_regularizer),
                                                                 activity_regularizer=tf.keras.regularizers.l2(
-                                                                    activity_regularizer),
+                                                                    self.activity_regularizer),
                                                                 ))
         embedding_input = embedding_layer(input_layer)
 
