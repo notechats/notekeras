@@ -1,6 +1,107 @@
+import demjson
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
+from sklearn.preprocessing import (Binarizer, LabelBinarizer, LabelEncoder,
+                                   MaxAbsScaler, MinMaxScaler, Normalizer,
+                                   OneHotEncoder, RobustScaler, StandardScaler)
+
+
+class FeaturePreProcessing:
+    def __init__(self):
+        self.feature_dict = {}
+
+    def _df_transform(self, dataframe: DataFrame, field, name):
+        if name in ['Normalizer']:
+            return 2, [dataframe[field].values]
+        elif name in ['a']:
+            return 1, np.transpose(dataframe[field].values)
+        else:
+            return 1, np.transpose([dataframe[field].values])
+
+    def _field_converse(self, dataframe: DataFrame, fields=None) -> dict:
+        if isinstance(fields, str) or isinstance(fields, list):
+            new_fields = {}
+            for col in dataframe.columns:
+                new_fields[col] = fields
+            return self._field_converse(dataframe, new_fields)
+        elif isinstance(fields, dict):
+            for field_k, field_v in fields.items():
+                if isinstance(field_v, str):
+                    fields[field_k] = {
+                        field_v: {}
+                    }
+                elif isinstance(field_v, list):
+                    fields[field_k] = {}
+                    for field in field_v:
+                        fields[field_k][field] = {}
+            return fields
+        else:
+            print("error")
+            return fields
+
+    def _fit(self, dataframe: DataFrame, field_k, field_v=None, *args, **kwargs):
+        if field_v in ('stand', 'StandardScaler', None):
+            value = StandardScaler(*args, **kwargs)
+        elif field_v in ('minmax', 'MinMaxScaler'):
+            value = MinMaxScaler(*args, **kwargs)
+        elif field_v in ('maxabs', 'MaxAbsScaler'):
+            value = MaxAbsScaler(*args, **kwargs)
+        elif field_v in ('norm', 'Normalizer'):
+            value = Normalizer(*args, **kwargs)
+        elif field_v in ('encoder', 'LabelEncoder'):
+            value = LabelEncoder()
+        elif field_v in ('robust', 'RobustScaler'):
+            value = RobustScaler(*args, **kwargs)
+        elif field_v in ('Binarizer', 'Binarizer'):
+            value = Binarizer(*args, **kwargs)
+        elif field_v in ('LabelBinarizer', 'LabelBinarizer'):
+            value = LabelBinarizer(*args, **kwargs)
+        elif field_v in ('OneHotEncoder', 'OneHotEncoder'):
+            value = OneHotEncoder(*args, **kwargs)
+        else:
+            value = StandardScaler(*args, **kwargs)
+
+        _, df = self._df_transform(dataframe, field_k, field_v)
+        value.fit(df, *args, **kwargs)
+        if field_k in self.feature_dict.keys():
+            self.feature_dict[field_k][field_v] = value
+        else:
+            self.feature_dict[field_k] = {}
+            self.feature_dict[field_k][field_v] = value
+
+    def _transform(self, dataframe: DataFrame, field_k, field_v=None, *args, **kwargs):
+        num, df = self._df_transform(dataframe, field_k, field_v)
+        if num == 2:
+            dataframe[field_k] = self.feature_dict[field_k][field_v].transform(df)[
+                0]
+        else:
+            dataframe[field_k] = self.feature_dict[field_k][field_v].transform(
+                df)
+
+    def fit(self, dataframe: DataFrame, fields=None, *args, **kwargs):
+        fields = self._field_converse(dataframe, fields)
+        for field, params in fields.items():
+            for process, v in params.items():
+                self._fit(dataframe, field, process, **v)
+
+    def transform(self, dataframe: DataFrame, fields=None, *args, **kwargs):
+        fields = self._field_converse(dataframe, fields)
+        for field, params in fields.items():
+            for process, v in params.items():
+                self._transform(dataframe, field, process, **v)
+        return dataframe
+
+    def fit_transform(self, dataframe: DataFrame, fields=None, *args, **kwargs):
+        fields = self._field_converse(dataframe, fields)
+        for field, params in fields.items():
+            for process, v in params.items():
+                self._fit(dataframe, field, process, **v)
+                self._transform(dataframe, field, process, **v)
+        return dataframe
+
+    def inverse_transform(self, *args, **kwargs):
+        pass
 
 
 class FeatureDictManage:
