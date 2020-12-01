@@ -135,7 +135,7 @@ class FeatureDictManage:
         fields = self._field_converse(dataframe, fields)
 
         for field_k, field_v in fields.items():
-            if field_v in self.feature_size.keys():
+            if field_v not in self.feature_size.keys():
                 self.feature_map[field_v] = {'': 0}
                 self.feature_size[field_v] = 1
 
