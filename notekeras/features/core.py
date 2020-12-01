@@ -168,7 +168,7 @@ class FeatureDictManage:
                     lambda x: [self.feature_map[field_v].get(i, 0) for i in x])
             else:
                 dataframe[field_k] = dataframe[field_k].apply(
-                    lambda x: self.feature_map[field_v].get(x, 0))
+                    lambda x: self.feature_map[field_v][x])
         return dataframe
 
     def fit_transform(self, dataframe: DataFrame, fields: dict = None) -> DataFrame:
