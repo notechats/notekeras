@@ -165,7 +165,7 @@ class FeatureDictManage:
         for field_k, field_v in fields.items():
             if field_v not in self.feature_map.keys():
                 continue
-            print(type(dataframe[field_k].values[0]))
+
             if isinstance(dataframe[field_k].values[0], list):
                 dataframe[field_k] = dataframe[field_k].apply(
                     lambda x: [self.feature_map[field_v][i] for i in x])
