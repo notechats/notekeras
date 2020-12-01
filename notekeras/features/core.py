@@ -126,7 +126,7 @@ class FeatureDictManage:
             fields = dict(zip(fields, fields))
         return fields
 
-    def add_feature(self, dataframe: DataFrame, fields=None):
+    def fit(self, dataframe: DataFrame, fields=None):
         """
         构建映射关系
         :param dataframe: 数据
@@ -141,19 +141,19 @@ class FeatureDictManage:
                 field_list = list(field_list)
                 field_list.sort()
                 d = dict(zip(field_list, [
-                         i + self.feature_size.get(field_v, 0) for i in range(len(field_list))]))
+                    i + self.feature_size.get(field_v, 0) for i in range(len(field_list))]))
 
                 self.feature_map[field_v].update(d)
             else:
                 field_list = list(
-                    set(dataframe[field_k].drop_duplicates().values))
+                    set(np.array(dataframe[field_k].values.tolist()).reshape(1, -1)[0]))
                 field_list.sort()
                 d = dict(zip(field_list, [i for i in range(len(field_list))]))
 
                 self.feature_map[field_v] = d
             self.feature_size[field_v] = len(self.feature_map[field_v])
 
-    def apply_feature(self, dataframe: DataFrame, fields: dict = None) -> DataFrame:
+    def transform(self, dataframe: DataFrame, fields: dict = None) -> DataFrame:
         """
         字段映射
         :param dataframe:
@@ -165,10 +165,15 @@ class FeatureDictManage:
         for field_k, field_v in fields.items():
             if field_v not in self.feature_map.keys():
                 continue
-            dataframe[field_k] = dataframe[field_k].apply(
-                lambda x: self.feature_map[field_v][x])
+            print(type(dataframe[field_k].values[0]))
+            if isinstance(dataframe[field_k].values[0], list):
+                dataframe[field_k] = dataframe[field_k].apply(
+                    lambda x: [self.feature_map[field_v][i] for i in x])
+            else:
+                dataframe[field_k] = dataframe[field_k].apply(
+                    lambda x: self.feature_map[field_v][x])
         return dataframe
 
-    def add_feature_and_apply(self, dataframe: DataFrame, fields: dict = None) -> DataFrame:
-        self.add_feature(dataframe, fields)
-        return self.apply_feature(dataframe, fields)
+    def fit_transform(self, dataframe: DataFrame, fields: dict = None) -> DataFrame:
+        self.fit(dataframe, fields)
+        return self.transform(dataframe, fields)
