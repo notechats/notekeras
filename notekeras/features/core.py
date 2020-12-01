@@ -136,21 +136,18 @@ class FeatureDictManage:
 
         for field_k, field_v in fields.items():
             if field_v in self.feature_size.keys():
-                field_list = set(dataframe[field_k].drop_duplicates(
-                ).values) - set(self.feature_map.get(field_v, []))
-                field_list = list(field_list)
-                field_list.sort()
-                d = dict(zip(field_list, [
-                    i + self.feature_size.get(field_v, 0) for i in range(len(field_list))]))
+                self.feature_map[field_v] = {'': 0}
+                self.feature_size[field_v] = 1
 
-                self.feature_map[field_v].update(d)
-            else:
-                field_list = list(
-                    set(np.array(dataframe[field_k].values.tolist()).reshape(1, -1)[0]))
-                field_list.sort()
-                d = dict(zip(field_list, [i for i in range(len(field_list))]))
+            field_list = set(np.array(dataframe[field_k].values.tolist()).reshape(1, -1)[0]) - set(
+                self.feature_map.get(field_v, []))
+            field_list = list(field_list)
+            field_list.sort()
+            size = self.feature_size.get(field_v, 0)
+            d = dict(
+                zip(field_list, [i + size for i in range(len(field_list))]))
 
-                self.feature_map[field_v] = d
+            self.feature_map[field_v].update(d)
             self.feature_size[field_v] = len(self.feature_map[field_v])
 
     def transform(self, dataframe: DataFrame, fields: dict = None) -> DataFrame:
@@ -168,10 +165,10 @@ class FeatureDictManage:
 
             if isinstance(dataframe[field_k].values[0], list):
                 dataframe[field_k] = dataframe[field_k].apply(
-                    lambda x: [self.feature_map[field_v][i] for i in x])
+                    lambda x: [self.feature_map[field_v].get(i, 0) for i in x])
             else:
                 dataframe[field_k] = dataframe[field_k].apply(
-                    lambda x: self.feature_map[field_v][x])
+                    lambda x: self.feature_map[field_v].get(x, 0))
         return dataframe
 
     def fit_transform(self, dataframe: DataFrame, fields: dict = None) -> DataFrame:
