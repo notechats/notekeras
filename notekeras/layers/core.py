@@ -74,6 +74,11 @@ class SelfSum(Layer):
             output_shape.append(1)
         return tuple(output_shape)
 
+    def get_config(self):
+        config = {"axis": self.axis}
+        base_config = super(SelfSum, self).get_config()
+        return dict(list(base_config.items()) + list(config.items()))
+
 
 class MaskFlatten(Layer):
     def __init__(self, **kwargs):
