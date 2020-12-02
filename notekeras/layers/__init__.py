@@ -1,3 +1,7 @@
+from tensorflow.keras.layers import Add
+from tensorflow.keras.layers import Average as Mean
+from tensorflow.keras.layers import Dot, Maximum, Minimum, Multiply, Subtract
+
 from .activations import Dice
 from .attention import (MultiHeadAttention, ScaledDotProductAttention,
                         SeqSelfAttention, SeqWeightedAttention)
