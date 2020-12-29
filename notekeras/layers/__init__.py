@@ -17,3 +17,4 @@ from .inputs import get_inputs
 from .masked import Masked
 from .normalize import BatchNormalizationFreeze, LayerNormalization
 from .pooling import MaskedGlobalMaxPool1D
+from .wrappers import WeightNormalization
