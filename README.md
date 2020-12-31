@@ -1,5 +1,6 @@
 # notekeras
 
+[my blog](http://blog.notechats.cn/)
 
 [attention](https://github.com/CyberZHG/keras-self-attention),
 [transformer](https://github.com/CyberZHG/keras-transformer), 
